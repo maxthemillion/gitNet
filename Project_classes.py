@@ -8,32 +8,28 @@ class Project:
     """Serves as data container for the communication data of a single project,
     handles the data import, cleaning and splits the project communication data into
     threads."""
-    # TODO: change this class so that it passes on data in the same way no matter which thread type is fed to it
-    _import_folder = "Input/"
     _export_folder = "Export/"
     _filename_lst = ['pullreq_data', 'issue_data', 'commit_data']
 
-    def __init__(self, import_path=None):
+    def __init__(self, pullreq_data, issue_data):
 
-        # TODO: add import option for all three thread types
+        assert len(pullreq_data["repo"].unique()) is 1
+        assert len(issue_data["repo"].unique()) is 1
+        assert issue_data["repo"].at[0] == pullreq_data["repo"].at[0]
 
-        if import_path is None:
-            import_path = self._import_folder
+        assert len(issue_data["owner"].unique()) is 1
+        assert len(pullreq_data["repo"].unique()) is 1
+        assert issue_data["owner"].at[0] == pullreq_data["owner"].at[0]
 
-        # self.owner =
-        # self.repo =
+        self.owner = pullreq_data["owner"].at[0]
+        self.repo = pullreq_data["repo"].at[0]
 
-        self._pullreq_data = pd.DataFrame(pd.read_json(import_path + "pullreq_data.json"))
-        self._pullreq_data = self.clean_input(self._pullreq_data)
-
-        # self._issue_data = pd.DataFrame(pd.read_json(import_path + "issue_data.csv"))
-        # self._issue_data = self.clean_input(self._issue_data)
-
-        # self._commit_data = pd.DataFrame(pd.read_json(import_path + "commit_data.csv"))
-        # self._commit_data = self.clean_input(self._commit_data)
+        self._pullreq_data = pullreq_data
+        self._issue_data = issue_data
+        # self._commit_data =       TODO: implement support for _commit_data
 
         self._threads = self._split_threads(self._pullreq_data, "pullreq")
-        # self._threads.append(self._split_threads(self._issue_data, "issue"))
+        self._threads = self._threads + self._split_threads(self._issue_data, "issue")
         # self._threads.append(self._split_threads(self._commit_data, "commit"))
 
     def collect_references(self, weighted=None):
@@ -54,7 +50,9 @@ class Project:
             ref_df.drop("comment_id", axis="columns")
             ref_df = ref_df.groupby(["commenter", "addressee", "ref_type"]).size().reset_index()
 
-        print("collected references with weighted parameter set to " + str(weighted))
+        print("collected references with weighted parameter set to \n >>>> " + str(weighted))
+        print()
+
         return ref_df
 
     def collect_participants(self):
@@ -65,14 +63,6 @@ class Project:
         part_df = part_df.drop_duplicates()
 
         return part_df
-
-    @staticmethod
-    def clean_input(data):
-        """removes remaining artifacts originating in the MongoDB data structure"""
-        if type(data["user"].iloc[1]) is dict:
-            for index, row in data.iterrows():
-                data.at[index, "user"] = row["user"].get('login')
-        return data
 
     def _split_threads(self, data, thread_type, start=None, stop=None):
         """splits the project data into single threads and passes them to new thread objects"""
@@ -95,6 +85,7 @@ class Project:
             stop = len(thread_ids)
 
         i = start
+
         while i < stop:
             next_thread = thread_ids.item(i)
             thread_data = data[data["thread_id"] == next_thread]
@@ -119,10 +110,11 @@ class Project:
     def export_network(self, target_db=None):
         """exports references from all threads of the project. Defaults to csv export"""
         if target_db is None:
-            target_db = "csv"
+            target_db = "Neo4j"
 
         assert target_db is "Neo4j" or "SQLite" or "csv", "target_db option set incorrectly."
-        print("begin export with parameter target_db set to " + target_db)
+        print("begin export with parameter target_db set to \n >>>> " + target_db)
+        print()
 
         # get all references
         ref_df = self.collect_references()
@@ -143,6 +135,9 @@ class Project:
             print()
 
         if target_db is "Neo4j":
+            # TODO: check if it makes sense to transfer the nodes directly to
+            # csv export-import could be replaced by something faster.
+
             graph = Graph(user="max", password="1111")
 
             # import the CSV files to Neo4j using Cypher
@@ -164,6 +159,9 @@ class Project:
                         MERGE (b:USER{login:row.addressee}) 
                         MERGE (a) -[:MENTIONS {comment_id:row.comment_id}]-> (b)'''
             graph.run(query_ref)
+
+            print("Export to Neo4j succeeded!")
+            print()
 
         elif target_db is "SQLite":
             # TODO: implement SQLite export option

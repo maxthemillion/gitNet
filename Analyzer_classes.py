@@ -49,8 +49,10 @@ class ThreadAnalyzer:
                     # check validity of identified username
                     # add a reference, if the username is at least 2 characters
                     # long and if it occurs in the thread's participants list
+                    # furthermore, commenter and addressee cannot be the same
                     if len(addressee) > 1 and \
-                            addressee in participants:
+                            addressee in participants and \
+                            addressee != commenter:
                         references = references.append(pd.DataFrame(row))
                 except ValueError:
                     message = "an ending character to @username has not been found for comment " + str(comment_id)
