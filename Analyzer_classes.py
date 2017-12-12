@@ -1,7 +1,6 @@
 import pandas as pd
 import warnings
 
-#sample comment
 
 class ThreadAnalyzer:
     """Runs the analytics on threads"""
@@ -57,6 +56,7 @@ class ThreadAnalyzer:
                 except ValueError:
                     message = "an ending character to @username has not been found for comment " + str(comment_id)
                     warnings.warn(message=message)
+
         return references
 
     @staticmethod
