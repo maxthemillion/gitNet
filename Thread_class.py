@@ -73,6 +73,8 @@ class Thread:
             body = row["body"]
             comment_id = row["id"]
 
+            #minor change
+
             ref_type = "mentions"
             start_pos_list = self._find_all(body, "@")
             # if start_pos_list is not None:
