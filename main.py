@@ -1,7 +1,7 @@
 import pandas as pd
 from Project_class import Project
+from Neo4j_controller import Neo4jController
 import warnings
-from py2neo import Graph
 
 
 def clean_input(data):
@@ -37,37 +37,6 @@ def extract_owner_data(owner):
     return pullreq_data, issue_data
 
 
-def run_louvain():
-    print("Running louvain algorithm on Neo4j.")
-
-    graph = Graph(user="max", password="1111")
-
-    query_part = "CALL algo.louvain(" \
-                 "'MATCH (u:USER) RETURN id(p) as id'," \
-                 "'MATCH (u1:USER)-[rel:MENTIONS]-(u2:USER)" \
-                 "RETURN id(u1) as source, id(u2) as target'," \
-                 "{weightProperty:'weight', write: true, writeProperty:'community', graph:'cypher'})"
-    graph.run(query_part)
-
-    print("Louvain algorithm complete")
-    print()
-
-
-def stream_to_gephi():
-    print("Running louvain algorithm on Neo4j.")
-
-    graph = Graph(user="max", password="1111")
-
-    query_part = "MATCH path = (:USER)-[:MENTIONS]-(:USER)" \
-                 "CALL apoc.gephi.add(null, 'workspace1', path, 'weight', ['community'])" \
-                 "YIELD nodes" \
-                 "return *"
-    graph.run(query_part)
-
-    print("Louvain algorithm complete")
-    print()
-
-
 def split_projects(owner):
 
     owner_pullreq_data, owner_issue_data = extract_owner_data(owner)
@@ -92,15 +61,18 @@ def split_projects(owner):
     return project_list
 
 
-owners_list = pd.read_csv("Input/owners.csv")
+def run_analysis():
+    owners_list = pd.read_csv("Input/owners.csv")
 
-for owner in owners_list["owner_name"]:
-    project_list = split_projects(owner)
-    for project in project_list:
-        project.analyze_threads()
-        project.stats.print_summary()
-        project.export_project("Neo4j")
+    for owner in owners_list["owner_name"]:
+        project_list = split_projects(owner)
+        for project in project_list:
+            project.analyze_threads()
+            project.stats.print_summary()
+            project.export_project("Neo4j")
 
 
-
-# run_louvain()
+# run_analysis()
+neo_controller = Neo4jController()
+neo_controller.run_louvain()
+neo_controller.stream_to_gephi()

@@ -57,6 +57,9 @@ class Thread:
 
         self._analysis_performed = True
 
+    def _get_mentions_from_row(self, row):
+        pass
+
     def _recognize_references_relaxed(self):
         """finds references in the thread according to the relaxed rule set"""
         # TODO: test this rule set by feeding sample data to it.
@@ -76,18 +79,17 @@ class Thread:
             for start_pos in start_pos_list:
                 stop_pos = Thread._find_end_username(body, start_pos)
                 addressee = str.lower(body[start_pos + 1:stop_pos])
-                row = [{'commenter': commenter,
-                        'addressee': addressee,
-                        'comment_id': comment_id,
-                        'ref_type': ref_type}]
+                reference = [{'commenter': commenter,
+                              'addressee': addressee,
+                              'comment_id': comment_id,
+                              'ref_type': ref_type}]
 
                 if addressee != commenter and \
                         self.is_participant(addressee) or self._parent_project.is_participant(addressee):
-                        ref_relaxed = ref_relaxed.append(pd.DataFrame(row))
+                        ref_relaxed = ref_relaxed.append(pd.DataFrame(reference))
                         self.report.add_mentions(comment_id)
 
             ref_type = "quote"
-
             # filter '>' that define quotes
             close_temp = []
             markdown_close = self._find_all(body, ">")
