@@ -1,7 +1,7 @@
 import pandas as pd
 import warnings
-from Run_Report_class import AnalysisReport
-from Mention import Mention
+from reports import AnalysisReport
+from references import Mention, Quote
 
 
 class Thread:
@@ -14,7 +14,7 @@ class Thread:
         assert len(thread_data["thread_id"].unique()) is 1
 
         self._type = thread_type
-        self._parent_project = parent_project
+        self.parent_project = parent_project
 
         self._participants = (self._thread_data["user"].str.lower()).unique()
 
@@ -40,6 +40,13 @@ class Thread:
                              "be returned!")
         return result
 
+    def get_references_as_df(self):
+        df = pd.DataFrame()
+        if self._references_relaxed:
+            for reference in self._references_relaxed:
+                df = df.append(reference.get_info_as_series(), ignore_index=True)
+        return df
+
     def get_participants(self):
         return self._participants
 
@@ -51,45 +58,71 @@ class Thread:
     def analyze_references(self):
         """can be called to start the analysis process"""
         #mentions_strict = Thread._recognize_references_strict()
-        ref_relaxed = self._recognize_references_relaxed()
+        ref_relaxed = self._find_references_relaxed()
 
         #self._references_strict = mentions_strict
         self._references_relaxed = ref_relaxed
 
         self._analysis_performed = True
 
-    def _get_mentions_from_row(self, row):
+    def _detect_mentions_in_row(self, row):
         mentions_list = []
 
         body = row["body"]
         commenter = row["user"]
+        comment_id = row["id"]
 
         start_pos_list = self._find_all(body, "@")
-        # if start_pos_list is not None:
         for start_pos in start_pos_list:
             stop_pos = Thread._find_end_username(body, start_pos)
             addressee = str.lower(body[start_pos + 1:stop_pos])
-            mention = Mention(commenter, addressee, comment_id)
-            if mentions_list:
-                mentions_list.append(mention)
-            else:
-                mentions_list = [mention]
+            mention = Mention(commenter, addressee, comment_id, self)
+
+            if mention.is_valid():
+                if mentions_list:
+                    mentions_list.append(mention)
+                else:
+                    mentions_list = [mention]
 
         return mentions_list
 
-    def _get_quotes_from_row(self, row):
-        pass
+    def _detect_quotes_in_row(self, row, index):
+        # TODO: author can't be found if quote was altered
 
-    def _test_append_mention(self, mention):
-        if addressee != commenter and \
-                self.is_participant(addressee) or self._parent_project.is_participant(addressee):
-            ref_relaxed = ref_relaxed.append(pd.DataFrame(reference))
-            self.report.add_mentions(comment_id)
+        quote_list = []
 
-    def _test_append_quote(self, quote):
-        pass
+        body = row["body"]
+        commenter = row["user"]
+        comment_id = row["id"]
 
-    def _recognize_references_relaxed(self):
+        # filter '>' that define quotes
+        close_temp = []
+        markdown_close = self._find_all(body, ">")
+
+        for item in markdown_close:
+            if item == 0:
+                close_temp.append(item)
+            elif body[item - 2:item] == "\r\n":
+                close_temp.append(item)
+
+        start_pos_list = close_temp
+        for start_pos in start_pos_list:
+            stop_pos = Thread._find_end_quote(body, start_pos)
+            # don't consider the first 5 values
+            quote_body = body[start_pos + 5:stop_pos]
+
+            addressee = self._find_source(quote_body, index)
+            new_quote = Quote(commenter, addressee, comment_id, self)
+
+            if new_quote.is_valid():
+                if quote_list:
+                    quote_list.append(new_quote)
+                else:
+                    quote_list = [new_quote]
+
+        return quote_list
+
+    def _find_references_relaxed(self):
         """finds references in the thread according to the relaxed rule set"""
         # TODO: test this rule set by feeding sample data to it.
 
@@ -98,41 +131,12 @@ class Thread:
         for index in range(0, len(self._thread_data)):
             row = self._thread_data.iloc[index]
 
+            mentions_list = self._detect_mentions_in_row(row)
 
+            quote_list = self._detect_quotes_in_row(row, index)
 
+            ref_relaxed = mentions_list + quote_list
 
-            ref_type = "quote"
-            # filter '>' that define quotes
-            close_temp = []
-            markdown_close = self._find_all(body, ">")
-
-            for item in markdown_close:
-                if item == 0:
-                    close_temp.append(item)
-                elif body[item-2:item] == "\r\n":
-                    close_temp.append(item)
-
-            start_pos_list = close_temp
-
-            for start_pos in start_pos_list:
-                stop_pos = Thread._find_end_quote(body, start_pos)
-                # don't consider the first 5 values to get rid of disturbing effects.
-                quote = body[start_pos + 5:stop_pos]
-                author = self._find_source(quote, index)
-                # assert author is not None
-                # TODO: author can't be found if quote was altered
-                # -> assert removed, log None-occurences instead
-                row = [{'commenter': commenter,
-                        'addressee': author,
-                        'comment_id': comment_id,
-                        'ref_type': ref_type}]
-                if author is not None and author != commenter and \
-                        self.is_participant(author) or self._parent_project.is_participant(author):
-
-                        ref_relaxed = ref_relaxed.append(pd.DataFrame(row))
-                        self.report.add_quote(comment_id, True)
-                elif author is None:
-                    self.report.add_quote(comment_id, False)
         # TODO: consolidate references
         return ref_relaxed
 

@@ -1,6 +1,6 @@
 import pandas as pd
 from py2neo import Graph, Path
-from Thread_class import Thread
+from threads import Thread
 
 
 class Project:
@@ -23,8 +23,8 @@ class Project:
         self.owner = pullreq_data["owner"].at[0]
         self.repo = pullreq_data["repo"].at[0]
 
-        self._pullreq_data = pullreq_data
-        self._issue_data = issue_data
+        self._pullreq_data = self.clean_input(pullreq_data)
+        self._issue_data = self.clean_input(issue_data)
         # self._commit_data =       TODO: implement support for _commit_data
 
         self._threads = self._split_threads(self._pullreq_data, "pullreq")
@@ -96,12 +96,11 @@ class Project:
 
         ref_df = pd.DataFrame()
         for thread in self._threads:
-            ref_df = ref_df.append(thread.get_references("relaxed"))
+            ref_df = ref_df.append(thread.get_references_as_df())
         result = ref_df
 
         if weighted:
             # drop comment_id column remove duplicate rows and add weights
-            # TODO: put comment ids and thread ids in a dict string
             # TODO: use formatter "{%s}" % ', '.join(str(x) instead of tuple(x)
 
             ref_df_weighted = ref_df.groupby(["commenter", "addressee", "ref_type"])\
@@ -132,6 +131,15 @@ class Project:
         part_df = part_df.drop_duplicates()
 
         return part_df
+
+    # -------- data cleaning -------
+    @staticmethod
+    def clean_input(data):
+        """removes remaining artifacts originating in the MongoDB data structure"""
+        if type(data["user"].iloc[1]) is dict:
+            for index, row in data.iterrows():
+                data.at[index, "user"] = row["user"].get('login')
+        return data
 
     # -------- data export --------
     def export_project(self, target_db):

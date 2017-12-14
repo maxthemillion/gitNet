@@ -1,15 +1,7 @@
 import pandas as pd
-from Project_class import Project
-from Neo4j_controller import Neo4jController
+from project import Project
+from neocontroller import Neo4jController
 import warnings
-
-
-def clean_input(data):
-    """removes remaining artifacts originating in the MongoDB data structure"""
-    if type(data["user"].iloc[1]) is dict:
-        for index, row in data.iterrows():
-            data.at[index, "user"] = row["user"].get('login')
-    return data
 
 
 def extract_owner_data(owner):
@@ -24,10 +16,8 @@ def extract_owner_data(owner):
     import_path = import_folder
 
     pullreq_data = pd.DataFrame(pd.read_json(import_path + owner + "_pullreq_data.json"))
-    pullreq_data = clean_input(pullreq_data)
 
     issue_data = pd.DataFrame(pd.read_json(import_path + owner + "_issue_data.json"))
-    issue_data = clean_input(issue_data)
 
     print("Imported pullreq and issue data from owner " + owner)
 
@@ -72,7 +62,7 @@ def run_analysis():
             project.export_project("Neo4j")
 
 
-# run_analysis()
+run_analysis()
 neo_controller = Neo4jController()
 neo_controller.run_louvain()
 neo_controller.stream_to_gephi()
