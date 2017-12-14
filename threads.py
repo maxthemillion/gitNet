@@ -6,7 +6,6 @@ from references import Mention, Quote
 
 class Thread:
     """contains a pull request communication thread and its thread analytics"""
-    # TODO: change this class so that it can handle all types of threads
     def __init__(self, thread_data, thread_type, parent_project):
 
         self._thread_data = thread_data.sort_values(by="id", axis="rows", ascending=True)
@@ -140,7 +139,7 @@ class Thread:
         # TODO: consolidate references
         return ref_relaxed
 
-    def _recognize_references_strict(self):
+    def _find_references_strict(self):
         # TODO: implement strict rule set
         pass
 
