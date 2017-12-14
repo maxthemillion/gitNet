@@ -1,5 +1,5 @@
 import pandas as pd
-from Project_classes import Project
+from Project_class import Project
 import warnings
 from py2neo import Graph
 
@@ -67,25 +67,40 @@ def stream_to_gephi():
     print("Louvain algorithm complete")
     print()
 
-def build_network():
-    owners_list = pd.read_csv("Input/owners.csv")
 
-    for owner in owners_list["owner_name"]:
+def split_projects(owner):
 
-        owner_pullreq_data, owner_issue_data = extract_owner_data(owner)
+    owner_pullreq_data, owner_issue_data = extract_owner_data(owner)
 
-        # TODO: clean up the following lines: Is there a better way to do it?
-        project_name_list = owner_pullreq_data["repo"].drop_duplicates()
-        project_name_list = project_name_list.append(owner_issue_data["repo"].drop_duplicates())
-        # project_name_list = project_name_list.append(owner_commit_data["repo"].drop_duplicates())
-        project_name_list = project_name_list.drop_duplicates()
+    # TODO: clean up the following lines: Is there a better way to do it?
+    project_name_list = owner_pullreq_data["repo"].drop_duplicates()
+    project_name_list = project_name_list.append(owner_issue_data["repo"].drop_duplicates())
+    # project_name_list = project_name_list.append(owner_commit_data["repo"].drop_duplicates())
+    project_name_list = project_name_list.drop_duplicates()
 
-        for project_name in project_name_list:
-            project_pullreq_data = owner_pullreq_data[owner_pullreq_data["repo"] == project_name]
-            project_issue_data = owner_issue_data[owner_issue_data["repo"] == project_name]
-            new_project = Project(project_pullreq_data, project_issue_data)
-            new_project.export_project()
+    for project_name in project_name_list:
+        project_pullreq_data = owner_pullreq_data[owner_pullreq_data["repo"] == project_name]
+        project_issue_data = owner_issue_data[owner_issue_data["repo"] == project_name]
+        # project_issue_data = owner_issue_data.iloc[0]
+        new_project = Project(project_pullreq_data, project_issue_data)
+        # new_project.export_project()
+        if 'project_list' not in locals():
+            project_list = [new_project]
+        else:
+            project_list.append(new_project)
+
+    return project_list
 
 
-# build_network()
-run_louvain()
+owners_list = pd.read_csv("Input/owners.csv")
+
+for owner in owners_list["owner_name"]:
+    project_list = split_projects(owner)
+    for project in project_list:
+        project.analyze_threads()
+        project.stats.print_summary()
+        project.export_project("Neo4j")
+
+
+
+# run_louvain()
