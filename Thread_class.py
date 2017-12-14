@@ -1,6 +1,7 @@
 import pandas as pd
 import warnings
 from Run_Report_class import AnalysisReport
+from Mention import Mention
 
 
 class Thread:
@@ -58,6 +59,34 @@ class Thread:
         self._analysis_performed = True
 
     def _get_mentions_from_row(self, row):
+        mentions_list = []
+
+        body = row["body"]
+        commenter = row["user"]
+
+        start_pos_list = self._find_all(body, "@")
+        # if start_pos_list is not None:
+        for start_pos in start_pos_list:
+            stop_pos = Thread._find_end_username(body, start_pos)
+            addressee = str.lower(body[start_pos + 1:stop_pos])
+            mention = Mention(commenter, addressee, comment_id)
+            if mentions_list:
+                mentions_list.append(mention)
+            else:
+                mentions_list = [mention]
+
+        return mentions_list
+
+    def _get_quotes_from_row(self, row):
+        pass
+
+    def _test_append_mention(self, mention):
+        if addressee != commenter and \
+                self.is_participant(addressee) or self._parent_project.is_participant(addressee):
+            ref_relaxed = ref_relaxed.append(pd.DataFrame(reference))
+            self.report.add_mentions(comment_id)
+
+    def _test_append_quote(self, quote):
         pass
 
     def _recognize_references_relaxed(self):
@@ -69,27 +98,8 @@ class Thread:
         for index in range(0, len(self._thread_data)):
             row = self._thread_data.iloc[index]
 
-            commenter = str.lower(row["user"])
-            body = row["body"]
-            comment_id = row["id"]
 
-            #minor change
 
-            ref_type = "mentions"
-            start_pos_list = self._find_all(body, "@")
-            # if start_pos_list is not None:
-            for start_pos in start_pos_list:
-                stop_pos = Thread._find_end_username(body, start_pos)
-                addressee = str.lower(body[start_pos + 1:stop_pos])
-                reference = [{'commenter': commenter,
-                              'addressee': addressee,
-                              'comment_id': comment_id,
-                              'ref_type': ref_type}]
-
-                if addressee != commenter and \
-                        self.is_participant(addressee) or self._parent_project.is_participant(addressee):
-                        ref_relaxed = ref_relaxed.append(pd.DataFrame(reference))
-                        self.report.add_mentions(comment_id)
 
             ref_type = "quote"
             # filter '>' that define quotes
