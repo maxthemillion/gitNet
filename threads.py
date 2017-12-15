@@ -11,6 +11,7 @@ class Thread:
         self._thread_data = thread_data.sort_values(by="id", axis="rows", ascending=True)
         # assert that only one pull request id appears in each thread
         assert len(thread_data["thread_id"].unique()) is 1
+        self.no_comments = len(self._thread_data)
 
         self._type = thread_type
         self.parent_project = parent_project
@@ -57,10 +58,7 @@ class Thread:
     def analyze_references(self):
         """can be called to start the analysis process"""
         #mentions_strict = Thread._recognize_references_strict()
-        ref_relaxed = self._find_references_relaxed()
-
-        #self._references_strict = mentions_strict
-        self._references_relaxed = ref_relaxed
+        self._references_relaxed = self._find_references_relaxed()
 
         self._analysis_performed = True
 
@@ -76,12 +74,10 @@ class Thread:
             stop_pos = Thread._find_end_username(body, start_pos)
             addressee = str.lower(body[start_pos + 1:stop_pos])
             mention = Mention(commenter, addressee, comment_id, self)
-
-            if mention.is_valid():
-                if mentions_list:
-                    mentions_list.append(mention)
-                else:
-                    mentions_list = [mention]
+            if mentions_list:
+                mentions_list.append(mention)
+            else:
+                mentions_list = [mention]
 
         return mentions_list
 
@@ -112,29 +108,44 @@ class Thread:
 
             addressee = self._find_source(quote_body, index)
             new_quote = Quote(commenter, addressee, comment_id, self)
-
-            if new_quote.is_valid():
-                if quote_list:
-                    quote_list.append(new_quote)
-                else:
-                    quote_list = [new_quote]
+            if quote_list:
+                quote_list.append(new_quote)
+            else:
+                quote_list = [new_quote]
 
         return quote_list
 
+    @staticmethod
+    def _remove_invalid_references(reference_list):
+        ind_invalid = []
+        for i in range(0, len(reference_list)):
+            if not reference_list[i].is_valid():
+                if ind_invalid:
+                    ind_invalid.append(i)
+                else:
+                    ind_invalid = [i]
+
+        for i in sorted(ind_invalid, reverse=True):
+            del reference_list[i]
+
+        return reference_list
+
     def _find_references_relaxed(self):
         """finds references in the thread according to the relaxed rule set"""
-        # TODO: test this rule set by feeding sample data to it.
-
-        ref_relaxed = pd.DataFrame(columns=["commenter", "addressee", "comment_id", "ref_type"])
-
+        ref_relaxed = []
         for index in range(0, len(self._thread_data)):
             row = self._thread_data.iloc[index]
 
             mentions_list = self._detect_mentions_in_row(row)
+            mentions_list = self._remove_invalid_references(mentions_list)
 
             quote_list = self._detect_quotes_in_row(row, index)
+            quote_list = self._remove_invalid_references(quote_list)
 
-            ref_relaxed = mentions_list + quote_list
+            if ref_relaxed:
+                ref_relaxed.extend((mentions_list + quote_list))
+            else:
+                ref_relaxed = mentions_list + quote_list
 
         # TODO: consolidate references
         return ref_relaxed
@@ -167,7 +178,7 @@ class Thread:
         characters in char_list or with the comment end"""
         char_list = {' ', "'", '.', '@', '`', ',', "!", "?",
                       "(", ")", "{", "}", "[", "]", "/",
-                      "\\", "\"", "\n", "\t"}
+                      "\\", "\"", "\n", "\t", "\r"}
         ind = next((i for i, ch in enumerate(s) if ch in char_list and i > start_pos + 1), len(s))
         return ind
 

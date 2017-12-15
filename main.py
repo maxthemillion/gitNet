@@ -15,9 +15,12 @@ def extract_owner_data(owner):
     import_folder = "Input/"
     import_path = import_folder
 
-    pullreq_data = pd.DataFrame(pd.read_json(import_path + owner + "_pullreq_data.json"))
+    # pullreq_data = pd.DataFrame(pd.read_json(import_path + owner + "_pullreq_data.json"))
+    # issue_data = pd.DataFrame(pd.read_json(import_path + owner + "_issue_data.json"))
 
-    issue_data = pd.DataFrame(pd.read_json(import_path + owner + "_issue_data.json"))
+    pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_data_pullreq.json"))
+    issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_data_issue.json"))
+
 
     print("Imported pullreq and issue data from owner " + owner)
 
@@ -37,16 +40,17 @@ def split_projects(owner):
     # project_name_list = project_name_list.append(owner_commit_data["repo"].drop_duplicates())
     project_name_list = project_name_list.drop_duplicates()
 
+    project_list = []
     for project_name in project_name_list:
         project_pullreq_data = owner_pullreq_data[owner_pullreq_data["repo"] == project_name]
         project_issue_data = owner_issue_data[owner_issue_data["repo"] == project_name]
         # project_issue_data = owner_issue_data.iloc[0]
         new_project = Project(project_pullreq_data, project_issue_data)
         # new_project.export_project()
-        if 'project_list' not in locals():
-            project_list = [new_project]
-        else:
+        if project_list:
             project_list.append(new_project)
+        else:
+            project_list = [new_project]
 
     return project_list
 
@@ -62,7 +66,12 @@ def run_analysis():
             project.export_project("Neo4j")
 
 
-run_analysis()
-neo_controller = Neo4jController()
-neo_controller.run_louvain()
-neo_controller.stream_to_gephi()
+analysis = True
+neo4j = False
+
+if analysis:
+    run_analysis()
+if neo4j:
+    neo_controller = Neo4jController()
+    neo_controller.run_louvain()
+    neo_controller.stream_to_gephi()

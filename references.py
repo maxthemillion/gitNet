@@ -1,5 +1,6 @@
 import pandas as pd
 
+
 class Reference:
     def __init__(self, commenter, addressee, comment_id, parent_thread):
         self.commenter = commenter
@@ -32,7 +33,8 @@ class Reference:
 
 class Mention(Reference):
     def _add_to_report(self):
-        self._parent_thread.report.add_mentions(self.comment_id)
+        # TODO: differenciate beteween valid and invalid mentions
+        self._parent_thread.report.add_mentions(self.comment_id, self._valid)
 
 
 class Quote(Reference):

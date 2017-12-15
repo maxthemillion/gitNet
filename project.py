@@ -12,6 +12,7 @@ class Project:
 
     def __init__(self, pullreq_data, issue_data):
 
+        # TODO: shift these asserts to unit tests
         assert len(pullreq_data["repo"].unique()) is 1
         assert len(issue_data["repo"].unique()) is 1
         assert issue_data["repo"].at[0] == pullreq_data["repo"].at[0]
@@ -27,9 +28,11 @@ class Project:
         self._issue_data = self.clean_input(issue_data)
         # self._commit_data =       TODO: implement support for _commit_data
 
-        self._threads = self._split_threads(self._pullreq_data, "pullreq")
-        self._threads = self._threads + self._split_threads(self._issue_data, "issue")
-        # self._threads.append(self._split_threads(self._commit_data, "commit"))
+        self._threads = self._split_threads("pullreq")
+        self._threads = self._threads + self._split_threads("issue")
+        # self._threads.append(self._split_threads( "commit"))
+
+        self.no_threads = len(self._threads)
 
         self._participants = self._collect_participants()
         self._references = None
@@ -49,18 +52,14 @@ class Project:
         self._references = self._collect_references()
         self._collect_stats()
 
-    def _split_threads(self, data, thread_type, start=None, stop=None):
+    def _split_threads(self, thread_type, start=None, stop=None):
         """splits the project data into single threads and passes them to new thread objects"""
-
-        column_names = data.columns
-        if thread_type is "pullreq":
-            data = data.rename(index=str, columns={"pullreq_id": "thread_id"})
-        elif thread_type is "issue":
-            data = data.rename(index=str, columns={"issue_id": "thread_id"})
-        elif thread_type is "commit":
-            data = data.rename(index=str, columns={"commit_id": "thread_id"})
+        if thread_type == "issue":
+            data = self._issue_data
+        elif thread_type == "pullreq":
+            data = self._pullreq_data
         else:
-            raise ValueError("wrong thread type passed to self.split_threads()")
+            raise ValueError
 
         thread_ids = data["thread_id"].unique()
 
@@ -70,7 +69,6 @@ class Project:
             stop = len(thread_ids)
 
         i = start
-
         while i < stop:
             next_thread = thread_ids.item(i)
             thread_data = data[data["thread_id"] == next_thread]
@@ -139,6 +137,17 @@ class Project:
         if type(data["user"].iloc[1]) is dict:
             for index, row in data.iterrows():
                 data.at[index, "user"] = row["user"].get('login')
+
+        # TODO: do this upon data import!
+        # TODO: is the thread type even important?
+        column_names = data.columns
+        if "pullreq_id" in column_names:
+            data = data.rename(index=str, columns={"pullreq_id": "thread_id"})
+        elif "issue_id" in column_names:
+            data = data.rename(index=str, columns={"issue_id": "thread_id"})
+        elif "commit_id" in column_names:
+            data = data.rename(index=str, columns={"commit_id": "thread_id"})
+
         return data
 
     # -------- data export --------
@@ -216,7 +225,9 @@ class Project:
         for thread in self._threads:
             self.stats.add_quotes_sourced(thread.report.get_quotes_sourced())
             self.stats.add_quotes_not_sourced(thread.report.get_quotes_not_sourced())
-            self.stats.add_mentions_found(thread.report.get_mentions_found())
+            self.stats.add_mentions_found_total(thread.report.get_mentions_found_total())
+            self.stats.add_mentions_found_valid(thread.report.get_mentions_found_valid())
+            self.stats.add_comments(thread.no_comments)
 
 
 class ProjectStats:
@@ -224,8 +235,9 @@ class ProjectStats:
         self._parent_project = parent_project
         self._quotes_sourced = 0
         self._quotes_not_sourced = 0
-        self._mentions_found = 0 # TODO: also show the number of weighted edges drawn
-        self._no_threads_analyzed = 0
+        self._mentions_found_total = 0 # TODO: also show the number of weighted edges drawn
+        self._mentions_found_valid = 0
+        self._no_threads_analyzed = parent_project.no_threads
         self._no_comments = 0
         self._no_participants = 0 # TODO: get the number of participants from the parent project
 
@@ -235,8 +247,14 @@ class ProjectStats:
     def add_quotes_not_sourced(self, no):
         self._quotes_not_sourced += no
 
-    def add_mentions_found(self, no):
-        self._mentions_found += no
+    def add_mentions_found_total(self, no):
+        self._mentions_found_total += no
+
+    def add_mentions_found_valid(self, no):
+        self._mentions_found_valid += no
+
+    def add_comments(self, no):
+        self._no_comments += no
 
     def print_summary(self):
         total_no_quotes = self._quotes_not_sourced + self._quotes_sourced
@@ -249,8 +267,9 @@ class ProjectStats:
         print("project name:                " + self._parent_project.owner + "/" + self._parent_project.repo)
         print()
         print("number of threads analyzed: {0}".format(self._no_threads_analyzed))
-        print("number of comments:         {0}".format('missing'))
+        print("number of comments:         {0}".format(self._no_comments))
         print("total number of quotes:     {0} ".format(total_no_quotes))
         print("percentage quotes sourced:  {0}".format(share_sourced))
-        print("number of mentions found:   {0}".format(self._mentions_found))
+        print("number of mentions (total): {0}".format(self._mentions_found_total))
+        print("number of valid mentions:   {0}".format(self._mentions_found_valid))
         print()
