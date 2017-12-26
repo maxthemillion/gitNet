@@ -158,7 +158,7 @@ class Thread:
         i = 0
         while stop_row > i:
             if self._thread_data["body"].iloc[i].find(quote) > -1:
-                return self._thread_data["user"].iloc[i]
+                return self._thread_data["user"].iloc[i].lower()
             i = i + 1
 
         # print("source not found for the following quote:")

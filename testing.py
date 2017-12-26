@@ -103,6 +103,7 @@ class MentionsDetectionTestCase(unittest.TestCase):
             self.assertTrue(m.comment_id == self.fake_comment_id)
             self.assertTrue(m.addressee == self.addressee1)
 
+
 class QuoteDetectionTestCase(unittest.TestCase):
     def setUp(self):
         test_issue_data = pd.DataFrame(pd.read_json("TestData/test_issue_data.json"))
@@ -126,6 +127,12 @@ class QuoteDetectionTestCase(unittest.TestCase):
         pass
 
     # TODO: write test case for mentions detection
+
+
+class FindQuoteSourceTestCase(unittest.TestCase):
+    def test_foo(self):
+        # Thread._find_source("sample", )
+        self.assertTrue(False)
 
 
 class ReferencesTestCaseRelaxed(unittest.TestCase):

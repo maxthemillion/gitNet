@@ -15,11 +15,11 @@ def extract_owner_data(owner):
     import_folder = "Input/"
     import_path = import_folder
 
-    # pullreq_data = pd.DataFrame(pd.read_json(import_path + owner + "_pullreq_data.json"))
-    # issue_data = pd.DataFrame(pd.read_json(import_path + owner + "_issue_data.json"))
+    pullreq_data = pd.DataFrame(pd.read_json(import_path + owner + "_pullreq_data.json"))
+    issue_data = pd.DataFrame(pd.read_json(import_path + owner + "_issue_data.json"))
 
-    pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_data_pullreq.json"))
-    issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_data_issue.json"))
+    # pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_data_pullreq.json"))
+    # issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_data_issue.json"))
 
 
     print("Imported pullreq and issue data from owner " + owner)
@@ -67,11 +67,13 @@ def run_analysis():
 
 
 analysis = True
-neo4j = False
+neo4j = True
 
 if analysis:
     run_analysis()
 if neo4j:
     neo_controller = Neo4jController()
     neo_controller.run_louvain()
-    neo_controller.stream_to_gephi()
+    # neo_controller.stream_to_gephi()
+    neo_controller.export_graphjson()
+

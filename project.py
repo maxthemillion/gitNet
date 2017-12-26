@@ -138,6 +138,8 @@ class Project:
             for index, row in data.iterrows():
                 data.at[index, "user"] = row["user"].get('login')
 
+        data["user"] = data["user"].str.lower()
+
         # TODO: do this upon data import!
         # TODO: is the thread type even important?
         column_names = data.columns
