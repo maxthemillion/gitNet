@@ -2,6 +2,7 @@ from py2neo import Graph
 import json
 import pandas as pd
 
+
 class Neo4jController:
     def __init__(self):
         self.graph = Graph(user="max", password="1111")
@@ -15,7 +16,7 @@ class Neo4jController:
         print("Running Louvain algorithm on Neo4j...")
         query_part = "CALL algo.louvain(" \
                      "'MATCH (u:USER) RETURN id(p) as id', " \
-                     "'MATCH (u1:USER)-[rel:REFERS_TO]-(u2:USER) " \
+                     "'MATCH (u1:USER)-[rel]-(u2:USER) " \
                      "RETURN id(u1) as source, id(u2) as target', " \
                      "{weightProperty:'weight', write: true, writeProperty:'community', graph:'cypher'})"
         self.graph.run(query_part)
@@ -24,7 +25,7 @@ class Neo4jController:
 
     def stream_to_gephi(self):
         print("Streaming network to Gephi...")
-        query_part = "MATCH path = (:USER)-[:REFERS_TO]-(:USER)" \
+        query_part = "MATCH path = (:USER)--(:USER)" \
                      "CALL apoc.gephi.add(null, 'workspace1', path, 'weight', ['community']) " \
                      "YIELD nodes " \
                      "return *"
@@ -55,12 +56,12 @@ class Neo4jController:
         # TODO: Check this query! Does it deliver what you expect?
         # From each group, get the node with the highest degree.
         cut_val = 10
-        query = "MATCH r = (n:USER)-[x:REFERS_TO]-() " \
+        query = "MATCH r = (n:USER)-[x]-() " \
                 "WITH Count(x) as node_degree, n " \
                 "ORDER BY n.community, node_degree DESC " \
                 "WITH n.community AS group, Collect(n)[..1] as topNodes " \
                 "UNWIND topNodes as n2 " \
-                "MATCH (n2)-[x:REFERS_TO]-() " \
+                "MATCH (n2)-[x]-() " \
                 "RETURN n2.login AS name, n2.community as group, Count(x) AS n_degree " \
                 "ORDER BY n_degree DESC "
 
@@ -71,7 +72,7 @@ class Neo4jController:
     def export_graphjson(self):
         print("exporting data in graphJSON format...")
         query1 = "MATCH (n:USER) RETURN n.login AS name, n.community AS group, id(n) AS node_id"
-        query2 = "MATCH (a)-[r]->(b) RETURN id(a) AS source, id(b) AS target, r.weight AS weight"
+        query2 = "MATCH (a)-[r]->(b) RETURN id(a) AS source, id(b) AS target, r.weight AS weight, type(r) as rel_type"
         nodes = self.graph.data(query1)
 
         communities = self.get_communities()
@@ -102,5 +103,5 @@ class Neo4jController:
 
         data = {"nodes": nodes, "links": links}
 
-        with open("data.json", "w") as fp:
+        with open("Export/data.json", "w") as fp:
             json.dump(data, fp, indent="\t")

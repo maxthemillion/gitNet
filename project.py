@@ -30,7 +30,7 @@ class Project:
 
         self._threads = self._split_threads("pullreq")
         self._threads = self._threads + self._split_threads("issue")
-        # self._threads.append(self._split_threads( "commit"))
+        # self._threads.append(self._split_threads("commit"))
 
         self.no_threads = len(self._threads)
 
@@ -203,21 +203,31 @@ class Project:
 
         # create user nodes if these do not already exist
         # 'MERGE' matches new patterns to existing ones. If it doesn't exist, it creates a new one
-        query_part = "LOAD CSV WITH HEADERS FROM " + import_path + \
+        query_create_users = "LOAD CSV WITH HEADERS FROM " + import_path + \
                      "AS row FIELDTERMINATOR ';'" \
                      "MERGE (:USER{login:row.participants})"
-        graph.run(query_part)
+        graph.run(query_create_users)
 
         import_path = \
             "'file:///Users/Max/Desktop/MA/Python/projects/NetworkConstructor/Export/references_export.csv'"
-        query_ref = '''LOAD CSV WITH HEADERS FROM ''' + import_path + \
+        query_create_ref_1 = '''LOAD CSV WITH HEADERS FROM ''' + import_path + \
                     '''AS row FIELDTERMINATOR ';'
                     MERGE (a:USER{login:row.commenter})
                     MERGE (b:USER{login:row.addressee}) 
                     MERGE (a) -[:REFERS_TO {comment_id:row.comment_id, 
                     ref_type:row.ref_type, 
                     weight:row.weight}]-> (b)'''
-        graph.run(query_ref)
+
+        query_create_ref_2 = '''LOAD CSV WITH HEADERS FROM ''' + import_path + \
+                    '''AS row FIELDTERMINATOR ';'
+                    MERGE (a:USER{login:row.commenter})
+                    MERGE (b:USER{login:row.addressee})
+                    WITH a, b, row
+                    CALL apoc.create.relationship(a, row.ref_type, {weight: row.weight}, b)
+                    YIELD rel
+                    RETURN rel'''
+
+        graph.run(query_create_ref_2)
 
         print("Export to Neo4j succeeded!")
         print()

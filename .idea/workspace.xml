@@ -6,8 +6,7 @@
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/neocontroller.py" afterPath="$PROJECT_DIR$/neocontroller.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project.py" afterPath="$PROJECT_DIR$/project.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testing.py" afterPath="$PROJECT_DIR$/testing.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/threads.py" afterPath="$PROJECT_DIR$/threads.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/references.py" afterPath="$PROJECT_DIR$/references.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -18,11 +17,11 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="374">
-              <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+            <state relative-caret-position="612">
+              <caret line="81" column="0" lean-forward="false" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#143#1160#0" expanded="false" />
@@ -32,55 +31,13 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="neocontroller.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/neocontroller.py">
+      <file leaf-file-name="project.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/project.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="458">
-              <caret line="70" column="31" lean-forward="false" selection-start-line="70" selection-start-column="31" selection-end-line="70" selection-end-column="31" />
+            <state relative-caret-position="22">
+              <caret line="227" column="33" lean-forward="true" selection-start-line="227" selection-start-column="0" selection-end-line="228" selection-end-column="0" />
               <folding>
-                <element signature="e#0#24#0" expanded="true" />
-                <element signature="e#854#1204#0" expanded="false" />
-                <element signature="e#1248#1351#0" expanded="false" />
-                <element signature="e#1393#1796#0" expanded="false" />
-                <element signature="e#1843#2583#0" expanded="false" />
-                <element signature="e#2625#4149#0" expanded="false" />
-              </folding>
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="base.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/indexes/base.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="2521" column="0" lean-forward="false" selection-start-line="2521" selection-start-column="0" selection-end-line="2521" selection-end-column="0" />
-              <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="testing.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/testing.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="204">
-              <caret line="75" column="0" lean-forward="false" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#15#0" expanded="true" />
-                <element signature="e#183#1975#0" expanded="false" />
-                <element signature="e#227#346#0" expanded="false" />
-                <element signature="e#385#562#0" expanded="false" />
-                <element signature="e#621#747#0" expanded="false" />
-                <element signature="e#795#1310#0" expanded="false" />
-                <element signature="e#1366#1489#0" expanded="false" />
-                <element signature="e#1534#1975#0" expanded="false" />
-                <element signature="e#2029#2848#0" expanded="false" />
-                <element signature="e#2907#4215#0" expanded="false" />
-                <element signature="e#4271#5184#0" expanded="false" />
-                <element signature="e#5020#5184#0" expanded="false" />
-                <element signature="e#5020#5063#0" expanded="false" />
-                <element signature="e#5392#8029#0" expanded="false" />
-                <element signature="e#7860#8029#0" expanded="false" />
-                <marker date="1513367328000" expanded="false" signature="3715:3787" ph="..." />
+                <element signature="e#0#19#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -89,9 +46,23 @@
       <file leaf-file-name="references.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/references.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="-105">
-              <caret line="16" column="50" lean-forward="false" selection-start-line="16" selection-start-column="50" selection-end-line="16" selection-end-column="50" />
+            <state relative-caret-position="391">
+              <caret line="23" column="13" lean-forward="true" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
               <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="neocontroller.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/neocontroller.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="68">
+              <caret line="4" column="0" lean-forward="true" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#24#0" expanded="true" />
+                <element signature="e#1227#1330#0" expanded="false" />
+                <element signature="e#1372#1775#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -102,7 +73,6 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Python Script" />
-        <option value="HTML File" />
       </list>
     </option>
   </component>
@@ -111,6 +81,7 @@
       <find>len</find>
       <find>addressee</find>
       <find>item</find>
+      <find>append</find>
       <find>thread_list</find>
       <find>return part</find>
       <find>print</find>
@@ -119,12 +90,9 @@
       <find>not in  locals</find>
       <find>not in l</find>
       <find>_collect_participants</find>
-      <find>&lt;</find>
-      <find>v1k0d3n</find>
-      <find>@</find>
-      <find>append</find>
-      <find>&gt;</find>
-      <find>lower</find>
+      <find>export</find>
+      <find>)--</find>
+      <find>get</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -152,32 +120,20 @@
         <option value="$PROJECT_DIR$/Project_classes.py" />
         <option value="$PROJECT_DIR$/Analyzer_classes.py" />
         <option value="$PROJECT_DIR$/Run_Report_class.py" />
-        <option value="$PROJECT_DIR$/Neo4j_controller.py" />
-        <option value="$PROJECT_DIR$/Mention.py" />
-        <option value="$PROJECT_DIR$/Quote.py" />
-        <option value="$PROJECT_DIR$/Reference_classes.py" />
-        <option value="$PROJECT_DIR$/Thread_class.py" />
         <option value="$PROJECT_DIR$/Project_class.py" />
+        <option value="$PROJECT_DIR$/Neo4j_controller.py" />
         <option value="$PROJECT_DIR$/UnitTests.py" />
-        <option value="$PROJECT_DIR$/TestData/test_pullreq_data.json" />
-        <option value="$PROJECT_DIR$/Input/synthetic_data.json" />
-        <option value="$PROJECT_DIR$/Input/synthetic_data_issue.json" />
-        <option value="$PROJECT_DIR$/Input/synthetic_data_pullreq.json" />
-        <option value="$PROJECT_DIR$/TestData/test_issue_data.json" />
+        <option value="$PROJECT_DIR$/Thread_class.py" />
         <option value="$PROJECT_DIR$/references.py" />
-        <option value="$PROJECT_DIR$/reports.py" />
-        <option value="$PROJECT_DIR$/testing.py" />
-        <option value="$PROJECT_DIR$/networkViz.html" />
         <option value="$PROJECT_DIR$/project.py" />
-        <option value="$PROJECT_DIR$/threads.py" />
-        <option value="$PROJECT_DIR$/neocontroller.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/neocontroller.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds" fullScreen="true">
-    <option name="width" value="1280" />
-    <option name="height" value="800" />
+    <option name="width" value="1417" />
+    <option name="height" value="1440" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -211,20 +167,14 @@
     </panes>
   </component>
   <component name="PropertiesComponent">
-    <property name="settings.editor.selected.configurable" value="editor.preferences.fonts.default" />
+    <property name="settings.editor.selected.configurable" value="vcs.Subversion" />
     <property name="full.screen.before.presentation.mode" value="true" />
     <property name="com.intellij.ide.scratch.LRUPopupBuilder$2/Languages" value="Python" />
     <property name="ChangesBrowser.SHOW_FLATTEN" value="false" />
     <property name="SearchEverywhereHistoryKey" value="Thr&#9;null&#9;null" />
-    <property name="DefaultHtmlFileTemplate" value="HTML File" />
   </component>
   <component name="RecentsManager">
-    <key name="CopyFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/Input" />
-      <recent name="$PROJECT_DIR$/TestData" />
-    </key>
     <key name="MoveFile.RECENT_KEYS">
-      <recent name="$PROJECT_DIR$/TestData" />
       <recent name="$PROJECT_DIR$" />
     </key>
   </component>
@@ -241,7 +191,7 @@
     </option>
   </component>
   <component name="RunManager" selected="Python.main">
-    <configuration name="Nosetests in testing.py" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
+    <configuration name="Nosetests in UnitTests.py" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
       <envs />
@@ -302,7 +252,7 @@
       <option name="ADD_CONTENT_ROOTS" value="true" />
       <option name="ADD_SOURCE_ROOTS" value="true" />
       <module name="NetworkConstructor" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/project.py" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Project_class.py" />
       <option name="PARAMETERS" value="" />
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
@@ -311,12 +261,12 @@
       <item index="0" class="java.lang.String" itemvalue="Python.test_at_username" />
       <item index="1" class="java.lang.String" itemvalue="Python.main" />
       <item index="2" class="java.lang.String" itemvalue="Python.test" />
-      <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests in testing.py" />
+      <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests in UnitTests.py" />
     </list>
     <recent_temporary>
       <list size="4">
         <item index="0" class="java.lang.String" itemvalue="Python.main" />
-        <item index="1" class="java.lang.String" itemvalue="Python tests.Nosetests in testing.py" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.Nosetests in UnitTests.py" />
         <item index="2" class="java.lang.String" itemvalue="Python.test" />
         <item index="3" class="java.lang.String" itemvalue="Python.test_at_username" />
       </list>
@@ -357,84 +307,18 @@
       <option name="project" value="LOCAL" />
       <updated>1513250898967</updated>
     </task>
-    <task id="LOCAL-00004" summary="Add Neo4j controller">
-      <created>1513250958866</created>
-      <option name="number" value="00004" />
-      <option name="presentableId" value="LOCAL-00004" />
-      <option name="project" value="LOCAL" />
-      <updated>1513250958867</updated>
-    </task>
-    <task id="LOCAL-00005" summary="Add Neo4j controller">
-      <created>1513251058151</created>
-      <option name="number" value="00005" />
-      <option name="presentableId" value="LOCAL-00005" />
-      <option name="project" value="LOCAL" />
-      <updated>1513251058151</updated>
-    </task>
-    <task id="LOCAL-00006" summary="refactoring 1">
-      <created>1513263866127</created>
-      <option name="number" value="00006" />
-      <option name="presentableId" value="LOCAL-00006" />
-      <option name="project" value="LOCAL" />
-      <updated>1513263866127</updated>
-    </task>
-    <task id="LOCAL-00007" summary="major refactoring changes, introduced reference classes and unit tests">
-      <created>1513279633479</created>
-      <option name="number" value="00007" />
-      <option name="presentableId" value="LOCAL-00007" />
-      <option name="project" value="LOCAL" />
-      <updated>1513279633480</updated>
-    </task>
-    <task id="LOCAL-00008" summary="small change">
-      <created>1513279926989</created>
-      <option name="number" value="00008" />
-      <option name="presentableId" value="LOCAL-00008" />
-      <option name="project" value="LOCAL" />
-      <updated>1513279926989</updated>
-    </task>
-    <task id="LOCAL-00009" summary="refactoring started, stats corrected">
-      <created>1513333312836</created>
-      <option name="number" value="00009" />
-      <option name="presentableId" value="LOCAL-00009" />
-      <option name="project" value="LOCAL" />
-      <updated>1513333312836</updated>
-    </task>
-    <option name="localTasksCounter" value="10" />
+    <option name="localTasksCounter" value="4" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Nosetests_in_testing_py - 2017.12.15 at 08h 39m 22s.xml">
-      <configuration name="Nosetests in testing.py" configurationId="tests" />
+    <history-entry file="Nosetests_in_UnitTests_py - 2017.12.14 at 12h 02m 04s.xml">
+      <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_testing_py - 2017.12.15 at 08h 41m 39s.xml">
-      <configuration name="Nosetests in testing.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_testing_py - 2017.12.15 at 08h 41m 54s.xml">
-      <configuration name="Nosetests in testing.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_testing_py - 2017.12.15 at 08h 42m 42s.xml">
-      <configuration name="Nosetests in testing.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_testing_py - 2017.12.15 at 09h 41m 52s.xml">
-      <configuration name="Nosetests in testing.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_testing_py - 2017.12.15 at 09h 45m 36s.xml">
-      <configuration name="Nosetests in testing.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_testing_py - 2017.12.15 at 09h 47m 09s.xml">
-      <configuration name="Nosetests in testing.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_testing_py - 2017.12.15 at 09h 47m 33s.xml">
-      <configuration name="Nosetests in testing.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_testing_py - 2017.12.15 at 10h 22m 06s.xml">
-      <configuration name="Nosetests in testing.py" configurationId="tests" />
-    </history-entry>
-    <history-entry file="Nosetests_in_testing_py - 2017.12.16 at 10h 38m 21s.xml">
-      <configuration name="Nosetests in testing.py" configurationId="tests" />
+    <history-entry file="Nosetests_in_UnitTests_py - 2017.12.26 at 11h 18m 38s.xml">
+      <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
   </component>
-  <component name="TodoView">
+  <component name="TodoView" selected-index="4">
     <todo-panel id="selected-file">
       <is-autoscroll-to-source value="true" />
     </todo-panel>
@@ -445,11 +329,12 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="1280" height="800" extended-state="0" />
+    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.22617124" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32599726" sideWeight="0.49285147" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6795048" sideWeight="0.50646204" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3204952" sideWeight="0.49353796" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3204952" sideWeight="0.509693" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3204952" sideWeight="0.49030694" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32743362" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.2943604" sideWeight="0.48707592" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26817447" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -458,32 +343,43 @@
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4002751" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.69628435" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
-      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
-      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32462174" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-    </layout>
-    <layout-to-restore>
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3269934" sideWeight="0.49285147" order="10" side_tool="false" content_ui="tabs" />
-      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6795048" sideWeight="0.50646204" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
-      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32260424" sideWeight="0.49353796" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.3314993" sideWeight="0.49353796" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.31636864" sideWeight="0.48707592" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.48280606" sideWeight="0.48707592" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.49353796" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2197092" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32462174" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.26817447" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.40872374" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32599726" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19063005" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4002751" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.69628435" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4016506" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.9410339" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+    </layout>
+    <layout-to-restore>
+      <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.4951535" order="10" side_tool="false" content_ui="tabs" />
+      <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="8" side_tool="false" content_ui="tabs" />
+      <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
+      <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.50646204" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="9" side_tool="false" content_ui="tabs" />
+      <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.36187398" sideWeight="0.49676898" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32737276" sideWeight="0.48707592" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.49353796" order="3" side_tool="false" content_ui="tabs" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.2536349" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="3" side_tool="false" content_ui="combo" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32737276" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.19063005" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.39889959" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32956383" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
     </layout-to-restore>
   </component>
   <component name="Vcs.Log.Tabs.Properties">
@@ -498,27 +394,16 @@
               <option name="RECENTLY_FILTERED_BRANCH_GROUPS">
                 <collection />
               </option>
-              <option name="HIGHLIGHTERS">
-                <map>
-                  <entry key="CURRENT_BRANCH" value="true" />
-                </map>
-              </option>
               <option name="FILTERS">
                 <map>
                   <entry key="branch">
                     <value>
                       <list>
-                        <option value="master" />
+                        <option value="HEAD" />
                       </list>
                     </value>
                   </entry>
                 </map>
-              </option>
-              <option name="TEXT_FILTER_SETTINGS">
-                <TextFilterSettings>
-                  <option name="REGEX" value="true" />
-                  <option name="MATCH_CASE" value="true" />
-                </TextFilterSettings>
               </option>
               <option name="COLUMN_ORDER">
                 <list>
@@ -544,40 +429,15 @@
     <MESSAGE value="Run louvain algorithm and stream to Gephi." />
     <MESSAGE value="Major changes: &#10;+ AnalysisReport&#10;+ ProjectStats&#10;+ quotes recognition (relaxed)&#10;+ mentions recognition improved (relaxed)&#10;- Analyzer_classes" />
     <MESSAGE value="Add unit test file and Neo4j controller" />
-    <MESSAGE value="Add Neo4j controller" />
-    <MESSAGE value="refactoring 1" />
-    <MESSAGE value="major refactoring changes, introduced reference classes and unit tests" />
-    <MESSAGE value="small change" />
-    <MESSAGE value="refactoring started, stats corrected" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactoring started, stats corrected" />
+    <option name="LAST_COMMIT_MESSAGE" value="" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/testing.py</url>
-          <line>61</line>
-          <option name="timeStamp" value="166" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/project.py</url>
-          <line>116</line>
-          <option name="timeStamp" value="189" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/neocontroller.py</url>
-          <line>96</line>
-          <option name="timeStamp" value="198" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/neocontroller.py</url>
-          <line>92</line>
-          <option name="timeStamp" value="200" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/threads.py</url>
-          <line>62</line>
-          <option name="timeStamp" value="206" />
+          <line>103</line>
+          <option name="timeStamp" value="143" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -587,204 +447,15 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="207" />
+      <option name="time" value="144" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/reports.py">
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/frame.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="0" lean-forward="true" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/references.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="272">
-          <caret line="16" column="0" lean-forward="false" selection-start-line="16" selection-start-column="0" selection-end-line="16" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/io/json/json.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="5899">
-          <caret line="365" column="0" lean-forward="false" selection-start-line="365" selection-start-column="0" selection-end-line="365" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="408">
-          <caret line="136" column="0" lean-forward="true" selection-start-line="0" selection-start-column="0" selection-end-line="195" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-            <element signature="e#183#1975#0" expanded="false" />
-            <element signature="e#227#346#0" expanded="false" />
-            <element signature="e#385#562#0" expanded="false" />
-            <element signature="e#621#747#0" expanded="false" />
-            <element signature="e#795#1310#0" expanded="false" />
-            <element signature="e#1366#1489#0" expanded="false" />
-            <element signature="e#1534#1975#0" expanded="false" />
-            <element signature="e#2029#2848#0" expanded="false" />
-            <element signature="e#2907#4215#0" expanded="false" />
-            <element signature="e#4271#5184#0" expanded="false" />
-            <element signature="e#5020#5184#0" expanded="false" />
-            <element signature="e#5020#5063#0" expanded="false" />
-            <element signature="e#5392#8029#0" expanded="false" />
-            <element signature="e#7860#8029#0" expanded="false" />
-            <marker date="1513367328000" expanded="false" signature="3715:3787" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/project.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="180">
-          <caret line="15" column="41" lean-forward="false" selection-start-line="15" selection-start-column="41" selection-end-line="15" selection-end-column="41" />
-          <folding>
-            <element signature="e#1524#1557#0" expanded="false" />
-            <element signature="e#4552#4825#0" expanded="false" />
-            <element signature="e#6327#6542#0" expanded="false" />
-            <element signature="e#6588#7329#0" expanded="false" />
-            <element signature="e#7377#8750#0" expanded="false" />
-            <element signature="e#8825#9253#0" expanded="false" />
-            <element signature="e#9280#11081#0" expanded="false" />
-            <element signature="e#10183#11081#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="285">
-          <caret line="19" column="32" lean-forward="false" selection-start-line="19" selection-start-column="32" selection-end-line="19" selection-end-column="32" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#143#1160#0" expanded="false" />
-            <element signature="e#1195#2217#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Analyzer_classes.py" />
-    <entry file="file://$PROJECT_DIR$/project.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2595">
-          <caret line="173" column="20" lean-forward="false" selection-start-line="173" selection-start-column="20" selection-end-line="173" selection-end-column="20" />
-          <folding>
-            <element signature="e#1524#1557#0" expanded="false" />
-            <element signature="e#4552#4825#0" expanded="false" />
-            <element signature="e#6327#6542#0" expanded="false" />
-            <element signature="e#6588#7329#0" expanded="false" />
-            <element signature="e#7377#8750#0" expanded="false" />
-            <element signature="e#8825#9253#0" expanded="false" />
-            <element signature="e#9280#11081#0" expanded="false" />
-            <element signature="e#10183#11081#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="37" lean-forward="true" selection-start-line="4" selection-start-column="37" selection-end-line="4" selection-end-column="37" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#143#1160#0" expanded="false" />
-            <element signature="e#1195#2217#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Analyzer_classes.py" />
-    <entry file="file://$PROJECT_DIR$/project.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1755">
-          <caret line="117" column="0" lean-forward="true" selection-start-line="117" selection-start-column="0" selection-end-line="117" selection-end-column="0" />
-          <folding>
-            <element signature="e#1524#1557#0" expanded="false" />
-            <element signature="e#4552#4825#0" expanded="false" />
-            <element signature="e#6327#6542#0" expanded="false" />
-            <element signature="e#6588#7329#0" expanded="false" />
-            <element signature="e#7377#8750#0" expanded="false" />
-            <element signature="e#8825#9253#0" expanded="false" />
-            <element signature="e#9280#11081#0" expanded="false" />
-            <element signature="e#10183#11081#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/project.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="465">
-          <caret line="31" column="30" lean-forward="false" selection-start-line="31" selection-start-column="30" selection-end-line="31" selection-end-column="30" />
-          <folding>
-            <element signature="e#1524#1557#0" expanded="false" />
-            <element signature="e#4552#4825#0" expanded="false" />
-            <element signature="e#6327#6542#0" expanded="false" />
-            <element signature="e#6588#7329#0" expanded="false" />
-            <element signature="e#7377#8750#0" expanded="false" />
-            <element signature="e#8825#9253#0" expanded="false" />
-            <element signature="e#9280#11081#0" expanded="false" />
-            <element signature="e#10183#11081#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/project.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="435">
-          <caret line="29" column="12" lean-forward="false" selection-start-line="29" selection-start-column="12" selection-end-line="29" selection-end-column="12" />
-          <folding>
-            <element signature="e#1524#1557#0" expanded="false" />
-            <element signature="e#4552#4825#0" expanded="false" />
-            <element signature="e#6327#6542#0" expanded="false" />
-            <element signature="e#6588#7329#0" expanded="false" />
-            <element signature="e#7377#8750#0" expanded="false" />
-            <element signature="e#8825#9253#0" expanded="false" />
-            <element signature="e#9280#11081#0" expanded="false" />
-            <element signature="e#10183#11081#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/series.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="154">
-          <caret line="1282" column="0" lean-forward="false" selection-start-line="1282" selection-start-column="0" selection-end-line="1282" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/algorithms.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="147">
-          <caret line="363" column="0" lean-forward="false" selection-start-line="363" selection-start-column="0" selection-end-line="363" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Owner.py" />
-    <entry file="file://$PROJECT_DIR$/test.py" />
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/internals.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
-          <caret line="3837" column="0" lean-forward="false" selection-start-line="3837" selection-start-column="0" selection-end-line="3837" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/reshape/merge.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="137">
-          <caret line="836" column="0" lean-forward="false" selection-start-line="836" selection-start-column="0" selection-end-line="836" selection-end-column="0" />
+        <state relative-caret-position="130">
+          <caret line="5346" column="0" lean-forward="false" selection-start-line="5346" selection-start-column="0" selection-end-line="5346" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -818,92 +489,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Quote.py" />
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/frame.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="257">
-          <caret line="317" column="0" lean-forward="false" selection-start-line="317" selection-start-column="0" selection-end-line="317" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/UnitTests.py" />
-    <entry file="file://$PROJECT_DIR$/Input/Homebrew_issue_data.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TestData/test_pullreq_data.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="12" column="24" lean-forward="true" selection-start-line="12" selection-start-column="24" selection-end-line="12" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/Input/Homebrew_pullreq_data.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="24" lean-forward="true" selection-start-line="23" selection-start-column="23" selection-end-line="23" selection-end-column="24" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/imp.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="349">
-          <caret line="176" column="0" lean-forward="false" selection-start-line="176" selection-start-column="0" selection-end-line="176" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TestData/synthetic_data_pullreq.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="115">
-          <caret line="40" column="88" lean-forward="false" selection-start-line="40" selection-start-column="18" selection-end-line="40" selection-end-column="88" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/unittest/case.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="91">
-          <caret line="58" column="0" lean-forward="false" selection-start-line="58" selection-start-column="0" selection-end-line="58" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/groupby.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="91">
-          <caret line="1758" column="0" lean-forward="false" selection-start-line="1758" selection-start-column="0" selection-end-line="1758" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/generic.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="99">
-          <caret line="5161" column="0" lean-forward="false" selection-start-line="5161" selection-start-column="0" selection-end-line="5161" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TestData/test_issue_data.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="141">
-          <caret line="249" column="19" lean-forward="false" selection-start-line="249" selection-start-column="18" selection-end-line="249" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TestData/synthetic_data_issue.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="185">
-          <caret line="106" column="19" lean-forward="false" selection-start-line="106" selection-start-column="18" selection-end-line="106" selection-end-column="19" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/reports.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="391">
-          <caret line="23" column="0" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="23" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/codecs.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="52">
@@ -911,72 +496,118 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/threads.py">
+    <entry file="file://$PROJECT_DIR$/Run_Report_class.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="221">
-          <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+        <state relative-caret-position="105">
+          <caret line="7" column="0" lean-forward="true" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-734">
+          <caret line="16" column="14" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
           <folding>
-            <element signature="e#939#1464#0" expanded="false" />
-            <element signature="e#1510#1721#0" expanded="false" />
-            <element signature="e#1763#1788#0" expanded="false" />
-            <element signature="e#1862#1895#0" expanded="false" />
-            <element signature="e#2255#2823#0" expanded="false" />
-            <element signature="e#2882#3888#0" expanded="false" />
-            <element signature="e#3968#4333#0" expanded="false" />
-            <element signature="e#4383#5089#0" expanded="false" />
-            <element signature="e#5138#5184#0" expanded="false" />
-            <element signature="e#5239#5532#0" expanded="false" />
-            <element signature="e#5799#6228#0" expanded="false" />
-            <element signature="e#6299#6693#0" expanded="false" />
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#143#1160#0" expanded="false" />
+            <element signature="e#1195#2217#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/project.py">
+    <entry file="file://$PROJECT_DIR$/Neo4j_controller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1167">
-          <caret line="193" column="37" lean-forward="false" selection-start-line="193" selection-start-column="37" selection-end-line="193" selection-end-column="37" />
+        <state relative-caret-position="15">
+          <caret line="1" column="0" lean-forward="true" selection-start-line="1" selection-start-column="0" selection-end-line="1" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Project_class.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="236">
+          <caret line="213" column="19" lean-forward="false" selection-start-line="213" selection-start-column="19" selection-end-line="213" selection-end-column="19" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/UnitTests.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="105">
+          <caret line="7" column="0" lean-forward="false" selection-start-line="7" selection-start-column="0" selection-end-line="7" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Thread_class.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-416">
+          <caret line="20" column="39" lean-forward="true" selection-start-line="20" selection-start-column="39" selection-end-line="20" selection-end-column="39" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Project_class.py" />
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="285">
+          <caret line="19" column="32" lean-forward="false" selection-start-line="19" selection-start-column="32" selection-end-line="19" selection-end-column="32" />
           <folding>
-            <element signature="e#1524#1557#0" expanded="false" />
-            <element signature="e#4552#4825#0" expanded="false" />
-            <element signature="e#6327#6542#0" expanded="false" />
-            <element signature="e#6588#7329#0" expanded="false" />
-            <element signature="e#7377#8750#0" expanded="false" />
-            <element signature="e#8825#9253#0" expanded="false" />
-            <element signature="e#9280#11081#0" expanded="false" />
-            <element signature="e#10183#11081#0" expanded="false" />
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#143#1160#0" expanded="false" />
+            <element signature="e#1195#2217#0" expanded="false" />
           </folding>
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/networkViz.html">
+    <entry file="file://$PROJECT_DIR$/Analyzer_classes.py" />
+    <entry file="file://$PROJECT_DIR$/Project_class.py" />
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2023">
-          <caret line="119" column="0" lean-forward="false" selection-start-line="119" selection-start-column="0" selection-end-line="119" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/json/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="162">
-          <caret line="178" column="0" lean-forward="false" selection-start-line="178" selection-start-column="0" selection-end-line="178" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/neocontroller.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="458">
-          <caret line="70" column="31" lean-forward="false" selection-start-line="70" selection-start-column="31" selection-end-line="70" selection-end-column="31" />
+        <state relative-caret-position="60">
+          <caret line="4" column="37" lean-forward="true" selection-start-line="4" selection-start-column="37" selection-end-line="4" selection-end-column="37" />
           <folding>
-            <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#854#1204#0" expanded="false" />
-            <element signature="e#1248#1351#0" expanded="false" />
-            <element signature="e#1393#1796#0" expanded="false" />
-            <element signature="e#1843#2583#0" expanded="false" />
-            <element signature="e#2625#4149#0" expanded="false" />
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#143#1160#0" expanded="false" />
+            <element signature="e#1195#2217#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Analyzer_classes.py" />
+    <entry file="file://$PROJECT_DIR$/Project_class.py" />
+    <entry file="file://$PROJECT_DIR$/Project_class.py" />
+    <entry file="file://$PROJECT_DIR$/Project_class.py" />
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/series.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="154">
+          <caret line="1282" column="0" lean-forward="false" selection-start-line="1282" selection-start-column="0" selection-end-line="1282" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/algorithms.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="147">
+          <caret line="363" column="0" lean-forward="false" selection-start-line="363" selection-start-column="0" selection-end-line="363" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_CONFIG_DIR$/scratches/scratch.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Owner.py" />
+    <entry file="file://$PROJECT_DIR$/test.py" />
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/io/json/json.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="790" column="0" lean-forward="false" selection-start-line="790" selection-start-column="0" selection-end-line="790" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/groupby.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="700" column="0" lean-forward="false" selection-start-line="700" selection-start-column="0" selection-end-line="700" selection-end-column="0" />
         </state>
       </provider>
     </entry>
@@ -988,63 +619,132 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/internals.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="3837" column="0" lean-forward="false" selection-start-line="3837" selection-start-column="0" selection-end-line="3837" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/generic.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="1841" column="0" lean-forward="false" selection-start-line="1841" selection-start-column="0" selection-end-line="1841" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/reshape/merge.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="836" column="0" lean-forward="false" selection-start-line="836" selection-start-column="0" selection-end-line="836" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/frame.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="5346" column="0" lean-forward="false" selection-start-line="5346" selection-start-column="0" selection-end-line="5346" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/base.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="130">
+          <caret line="248" column="0" lean-forward="false" selection-start-line="248" selection-start-column="0" selection-end-line="248" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Analyzer_classes.py" />
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="137">
+          <caret line="1025" column="0" lean-forward="false" selection-start-line="1025" selection-start-column="0" selection-end-line="1025" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="255">
+          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/codecs.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="52">
+          <caret line="310" column="0" lean-forward="false" selection-start-line="310" selection-start-column="0" selection-end-line="310" selection-end-column="0" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/Run_Report_class.py" />
+    <entry file="file://$PROJECT_DIR$/Neo4j_controller.py" />
+    <entry file="file://$PROJECT_DIR$/Project_class.py" />
+    <entry file="file://$PROJECT_DIR$/UnitTests.py" />
+    <entry file="file://$PROJECT_DIR$/Thread_class.py" />
     <entry file="file://$PROJECT_DIR$/references.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-105">
-          <caret line="16" column="50" lean-forward="false" selection-start-line="16" selection-start-column="50" selection-end-line="16" selection-end-column="50" />
+        <state relative-caret-position="391">
+          <caret line="23" column="13" lean-forward="true" selection-start-line="23" selection-start-column="13" selection-end-line="23" selection-end-column="13" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/edges.json">
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/py2neo/packages/neo4j/v1/bolt.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="204">
-          <caret line="75" column="0" lean-forward="false" selection-start-line="75" selection-start-column="0" selection-end-line="75" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-            <element signature="e#183#1975#0" expanded="false" />
-            <element signature="e#227#346#0" expanded="false" />
-            <element signature="e#385#562#0" expanded="false" />
-            <element signature="e#621#747#0" expanded="false" />
-            <element signature="e#795#1310#0" expanded="false" />
-            <element signature="e#1366#1489#0" expanded="false" />
-            <element signature="e#1534#1975#0" expanded="false" />
-            <element signature="e#2029#2848#0" expanded="false" />
-            <element signature="e#2907#4215#0" expanded="false" />
-            <element signature="e#4271#5184#0" expanded="false" />
-            <element signature="e#5020#5184#0" expanded="false" />
-            <element signature="e#5020#5063#0" expanded="false" />
-            <element signature="e#5392#8029#0" expanded="false" />
-            <element signature="e#7860#8029#0" expanded="false" />
-            <marker date="1513367328000" expanded="false" signature="3715:3787" ph="..." />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/io/json/json.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="4621">
-          <caret line="365" column="0" lean-forward="false" selection-start-line="365" selection-start-column="0" selection-end-line="365" selection-end-column="0" />
+        <state relative-caret-position="162">
+          <caret line="343" column="0" lean-forward="false" selection-start-line="343" selection-start-column="0" selection-end-line="343" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="374">
-          <caret line="67" column="0" lean-forward="false" selection-start-line="67" selection-start-column="0" selection-end-line="67" selection-end-column="0" />
+        <state relative-caret-position="612">
+          <caret line="81" column="0" lean-forward="false" selection-start-line="81" selection-start-column="0" selection-end-line="81" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
             <element signature="e#143#1160#0" expanded="false" />
             <element signature="e#1195#2217#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/threads.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="473">
+          <caret line="49" column="31" lean-forward="true" selection-start-line="49" selection-start-column="31" selection-end-line="49" selection-end-column="31" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/project.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="22">
+          <caret line="227" column="33" lean-forward="true" selection-start-line="227" selection-start-column="0" selection-end-line="228" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/py2neo/database/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="155">
+          <caret line="1295" column="0" lean-forward="false" selection-start-line="1295" selection-start-column="0" selection-end-line="1295" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/neocontroller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="68">
+          <caret line="4" column="0" lean-forward="true" selection-start-line="4" selection-start-column="0" selection-end-line="4" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#24#0" expanded="true" />
+            <element signature="e#1227#1330#0" expanded="false" />
+            <element signature="e#1372#1775#0" expanded="false" />
           </folding>
         </state>
       </provider>

@@ -66,14 +66,18 @@ def run_analysis():
             project.export_project("Neo4j")
 
 
-analysis = True
-neo4j = True
+neo_controller = Neo4jController()
 
-if analysis:
+if False:
+    neo_controller.clear_db()
+
+if False:
     run_analysis()
-if neo4j:
-    neo_controller = Neo4jController()
+if True:
     neo_controller.run_louvain()
-    # neo_controller.stream_to_gephi()
+
+if False:
+    neo_controller.stream_to_gephi()
+if True:
     neo_controller.export_graphjson()
 

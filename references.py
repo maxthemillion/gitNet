@@ -14,7 +14,7 @@ class Reference:
         return pd.Series({"commenter": self.commenter,
                           "addressee": self.addressee,
                           "comment_id": self.comment_id,
-                          "ref_type": str(type(self))})
+                          "ref_type": type(self).__name__})
 
     def _validate(self):
         if self.addressee != self.commenter and \
