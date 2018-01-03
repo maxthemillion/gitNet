@@ -18,8 +18,8 @@ def extract_owner_data(owner):
     pullreq_data = pd.DataFrame(pd.read_json(import_path + owner + "_pullreq_data.json"))
     issue_data = pd.DataFrame(pd.read_json(import_path + owner + "_issue_data.json"))
 
-    # pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_data_pullreq.json"))
-    # issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_data_issue.json"))
+    # pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_pullreq_data.json"))
+    # issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_issue_data.json"))
 
 
     print("Imported pullreq and issue data from owner " + owner)
@@ -34,7 +34,6 @@ def split_projects(owner):
 
     owner_pullreq_data, owner_issue_data = extract_owner_data(owner)
 
-    # TODO: clean up the following lines: Is there a better way to do it?
     project_name_list = owner_pullreq_data["repo"].drop_duplicates()
     project_name_list = project_name_list.append(owner_issue_data["repo"].drop_duplicates())
     # project_name_list = project_name_list.append(owner_commit_data["repo"].drop_duplicates())
@@ -44,9 +43,7 @@ def split_projects(owner):
     for project_name in project_name_list:
         project_pullreq_data = owner_pullreq_data[owner_pullreq_data["repo"] == project_name]
         project_issue_data = owner_issue_data[owner_issue_data["repo"] == project_name]
-        # project_issue_data = owner_issue_data.iloc[0]
         new_project = Project(project_pullreq_data, project_issue_data)
-        # new_project.export_project()
         if project_list:
             project_list.append(new_project)
         else:
@@ -73,7 +70,7 @@ if False:
 
 if False:
     run_analysis()
-if True:
+if False:
     neo_controller.run_louvain()
 
 if False:

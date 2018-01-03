@@ -7,7 +7,6 @@ class Neo4jController:
     def __init__(self):
         self.graph = Graph(user="max", password="1111")
 
-    # TODO: call this where it fits best
     def clear_db(self):
         query = "MATCH (n) DETACH DELETE n"
         self.graph.run(query)
@@ -55,7 +54,7 @@ class Neo4jController:
     def get_high_degree_nodes(self):
         # TODO: Check this query! Does it deliver what you expect?
         # From each group, get the node with the highest degree.
-        cut_val = 10
+        # cut_val = 10
         query = "MATCH r = (n:USER)-[x]-() " \
                 "WITH Count(x) as node_degree, n " \
                 "ORDER BY n.community, node_degree DESC " \
@@ -66,19 +65,38 @@ class Neo4jController:
                 "ORDER BY n_degree DESC "
 
         nodes = pd.DataFrame(self.graph.data(query))
-        nodes = nodes[nodes["n_degree"] > cut_val]
+        # nodes = nodes[nodes["n_degree"] > cut_val]
+        return nodes
+
+    def get_degree(self):
+        query = "MATCH r = (n:USER)-[x]-() " \
+                "RETURN Count(x) as node_degree, n.login as name" \
+
+        nodes = pd.DataFrame(self.graph.data(query))
         return nodes
 
     def export_graphjson(self):
         print("exporting data in graphJSON format...")
-        query1 = "MATCH (n:USER) RETURN n.login AS name, n.community AS group, id(n) AS node_id"
-        query2 = "MATCH (a)-[r]->(b) RETURN id(a) AS source, id(b) AS target, r.weight AS weight, type(r) as rel_type"
+        query1 = "MATCH (n:USER) " \
+                 "RETURN n.login AS id, " \
+                 "n.community AS group, " \
+                 "id(n) AS node_id"
+
+        query2 = "MATCH (a)-[r]->(b) " \
+                 "RETURN a.login AS source, " \
+                 "b.login AS target, " \
+                 "r.weight AS weight, " \
+                 "type(r) as rel_type, " \
+                 "r.timestamp as timestamp, " \
+                 "id(r) AS link_id"
+
         nodes = self.graph.data(query1)
 
         communities = self.get_communities()
         num_no_community = len(communities) + 1
 
         high_degree_nodes = self.get_high_degree_nodes()
+        node_degree = self.get_degree()
 
         for node in nodes:
             if node["group"] in communities["community"].values:
@@ -89,17 +107,22 @@ class Neo4jController:
                 node["group"] = num_no_community
                 node["hasGroup"] = False
 
-            if node["name"] in high_degree_nodes["name"].values:
-                idx = high_degree_nodes[high_degree_nodes["name"] == node["name"]].index[0]
-                node["degree"] = int(high_degree_nodes["n_degree"].iloc[idx])
+            if node["id"] in node_degree["name"].values:
+                idx = node_degree[node_degree["name"] == node["id"]].index[0]
+                node["degree_py"] = int(node_degree["node_degree"].iloc[idx])
             else:
-                node["degree"] = 0
+                node["degree_py"] = 0
+
+            if node["id"] in high_degree_nodes["name"].values:
+                node["highestDegreeInGroup"] = True
+            else:
+                node["highestDegreeInGroup"] = False
 
         links = self.graph.data(query2)
         for link in links:
-            link["weight"] = int(link["weight"]) # TODO: find the cause for weight being a string
-            link["source"] = self.find_id(link["source"], nodes)
-            link["target"] = self.find_id(link["target"], nodes)
+            link["weight"] = int(link["weight"])  # TODO: find the cause for weight being a string
+            # link["source"] = self.find_id(link["source"], nodes)
+            # link["target"] = self.find_id(link["target"], nodes)
 
         data = {"nodes": nodes, "links": links}
 

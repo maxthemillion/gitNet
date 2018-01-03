@@ -5,7 +5,7 @@ import pandas as pd
 from threads import Thread
 
 
-class StringSearchTestCase(unittest.TestCase):
+class StringSearch(unittest.TestCase):
 
     def test_find_all_return_val(self):
         test_string = "abafart"
@@ -53,7 +53,7 @@ class StringSearchTestCase(unittest.TestCase):
             self.assertTrue(result == expected_results[i], "Test failed with i = {0}".format(i))
 
 
-class DataCleaningTestCase(unittest.TestCase):
+class DataCleaning(unittest.TestCase):
     def setUp(self):
         self.fake_pullreq_data = pd.DataFrame(pd.read_json("TestData/test_pullreq_data.json"))
         self.fake_issue_data = pd.DataFrame(pd.read_json("TestData/test_issue_data.json"))
@@ -74,10 +74,10 @@ class DataCleaningTestCase(unittest.TestCase):
         self.assertTrue(len(data.columns) == 7)
 
 
-class MentionsDetectionTestCase(unittest.TestCase):
+class MentionsDetection(unittest.TestCase):
     def setUp(self):
-        fake_pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_data_pullreq.json"))
-        fake_issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_data_issue.json"))
+        fake_pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_pullreq_data.json"))
+        fake_issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_issue_data.json"))
         self.fake_project = Project(fake_pullreq_data, fake_issue_data)
         self.fake_issue_thread_list = self.fake_project._split_threads("issue")
 
@@ -93,7 +93,8 @@ class MentionsDetectionTestCase(unittest.TestCase):
 
     def test_mentions_detection(self):
         # TODO: implement unit test for mentions detection
-        pass
+        self.assertTrue(False)
+
         mentions_list = self.thread._detect_mentions_in_row(self.standard_fake_row)
         self.assertTrue(len(mentions_list) == 1)
 
@@ -104,7 +105,7 @@ class MentionsDetectionTestCase(unittest.TestCase):
             self.assertTrue(m.addressee == self.addressee1)
 
 
-class QuoteDetectionTestCase(unittest.TestCase):
+class QuoteDetectionFindQuotes(unittest.TestCase):
     def setUp(self):
         test_issue_data = pd.DataFrame(pd.read_json("TestData/test_issue_data.json"))
         test_pullreq_data = pd.DataFrame(pd.read_json("TestData/test_pullreq_data.json"))
@@ -121,21 +122,124 @@ class QuoteDetectionTestCase(unittest.TestCase):
                                      "user": user1,
                                      "id": 9999})
 
-    def test_quote_detection(self):
-        # TODO: write test case for quote detection
-        # self.failIf(Thread._detect_mentions_in_row())
-        pass
+        self.fake_row_2 = pd.Series({"body": ">this is a sample comment with quote at the beginning!\r\n"
+                                             "And some arbitrary text.",
+                                     "user": user1,
+                                     "id": 9999})
 
-    # TODO: write test case for mentions detection
+        self.fake_row_3 = pd.Series({"body": "Arbitrary text. \r\n"
+                                             ">this is a sample comment with quote at the end!",
+                                     "user": user1,
+                                     "id": 9999})
+
+        self.fake_row_4 = pd.Series({"body": "Arbitrary text with <html tag> and some other >quote-like construct",
+                                     "user": user1,
+                                     "id": 9999})
+
+        self.fake_row_5 = pd.Series({"body": ">quote1 \r\nArbitrary text with <html tag> and some other "
+                                             "\r\n>quote at the end",
+                                     "user": user1,
+                                     "id": 9999})
+
+    def test_output_datatype(self):
+        self.assertIsInstance(self.thread_with_quotes._detect_quotes_in_row(self.fake_row_1, 1), list)
+
+    def test_fakerow_1(self):
+        result = self.thread_with_quotes._detect_quotes_in_row(self.fake_row_1, 1)
+        self.assertTrue(len(result) == 0)
+
+    def test_fakerow_2_result_length(self):
+        result = self.thread_with_quotes._detect_quotes_in_row(self.fake_row_2, 1)
+        self.assertTrue(len(result) == 1)
+
+    def test_fakerow_2_list_content_type(self):
+        result = self.thread_with_quotes._detect_quotes_in_row(self.fake_row_2, 1)
+        self.assertTrue(type(result[0]) == Quote)
+
+    def test_fakerow_3_result_length(self):
+        result = self.thread_with_quotes._detect_quotes_in_row(self.fake_row_3, 1)
+        self.assertTrue(len(result) == 1)
+
+    def test_fakerow_4_result_length(self):
+        result = self.thread_with_quotes._detect_quotes_in_row(self.fake_row_4, 1)
+        self.assertTrue(len(result) == 0)
+
+    def test_fakerow_5_result_length(self):
+        result = self.thread_with_quotes._detect_quotes_in_row(self.fake_row_5, 1)
+        self.assertTrue(len(result) == 2)
 
 
-class FindQuoteSourceTestCase(unittest.TestCase):
-    def test_foo(self):
-        # Thread._find_source("sample", )
-        self.assertTrue(False)
+class QuoteDetectionSourceQuotes(unittest.TestCase):
+    def setUp(self):
+        test_issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_issue_data.json"))
+        test_pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_pullreq_data.json"))
+
+        self.new_project = Project(test_pullreq_data, test_issue_data)
+        self.thread_list = self.new_project._split_threads("issue")
+
+        self.thread_with_quotes = self.thread_list[0]
+        self.thread_with_quotes.analyze_references()
+
+    def testGetReferencesOutputType(self):
+        ref_df = self.thread_with_quotes.get_references_as_df()
+        self.assertTrue(type(ref_df) == pd.DataFrame)
+
+    # TODO: test quote sourcing
+    def testSourcing(self):
+        ref_df = self.thread_with_quotes.get_references_as_df()
+        quote_ref = ref_df[ref_df["ref_type"] == Quote]
+        self.assertTrue(len(quote_ref) == 2)
 
 
-class ReferencesTestCaseRelaxed(unittest.TestCase):
+class QuoteDetectionIsQuote(unittest.TestCase):
+    def setUp(self):
+        self.fake_string_1 = ">>sample string"
+        self.fake_string_2 = "\r\n>> sample quote"
+        self.fake_string_3 = ">>>sample quote"
+        self.fake_string_4 = "no quote >>>quote-like construct"
+
+    def testIsQuoteFS1(self):
+        is_quote = Thread._is_quote(self.fake_string_1, 1)
+        self.assertTrue(is_quote)
+
+    def testIsQuoteFS2(self):
+        is_quote = Thread._is_quote(self.fake_string_2, 3)
+        self.assertTrue(is_quote)
+
+    def testIsQuoteFS3(self):
+        is_quote = Thread._is_quote(self.fake_string_3, 2)
+        self.assertTrue(is_quote)
+
+    def testIsQuoteFS4(self):
+        is_quote = Thread._is_quote(self.fake_string_4, 1)
+        self.assertFalse(is_quote)
+
+
+class QuoteDetectionClearMarkdownList(unittest.TestCase):
+    def setUp(self):
+        self.md_list_1 = [0, 1, 2, 4]
+        self.expected_result_1 = [2, 4]
+
+        self.md_list_2 = [0]
+        self.expected_result_2 = [0]
+
+        self.md_list_3 = []
+        self.expected_result_3 = []
+
+    def testClearMarkdown1(self):
+        cleared_list = Thread._clear_markdown_close(self.md_list_1)
+        self.assertTrue(cleared_list == self.expected_result_1)
+
+    def testClearMarkdown2(self):
+        cleared_list = Thread._clear_markdown_close(self.md_list_2)
+        self.assertTrue(cleared_list == self.expected_result_2)
+
+    def testClearMarkdown3(self):
+        cleared_list = Thread._clear_markdown_close(self.md_list_3)
+        self.assertTrue(cleared_list == self.expected_result_3)
+
+
+class FindReferencesRelaxed(unittest.TestCase):
     def setUp(self):
         test_issue_data = pd.DataFrame(pd.read_json("TestData/test_issue_data.json"))
         test_pullreq_data = pd.DataFrame(pd.read_json("TestData/test_pullreq_data.json"))

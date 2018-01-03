@@ -34,8 +34,8 @@ class Project:
 
         self.no_threads = len(self._threads)
 
-        self._participants = self._collect_participants()
-        self._references = None
+        self._participants = self._collect_participants() # TODO: move to analyze-threads()
+        self._references = pd.DataFrame()
 
         self.stats = ProjectStats(self)
 
@@ -83,19 +83,15 @@ class Project:
 
         return thread_list
 
-    def _collect_references(self, weighted=None):
+    def _collect_references(self):
         """returns references that were found in all threads of the project by the ThreadAnalyzer as a DataFrame.
         If parameter 'weighted' is set to False, one row of the df contains one reference found and
         additionally the comment_id is preserved."""
-
-        if weighted is None:
-            weighted = True
-        assert type(weighted) is bool
+        weighted = False
 
         ref_df = pd.DataFrame()
         for thread in self._threads:
             ref_df = ref_df.append(thread.get_references_as_df())
-        result = ref_df
 
         if weighted:
             # drop comment_id column remove duplicate rows and add weights
@@ -115,6 +111,9 @@ class Project:
 
             ref_df_weighted.columns = ["commenter", "addressee", "ref_type", "weight", "comment_id"]
             result = ref_df_weighted
+        else:
+            ref_df["weight"] = 1
+            result = ref_df
 
         print("collected references with weighted parameter set to \n >>>> " + str(weighted))
         print()
@@ -141,7 +140,7 @@ class Project:
         data["user"] = data["user"].str.lower()
 
         # TODO: do this upon data import!
-        # TODO: is the thread type even important?
+        # TODO: pass the thread type when exporting
         column_names = data.columns
         if "pullreq_id" in column_names:
             data = data.rename(index=str, columns={"pullreq_id": "thread_id"})
@@ -178,6 +177,8 @@ class Project:
         ref_df = self._references
         part_df = self._participants
 
+        print(ref_df.head())
+
         # export the references
         # this is also a prerequisite for the export to Neo4j
         filename = "references_export.csv"
@@ -210,24 +211,17 @@ class Project:
 
         import_path = \
             "'file:///Users/Max/Desktop/MA/Python/projects/NetworkConstructor/Export/references_export.csv'"
-        query_create_ref_1 = '''LOAD CSV WITH HEADERS FROM ''' + import_path + \
-                    '''AS row FIELDTERMINATOR ';'
-                    MERGE (a:USER{login:row.commenter})
-                    MERGE (b:USER{login:row.addressee}) 
-                    MERGE (a) -[:REFERS_TO {comment_id:row.comment_id, 
-                    ref_type:row.ref_type, 
-                    weight:row.weight}]-> (b)'''
 
-        query_create_ref_2 = '''LOAD CSV WITH HEADERS FROM ''' + import_path + \
+        query_create_ref = '''LOAD CSV WITH HEADERS FROM ''' + import_path + \
                     '''AS row FIELDTERMINATOR ';'
                     MERGE (a:USER{login:row.commenter})
                     MERGE (b:USER{login:row.addressee})
                     WITH a, b, row
-                    CALL apoc.create.relationship(a, row.ref_type, {weight: row.weight}, b)
+                    CALL apoc.create.relationship(a, row.ref_type, {weight: row.weight, timestamp:row.timestamp}, b)
                     YIELD rel
                     RETURN rel'''
 
-        graph.run(query_create_ref_2)
+        graph.run(query_create_ref)
 
         print("Export to Neo4j succeeded!")
         print()
@@ -247,11 +241,11 @@ class ProjectStats:
         self._parent_project = parent_project
         self._quotes_sourced = 0
         self._quotes_not_sourced = 0
-        self._mentions_found_total = 0 # TODO: also show the number of weighted edges drawn
+        self._mentions_found_total = 0  # TODO: also show the number of weighted edges drawn
         self._mentions_found_valid = 0
         self._no_threads_analyzed = parent_project.no_threads
         self._no_comments = 0
-        self._no_participants = 0 # TODO: get the number of participants from the parent project
+        self._no_participants = 0  # TODO: get the number of participants from the parent project
 
     def add_quotes_sourced(self, no):
         self._quotes_sourced += no

@@ -68,12 +68,13 @@ class Thread:
         body = row["body"]
         commenter = row["user"]
         comment_id = row["id"]
+        timestamp = row["created_at"]
 
         start_pos_list = self._find_all(body, "@")
         for start_pos in start_pos_list:
             stop_pos = Thread._find_end_username(body, start_pos)
             addressee = str.lower(body[start_pos + 1:stop_pos])
-            mention = Mention(commenter, addressee, comment_id, self)
+            mention = Mention(commenter, addressee, comment_id, self, timestamp)
             if mentions_list:
                 mentions_list.append(mention)
             else:
@@ -81,23 +82,56 @@ class Thread:
 
         return mentions_list
 
-    def _detect_quotes_in_row(self, row, index):
-        # TODO: author can't be found if quote was altered
+    @staticmethod
+    def _is_quote(s, i):
+        if i >= 2 and s[i - 2:i] == "\r\n":
+            return True
+        elif i >= 1 and s[i - 1:i] == ">":
+            return Thread._is_quote(s, i-1)
+        elif i == 0:
+            return True
+        else:
+            return False
 
+    @staticmethod
+    def _clear_markdown_close(md_list):
+        md_list.sort()
+        cleared_md_list = []
+        distance = 1
+
+        if not md_list:
+            return []
+        elif len(md_list) == 1:
+            cleared_md_list = md_list
+        else:
+            for i in range(1, len(md_list)):
+                if md_list[i] - md_list[i-1] > distance:
+                    if cleared_md_list:
+                        cleared_md_list.append(md_list[i-1])
+                    else:
+                        cleared_md_list = [md_list[i-1]]
+
+            cleared_md_list.append(md_list[len(md_list)-1])
+        return cleared_md_list
+
+    def _detect_quotes_in_row(self, row, index):
+        # TODO: source can't be found if quote was altered slightly (spelling corrected, etc.)
         quote_list = []
 
         body = row["body"]
         commenter = row["user"]
         comment_id = row["id"]
+        timestamp = row["created_at"]
 
         # filter '>' that define quotes
         close_temp = []
         markdown_close = self._find_all(body, ">")
 
+        # remove > that follow each other too closely
+        markdown_close = self._clear_markdown_close(markdown_close)
+
         for item in markdown_close:
-            if item == 0:
-                close_temp.append(item)
-            elif body[item - 2:item] == "\r\n":
+            if self._is_quote(body, item):
                 close_temp.append(item)
 
         start_pos_list = close_temp
@@ -107,7 +141,7 @@ class Thread:
             quote_body = body[start_pos + 5:stop_pos]
 
             addressee = self._find_source(quote_body, index)
-            new_quote = Quote(commenter, addressee, comment_id, self)
+            new_quote = Quote(commenter, addressee, comment_id, self, timestamp)
             if quote_list:
                 quote_list.append(new_quote)
             else:
@@ -147,7 +181,6 @@ class Thread:
             else:
                 ref_relaxed = mentions_list + quote_list
 
-        # TODO: consolidate references
         return ref_relaxed
 
     def _find_references_strict(self):
@@ -160,9 +193,6 @@ class Thread:
             if self._thread_data["body"].iloc[i].find(quote) > -1:
                 return self._thread_data["user"].iloc[i].lower()
             i = i + 1
-
-        # print("source not found for the following quote:")
-        # print(quote)
 
         return None
 
