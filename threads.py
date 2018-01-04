@@ -10,7 +10,7 @@ class Thread:
 
         self._thread_data = thread_data.sort_values(by="id", axis="rows", ascending=True)
         # assert that only one pull request id appears in each thread
-        assert len(thread_data["thread_id"].unique()) is 1
+        assert len(thread_data["thread_id"].unique()) is 1  # TODO: move to testing file
         self.no_comments = len(self._thread_data)
 
         self._type = thread_type
@@ -21,7 +21,7 @@ class Thread:
         self._references_strict = None
         self._references_relaxed = None
 
-        self._analysis_performed = False
+        self._analysis_performed = False  # TODO: remove, if not needed
 
         self.report = AnalysisReport()
 
@@ -57,30 +57,10 @@ class Thread:
     # -------- thread analysis --------
     def analyze_references(self):
         """can be called to start the analysis process"""
-        #mentions_strict = Thread._recognize_references_strict()
+        # mentions_strict = Thread._recognize_references_strict()
         self._references_relaxed = self._find_references_relaxed()
 
         self._analysis_performed = True
-
-    def _detect_mentions_in_row(self, row):
-        mentions_list = []
-
-        body = row["body"]
-        commenter = row["user"]
-        comment_id = row["id"]
-        timestamp = row["created_at"]
-
-        start_pos_list = self._find_all(body, "@")
-        for start_pos in start_pos_list:
-            stop_pos = Thread._find_end_username(body, start_pos)
-            addressee = str.lower(body[start_pos + 1:stop_pos])
-            mention = Mention(commenter, addressee, comment_id, self, timestamp)
-            if mentions_list:
-                mentions_list.append(mention)
-            else:
-                mentions_list = [mention]
-
-        return mentions_list
 
     @staticmethod
     def _is_quote(s, i):
@@ -114,6 +94,26 @@ class Thread:
             cleared_md_list.append(md_list[len(md_list)-1])
         return cleared_md_list
 
+    def _detect_mentions_in_row(self, row, index):
+        mentions_list = []
+
+        body = row["body"]
+        commenter = row["user"]
+        comment_id = row["id"]
+        timestamp = row["created_at"]
+
+        start_pos_list = self._find_all(body, "@")
+        for start_pos in start_pos_list:
+            stop_pos = Thread._find_end_username(body, start_pos)
+            addressee = str.lower(body[start_pos + 1:stop_pos])
+            mention = Mention(commenter, addressee, comment_id, self, timestamp, index)
+            if mentions_list:
+                mentions_list.append(mention)
+            else:
+                mentions_list = [mention]
+
+        return mentions_list
+
     def _detect_quotes_in_row(self, row, index):
         # TODO: source can't be found if quote was altered slightly (spelling corrected, etc.)
         quote_list = []
@@ -141,13 +141,16 @@ class Thread:
             quote_body = body[start_pos + 5:stop_pos]
 
             addressee = self._find_source(quote_body, index)
-            new_quote = Quote(commenter, addressee, comment_id, self, timestamp)
+            new_quote = Quote(commenter, addressee, comment_id, self, timestamp, index)
             if quote_list:
                 quote_list.append(new_quote)
             else:
                 quote_list = [new_quote]
 
         return quote_list
+
+    def _detect_contextuals(self, mentions, quotes):
+        return []
 
     @staticmethod
     def _remove_invalid_references(reference_list):
@@ -164,22 +167,39 @@ class Thread:
 
         return reference_list
 
+    @staticmethod
+    def _consolidate_references(mentions, quotes, contextuals):
+        # TODO: implement proper consolidation
+        reference_list = mentions + quotes + contextuals
+        return reference_list
+
     def _find_references_relaxed(self):
         """finds references in the thread according to the relaxed rule set"""
-        ref_relaxed = []
+        all_mentions = []
+        all_quotes = []
         for index in range(0, len(self._thread_data)):
             row = self._thread_data.iloc[index]
 
-            mentions_list = self._detect_mentions_in_row(row)
-            mentions_list = self._remove_invalid_references(mentions_list)
+            mentions = self._detect_mentions_in_row(row, index)
+            mentions = self._remove_invalid_references(mentions)
 
-            quote_list = self._detect_quotes_in_row(row, index)
-            quote_list = self._remove_invalid_references(quote_list)
+            quotes = self._detect_quotes_in_row(row, index)
+            quotes = self._remove_invalid_references(quotes)
 
-            if ref_relaxed:
-                ref_relaxed.extend((mentions_list + quote_list))
+            if mentions:
+                all_mentions.extend(mentions)
             else:
-                ref_relaxed = mentions_list + quote_list
+                all_mentions = mentions
+
+            if quotes:
+                all_quotes.extend(quotes)
+            else:
+                all_quotes = quotes
+
+        all_contextuals = self._detect_contextuals(all_mentions, all_quotes)
+        all_contextuals = self._remove_invalid_references(all_contextuals)
+
+        ref_relaxed = self._consolidate_references(all_mentions, all_quotes, all_contextuals)
 
         return ref_relaxed
 

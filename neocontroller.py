@@ -6,36 +6,43 @@ import pandas as pd
 class Neo4jController:
     def __init__(self):
         self.graph = Graph(user="max", password="1111")
+        # TODO: collect paths as object attributes
 
     def clear_db(self):
         query = "MATCH (n) DETACH DELETE n"
         self.graph.run(query)
 
-    def run_louvain(self):
-        print("Running Louvain algorithm on Neo4j...")
-        query_part = "CALL algo.louvain(" \
-                     "'MATCH (u:USER) RETURN id(p) as id', " \
-                     "'MATCH (u1:USER)-[rel]-(u2:USER) " \
-                     "RETURN id(u1) as source, id(u2) as target', " \
-                     "{weightProperty:'weight', write: true, writeProperty:'community', graph:'cypher'})"
-        self.graph.run(query_part)
-        print("Complete!")
-        print()
+    def import_graph(self):
+        # TODO: check if it makes sense to transfer the nodes directly to Neo4j
+        # csv export-import could be replaced by something faster.
 
-    def stream_to_gephi(self):
-        print("Streaming network to Gephi...")
-        query_part = "MATCH path = (:USER)--(:USER)" \
-                     "CALL apoc.gephi.add(null, 'workspace1', path, 'weight', ['community']) " \
-                     "YIELD nodes " \
-                     "return *"
-        self.graph.run(query_part)
-        print("Complete!")
-        print()
+        # import the CSV files to Neo4j using Cypher
+        import_path = \
+            "'file:///Users/Max/Desktop/MA/Python/projects/NetworkConstructor/Export/participants_export.csv'"
 
-    def find_id(self, id, nodes):
-        for index, node in enumerate(nodes):
-            if node["node_id"] == id:
-                return index
+        # create user nodes if these do not already exist
+        # 'MERGE' matches new patterns to existing ones. If it doesn't exist, it creates a new one
+        query_create_users = "LOAD CSV WITH HEADERS FROM " + import_path + \
+                             "AS row FIELDTERMINATOR ';'" \
+                             "MERGE (:USER{login:row.participants})"
+        self.graph.run(query_create_users)
+
+        import_path = \
+            "'file:///Users/Max/Desktop/MA/Python/projects/NetworkConstructor/Export/references_export.csv'"
+
+        query_create_ref = '''LOAD CSV WITH HEADERS FROM ''' + import_path + \
+                           '''AS row FIELDTERMINATOR ';'
+                           MERGE (a:USER{login:row.commenter})
+                           MERGE (b:USER{login:row.addressee})
+                           WITH a, b, row
+                           CALL apoc.create.relationship(a, row.ref_type, {weight: row.weight, timestamp:row.timestamp}, b)
+                           YIELD rel
+                           RETURN rel'''
+
+        self.graph.run(query_create_ref)
+
+        print("Export to Neo4j succeeded!")
+        print()
 
     def get_communities(self):
 
@@ -74,6 +81,32 @@ class Neo4jController:
 
         nodes = pd.DataFrame(self.graph.data(query))
         return nodes
+
+    def run_louvain(self):
+        print("Running Louvain algorithm on Neo4j...")
+        query_part = "CALL algo.louvain(" \
+                     "'MATCH (u:USER) RETURN id(p) as id', " \
+                     "'MATCH (u1:USER)-[rel]-(u2:USER) " \
+                     "RETURN id(u1) as source, id(u2) as target', " \
+                     "{weightProperty:'weight', write: true, writeProperty:'community', graph:'cypher'})"
+        self.graph.run(query_part)
+        print("Complete!")
+        print()
+
+    def stream_to_gephi(self):
+        print("Streaming network to Gephi...")
+        query_part = "MATCH path = (:USER)--(:USER)" \
+                     "CALL apoc.gephi.add(null, 'workspace1', path, 'weight', ['community']) " \
+                     "YIELD nodes " \
+                     "return *"
+        self.graph.run(query_part)
+        print("Complete!")
+        print()
+
+    def find_id(self, id, nodes):
+        for index, node in enumerate(nodes):
+            if node["node_id"] == id:
+                return index
 
     def export_graphjson(self):
         print("exporting data in graphJSON format...")
@@ -128,3 +161,4 @@ class Neo4jController:
 
         with open("Export/data.json", "w") as fp:
             json.dump(data, fp, indent="\t")
+

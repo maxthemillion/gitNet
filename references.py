@@ -33,11 +33,26 @@ class Reference:
         pass
 
 
-class Mention(Reference):
+# TODO: Don't pass the parent_thread but the report object
+class DirectReply(Reference):
+    def __init__(self, commenter, addressee, comment_id, parent_thread, timestamp, row_index):
+        Reference.__init__(self, commenter, addressee, comment_id, parent_thread, timestamp)
+        self._start_pos = row_index
+
+
+class Mention(DirectReply):
+
     def _add_to_report(self):
         self._parent_thread.report.add_mentions(self.comment_id, self._valid)
 
 
-class Quote(Reference):
+class Quote(DirectReply):
+
     def _add_to_report(self):
         self._parent_thread.report.add_quote(self.comment_id, self._valid)
+
+
+class ContextualReply(Reference):
+
+    def _add_to_report(self):
+        self._parent_thread.report.add_contextual(self.comment_id, self._valid)

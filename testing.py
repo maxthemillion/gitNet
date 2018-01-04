@@ -59,7 +59,7 @@ class DataCleaning(unittest.TestCase):
         self.fake_issue_data = pd.DataFrame(pd.read_json("TestData/test_issue_data.json"))
 
     def test_data_cleaning_column_names(self):
-        data = Project.clean_input(self.fake_pullreq_data)
+        data = Project._clean_input(self.fake_pullreq_data)
         self.assertTrue("thread_id" in data.columns)
         self.assertFalse("pullreq_id" in data.columns)
         self.assertFalse("issue_id" in data.columns)
@@ -237,6 +237,24 @@ class QuoteDetectionClearMarkdownList(unittest.TestCase):
     def testClearMarkdown3(self):
         cleared_list = Thread._clear_markdown_close(self.md_list_3)
         self.assertTrue(cleared_list == self.expected_result_3)
+
+
+class ContextualsDetection(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def testFoo(self):
+        self.assertTrue(False)
+        Thread._detect_contextuals_in_row()
+
+
+class ConsolidateReferences(unittest.TestCase):
+    def setUp(self):
+        pass
+
+    def testFoo(self):
+        self.assertTrue(False)
+        Thread._consolidate_references()
 
 
 class FindReferencesRelaxed(unittest.TestCase):

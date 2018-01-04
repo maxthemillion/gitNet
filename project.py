@@ -1,5 +1,4 @@
 import pandas as pd
-from py2neo import Graph, Path
 from threads import Thread
 
 
@@ -8,7 +7,6 @@ class Project:
     and splits the project communication data into threads."""
 
     _export_folder = "Export/"
-    _filename_lst = ['pullreq_data', 'issue_data', 'commit_data']
 
     def __init__(self, pullreq_data, issue_data):
 
@@ -24,27 +22,35 @@ class Project:
         self.owner = pullreq_data["owner"].at[0]
         self.repo = pullreq_data["repo"].at[0]
 
-        self._pullreq_data = self.clean_input(pullreq_data)
-        self._issue_data = self.clean_input(issue_data)
+        self._pullreq_data = self._clean_input(pullreq_data)
+        self._issue_data = self._clean_input(issue_data)
         # self._commit_data =       TODO: implement support for _commit_data
 
-        self._threads = self._split_threads("pullreq")
-        self._threads = self._threads + self._split_threads("issue")
-        # self._threads.append(self._split_threads("commit"))
-
-        self.no_threads = len(self._threads)
-
-        self._participants = self._collect_participants() # TODO: move to analyze-threads()
-        self._references = pd.DataFrame()
+        self._threads = None
+        self._references = None
+        self.no_threads = None
+        self._participants = None  # TODO: move to analyze-threads()
 
         self.stats = ProjectStats(self)
+
+        self._run()
+
+    def _run(self):
+        self._threads = self._split_threads("pullreq") + self._split_threads("issue")
+        # self._threads.append(self._split_threads("commit"))
+        self.no_threads = len(self._threads)
+        self._participants = self._collect_participants()
+
+        self._analyze_threads()
+        self._export_project()
+        self.stats.print_summary()
 
     # -------- is ------
     def is_participant(self, name):
         return name in self._participants
 
     # -------- threads -------
-    def analyze_threads(self):
+    def _analyze_threads(self):
         """starts the analysis process within threads. if more analysis should be performed
         besides the retrieval of references, add method calls in here."""
         for thread in self._threads:
@@ -126,12 +132,11 @@ class Project:
             participants = thread.get_participants()
             part_df = part_df.append(pd.DataFrame(participants, columns=["participants"]))
         part_df = part_df.drop_duplicates()
-
         return part_df
 
     # -------- data cleaning -------
     @staticmethod
-    def clean_input(data):
+    def _clean_input(data):
         """removes remaining artifacts originating in the MongoDB data structure"""
         if type(data["user"].iloc[1]) is dict:
             for index, row in data.iterrows():
@@ -152,32 +157,14 @@ class Project:
         return data
 
     # -------- data export --------
-    def export_project(self, target_db):
+    def _export_project(self):
         """exports references from all threads of the project."""
-        assert target_db is "Neo4j" or "csv", "target_db option set incorrectly."
 
-        print("begin export with parameter target_db set to \n >>>> " + target_db)
+        print("begin export to csv")
         print()
 
-        if target_db is "csv" or "Neo4j":
-            # csv export is prerequisite for importing the network to Neo4j
-            self._save_project_to_csv()
-
-        if target_db is "Neo4j":
-            self._save_project_to_neo4j()
-
-    def export_raw_data(self, filename=None):
-        """exports the raw_data DataFrame for control purposes"""
-        if filename is None:
-            filename = "raw_data_export.csv"
-
-        self._raw_data.to_csv(path_or_buf=self._export_folder + filename, sep=";")
-
-    def _save_project_to_csv(self):
         ref_df = self._references
         part_df = self._participants
-
-        print(ref_df.head())
 
         # export the references
         # this is also a prerequisite for the export to Neo4j
@@ -192,42 +179,19 @@ class Project:
         print("All participants of the project have been exported to: \n >>>> " + self._export_folder + filename)
         print()
 
-    def _save_project_to_neo4j(self):
-        # TODO: check if it makes sense to transfer the nodes directly to Neo4j
-        # csv export-import could be replaced by something faster.
-
-        graph = Graph(user="max", password="1111")
-
-        # import the CSV files to Neo4j using Cypher
-        import_path = \
-            "'file:///Users/Max/Desktop/MA/Python/projects/NetworkConstructor/Export/participants_export.csv'"
-
-        # create user nodes if these do not already exist
-        # 'MERGE' matches new patterns to existing ones. If it doesn't exist, it creates a new one
-        query_create_users = "LOAD CSV WITH HEADERS FROM " + import_path + \
-                     "AS row FIELDTERMINATOR ';'" \
-                     "MERGE (:USER{login:row.participants})"
-        graph.run(query_create_users)
-
-        import_path = \
-            "'file:///Users/Max/Desktop/MA/Python/projects/NetworkConstructor/Export/references_export.csv'"
-
-        query_create_ref = '''LOAD CSV WITH HEADERS FROM ''' + import_path + \
-                    '''AS row FIELDTERMINATOR ';'
-                    MERGE (a:USER{login:row.commenter})
-                    MERGE (b:USER{login:row.addressee})
-                    WITH a, b, row
-                    CALL apoc.create.relationship(a, row.ref_type, {weight: row.weight, timestamp:row.timestamp}, b)
-                    YIELD rel
-                    RETURN rel'''
-
-        graph.run(query_create_ref)
-
-        print("Export to Neo4j succeeded!")
+        print("export to csv succeeded")
         print()
 
+    def export_raw_data(self, filename=None):
+        """exports the raw_data DataFrame for control purposes"""
+        if filename is None:
+            filename = "raw_data_export.csv"
+
+        self._raw_data.to_csv(path_or_buf=self._export_folder + filename, sep=";")
+
+
     # ------- statistics ---------
-    def _collect_stats(self):
+    def _collect_stats(self):  # TODO: pass statistics object to Threads and References
         for thread in self._threads:
             self.stats.add_quotes_sourced(thread.report.get_quotes_sourced())
             self.stats.add_quotes_not_sourced(thread.report.get_quotes_not_sourced())
