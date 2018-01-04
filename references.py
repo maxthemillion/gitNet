@@ -13,6 +13,14 @@ class Reference:
         self._valid = self._validate()
         self._add_to_report()
 
+        self._start_pos = None
+
+    def set_start_pos(self, start_pos):
+        self._start_pos = start_pos
+
+    def get_start_pos(self):
+        return self._start_pos
+
     def get_info_as_series(self):
         return pd.Series({"commenter": self.commenter,
                           "addressee": self.addressee,

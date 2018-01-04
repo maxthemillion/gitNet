@@ -2,6 +2,7 @@ import pandas as pd
 from project import Project
 from neocontroller import Neo4jController
 import warnings
+import time
 
 # TODO: restructure this code, make it less dependent
 
@@ -27,6 +28,10 @@ def main():
     if False:
         neo_controller.export_graphjson()
 
+    print("------------------------------------------")
+    print("Total process time elapsed:        {0:.2f}s".format(time.process_time()))
+    print("------------------------------------------")
+
 
 def run_analysis():
     owners_list = pd.read_csv("Input/owners.csv")
@@ -47,11 +52,14 @@ def split_projects(owner):
     project_names = project_names.drop_duplicates()
 
     for project_name in project_names:
+        proc_time_start = time.process_time()
         project_pullreq_data = owner_pullreq_data[owner_pullreq_data["repo"] == project_name]
         project_issue_data = owner_issue_data[owner_issue_data["repo"] == project_name]
 
-        Project(project_pullreq_data, project_issue_data)
+        Project(project_pullreq_data, project_issue_data).run()
 
+        print("time required:                {0:.2f}s".format(time.process_time()-proc_time_start))
+        print()
 
 def import_owner_data(owner):
     # TODO: implement MongoDB data extractions

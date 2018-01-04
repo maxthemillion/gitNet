@@ -289,6 +289,7 @@ class FindReferencesRelaxed(unittest.TestCase):
 
 
     def test_assert_type(self):
+        print()
         self.assertIsInstance(self.new_mention_fakeuser, Mention)
         self.assertIsInstance(self.new_quote_fakeuser, Quote)
 
