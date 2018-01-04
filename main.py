@@ -9,22 +9,22 @@ import warnings
 def main():
     neo_controller = Neo4jController()
 
-    if True:
+    if False:
         neo_controller.clear_db()
 
     if True:
         run_analysis()
 
-    if True:
+    if False:
         neo_controller.import_graph()
 
-    if True:
+    if False:
         neo_controller.run_louvain()
 
     if False:
         neo_controller.stream_to_gephi()
 
-    if True:
+    if False:
         neo_controller.export_graphjson()
 
 

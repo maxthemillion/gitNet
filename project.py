@@ -40,6 +40,7 @@ class Project:
         # self._threads.append(self._split_threads("commit"))
         self.no_threads = len(self._threads)
         self._participants = self._collect_participants()
+        self.stats.add_participants(len(self._participants))
 
         self._analyze_threads()
         self._export_project()
@@ -56,7 +57,6 @@ class Project:
         for thread in self._threads:
             thread.analyze_references()
         self._references = self._collect_references()
-        self._collect_stats()
 
     def _split_threads(self, thread_type, start=None, stop=None):
         """splits the project data into single threads and passes them to new thread objects"""
@@ -78,7 +78,7 @@ class Project:
         while i < stop:
             next_thread = thread_ids.item(i)
             thread_data = data[data["thread_id"] == next_thread]
-            new_thread = Thread(thread_data, thread_type, self)
+            new_thread = Thread(thread_data, thread_type, self.stats, self)
 
             if new_thread is not None:
                 if 'thread_list' not in locals():
@@ -100,9 +100,6 @@ class Project:
             ref_df = ref_df.append(thread.get_references_as_df())
 
         if weighted:
-            # drop comment_id column remove duplicate rows and add weights
-            # TODO: use formatter "{%s}" % ', '.join(str(x) instead of tuple(x)
-
             ref_df_weighted = ref_df.groupby(["commenter", "addressee", "ref_type"])\
                 .size()\
                 .reset_index()
@@ -190,46 +187,59 @@ class Project:
         self._raw_data.to_csv(path_or_buf=self._export_folder + filename, sep=";")
 
 
-    # ------- statistics ---------
-    def _collect_stats(self):  # TODO: pass statistics object to Threads and References
-        for thread in self._threads:
-            self.stats.add_quotes_sourced(thread.report.get_quotes_sourced())
-            self.stats.add_quotes_not_sourced(thread.report.get_quotes_not_sourced())
-            self.stats.add_mentions_found_total(thread.report.get_mentions_found_total())
-            self.stats.add_mentions_found_valid(thread.report.get_mentions_found_valid())
-            self.stats.add_comments(thread.no_comments)
-
-
 class ProjectStats:
     def __init__(self, parent_project):
         self._parent_project = parent_project
-        self._quotes_sourced = 0
-        self._quotes_not_sourced = 0
-        self._mentions_found_total = 0  # TODO: also show the number of weighted edges drawn
-        self._mentions_found_valid = 0
-        self._no_threads_analyzed = parent_project.no_threads
+
+        self._no_threads_analyzed = 0
         self._no_comments = 0
         self._no_participants = 0  # TODO: get the number of participants from the parent project
 
-    def add_quotes_sourced(self, no):
-        self._quotes_sourced += no
+        self._quotes = []
+        self._mentions = []
+        self._contextuals = []
 
-    def add_quotes_not_sourced(self, no):
-        self._quotes_not_sourced += no
+        self._quotes_sourced = 0
+        self._quotes_not_sourced = 0
 
-    def add_mentions_found_total(self, no):
-        self._mentions_found_total += no
+        self._mentions_found_total = 0
+        self._mentions_found_valid = 0
 
-    def add_mentions_found_valid(self, no):
-        self._mentions_found_valid += no
+        self._contextuals_found_total = 0
+        self._contextuals_found_valid = 0
 
-    def add_comments(self, no):
-        self._no_comments += no
+    def add_thread(self):
+        self._no_threads_analyzed += 1
+
+    def add_comments(self, no_comments):
+        self._no_comments += no_comments
+
+    def add_participants(self, no_participants):
+        self._no_participants += no_participants
+
+    def add_quote(self, comment_id, sourced):
+        self._quotes.append([comment_id])
+        if sourced:
+            self._quotes_sourced += 1
+        else:
+            self._quotes_not_sourced += 1
+
+    def add_mentions(self, comment_id, valid):
+        self._mentions.append([comment_id])
+        self._mentions_found_total += 1
+        if valid:
+            self._mentions_found_valid += 1
+
+    def add_contextual(self, comment_id, valid):
+        self._contextuals.append([comment_id])
+        self._contextuals_found_total += 1
+        if valid:
+            self._contextuals_found_valid += 1
 
     def print_summary(self):
         total_no_quotes = self._quotes_not_sourced + self._quotes_sourced
         if not total_no_quotes == 0:
-            share_sourced = (1.00 * self._quotes_sourced)/(1.00 * total_no_quotes)
+            share_sourced = ((1.00 * self._quotes_sourced)/(1.00 * total_no_quotes)) * 100
         else:
             share_sourced = -999
 
@@ -238,8 +248,8 @@ class ProjectStats:
         print()
         print("number of threads analyzed: {0}".format(self._no_threads_analyzed))
         print("number of comments:         {0}".format(self._no_comments))
-        print("total number of quotes:     {0} ".format(total_no_quotes))
-        print("percentage quotes sourced:  {0}".format(share_sourced))
+        print("total number of quotes:     {0}".format(total_no_quotes))
+        print("percentage quotes sourced:  {0:.2f}%".format(share_sourced))
         print("number of mentions (total): {0}".format(self._mentions_found_total))
         print("number of valid mentions:   {0}".format(self._mentions_found_valid))
         print()

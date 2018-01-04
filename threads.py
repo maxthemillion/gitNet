@@ -1,12 +1,11 @@
 import pandas as pd
 import warnings
-from reports import AnalysisReport
 from references import Mention, Quote
 
 
 class Thread:
     """contains a pull request communication thread and its thread analytics"""
-    def __init__(self, thread_data, thread_type, parent_project):
+    def __init__(self, thread_data, thread_type, project_stats, parent_project):
 
         self._thread_data = thread_data.sort_values(by="id", axis="rows", ascending=True)
         # assert that only one pull request id appears in each thread
@@ -23,7 +22,9 @@ class Thread:
 
         self._analysis_performed = False  # TODO: remove, if not needed
 
-        self.report = AnalysisReport()
+        self._project_stats = project_stats
+        self._project_stats.add_thread()
+        self._project_stats.add_comments(len(self._thread_data))
 
     # -------- getters --------
     def get_references(self, which):
@@ -106,7 +107,7 @@ class Thread:
         for start_pos in start_pos_list:
             stop_pos = Thread._find_end_username(body, start_pos)
             addressee = str.lower(body[start_pos + 1:stop_pos])
-            mention = Mention(commenter, addressee, comment_id, self, timestamp, index)
+            mention = Mention(commenter, addressee, comment_id, self, self._project_stats, timestamp, index)
             if mentions_list:
                 mentions_list.append(mention)
             else:
@@ -141,7 +142,7 @@ class Thread:
             quote_body = body[start_pos + 5:stop_pos]
 
             addressee = self._find_source(quote_body, index)
-            new_quote = Quote(commenter, addressee, comment_id, self, timestamp, index)
+            new_quote = Quote(commenter, addressee, comment_id, self, self._project_stats, timestamp, index)
             if quote_list:
                 quote_list.append(new_quote)
             else:
