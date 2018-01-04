@@ -193,7 +193,7 @@ class ProjectStats:
 
         self._no_threads_analyzed = 0
         self._no_comments = 0
-        self._no_participants = 0  # TODO: get the number of participants from the parent project
+        self._no_participants = 0
 
         self._quotes = []
         self._mentions = []
@@ -236,6 +236,10 @@ class ProjectStats:
         if valid:
             self._contextuals_found_valid += 1
 
+    def export_summary(self):
+        pass
+        # TODO: print summary to file instead of to the console
+
     def print_summary(self):
         total_no_quotes = self._quotes_not_sourced + self._quotes_sourced
         if not total_no_quotes == 0:
@@ -246,6 +250,7 @@ class ProjectStats:
         print("------ Project Stats Summary -----")
         print("project name:                " + self._parent_project.owner + "/" + self._parent_project.repo)
         print()
+        print("number of participants:     {0}".format(self._no_participants))
         print("number of threads analyzed: {0}".format(self._no_threads_analyzed))
         print("number of comments:         {0}".format(self._no_comments))
         print("total number of quotes:     {0}".format(total_no_quotes))
