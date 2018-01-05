@@ -3,8 +3,6 @@
   <component name="ChangeListManager">
     <list default="true" id="f06550ee-959a-491f-9cb8-acfc389fafa4" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project.py" afterPath="$PROJECT_DIR$/project.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/references.py" afterPath="$PROJECT_DIR$/references.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testing.py" afterPath="$PROJECT_DIR$/testing.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/threads.py" afterPath="$PROJECT_DIR$/threads.py" />
@@ -21,9 +19,11 @@
       <file leaf-file-name="references.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/references.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="26" column="47" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
-              <folding />
+            <state relative-caret-position="629">
+              <caret line="43" column="0" lean-forward="true" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+              <folding>
+                <element signature="e#917#1180#0" expanded="false" />
+              </folding>
             </state>
           </provider>
         </entry>
@@ -31,21 +31,20 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="22" column="12" lean-forward="false" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="12" />
+            <state relative-caret-position="0">
+              <caret line="0" column="19" lean-forward="true" selection-start-line="0" selection-start-column="19" selection-end-line="0" selection-end-column="19" />
               <folding>
-                <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#1754#2700#0" expanded="false" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="neocontroller.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="neocontroller.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/neocontroller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="442">
-              <caret line="164" column="0" lean-forward="false" selection-start-line="164" selection-start-column="0" selection-end-line="164" selection-end-column="0" />
+            <state relative-caret-position="204">
+              <caret line="58" column="26" lean-forward="true" selection-start-line="58" selection-start-column="26" selection-end-line="58" selection-end-column="26" />
               <folding>
                 <element signature="e#246#311#0" expanded="false" />
                 <element signature="e#349#1827#0" expanded="false" />
@@ -61,18 +60,56 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="testing.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="testing.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/testing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="578">
-              <caret line="97" column="8" lean-forward="false" selection-start-line="97" selection-start-column="8" selection-end-line="97" selection-end-column="8" />
+            <state relative-caret-position="731">
+              <caret line="478" column="11" lean-forward="true" selection-start-line="478" selection-start-column="11" selection-end-line="478" selection-end-column="11" />
               <folding>
                 <element signature="e#0#15#0" expanded="true" />
-                <element signature="e#175#1967#0" expanded="false" />
-                <element signature="e#2013#2833#0" expanded="false" />
-                <element signature="e#4269#7178#0" expanded="false" />
-                <element signature="e#8922#9649#0" expanded="false" />
+                <element signature="e#206#1998#0" expanded="false" />
+                <element signature="e#2044#2864#0" expanded="false" />
+                <element signature="e#2926#4682#0" expanded="false" />
+                <element signature="e#4745#8021#0" expanded="false" />
+                <element signature="e#8079#11342#0" expanded="false" />
+                <element signature="e#11402#12249#0" expanded="false" />
+                <element signature="e#12304#13026#0" expanded="false" />
+                <element signature="e#13091#13818#0" expanded="false" />
+                <element signature="e#13883#14651#0" expanded="false" />
+                <element signature="e#14720#15846#0" expanded="false" />
+                <element signature="e#15901#15985#0" expanded="false" />
+                <element signature="e#16040#21232#0" expanded="false" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="synthetic_issue_data.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/TestData/synthetic_issue_data.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="-455">
+              <caret line="40" column="21" lean-forward="false" selection-start-line="40" selection-start-column="21" selection-end-line="40" selection-end-column="21" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="case.py" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/unittest/case.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="277">
+              <caret line="821" column="0" lean-forward="false" selection-start-line="821" selection-start-column="0" selection-end-line="821" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="Homebrew_issue_data.json" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/Input/Homebrew_issue_data.json">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="238">
+              <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="45" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -80,25 +117,22 @@
       <file leaf-file-name="threads.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/threads.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1037">
-              <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
+            <state relative-caret-position="-131">
+              <caret line="160" column="42" lean-forward="false" selection-start-line="160" selection-start-column="34" selection-end-line="160" selection-end-column="42" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
                 <element signature="e#2177#2202#0" expanded="false" />
                 <element signature="e#2276#2309#0" expanded="false" />
                 <element signature="e#2362#2592#0" expanded="false" />
                 <element signature="e#2660#3233#0" expanded="false" />
-                <element signature="e#3294#3986#0" expanded="false" />
-                <element signature="e#4045#5264#0" expanded="false" />
-                <element signature="e#5350#7324#0" expanded="false" />
-                <element signature="e#7404#7768#0" expanded="false" />
-                <element signature="e#7860#7986#0" expanded="false" />
-                <element signature="e#8036#9485#0" expanded="false" />
-                <element signature="e#9534#9580#0" expanded="false" />
-                <element signature="e#9635#9843#0" expanded="false" />
-                <element signature="e#9944#10040#0" expanded="false" />
-                <element signature="e#10110#10539#0" expanded="false" />
-                <element signature="e#10610#11004#0" expanded="false" />
+                <element signature="e#5329#7433#0" expanded="false" />
+                <element signature="e#7513#7877#0" expanded="false" />
+                <element signature="e#7969#8095#0" expanded="false" />
+                <element signature="e#9636#9682#0" expanded="false" />
+                <element signature="e#9737#9945#0" expanded="false" />
+                <element signature="e#10046#10142#0" expanded="false" />
+                <element signature="e#10212#10641#0" expanded="false" />
+                <element signature="e#10712#11106#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -107,7 +141,7 @@
       <file leaf-file-name="project.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/project.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1547">
+            <state relative-caret-position="776">
               <caret line="91" column="0" lean-forward="false" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
               <folding>
                 <element signature="e#0#19#0" expanded="true" />
@@ -130,8 +164,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>export</find>
-      <find>)--</find>
       <find>get</find>
       <find>isins</find>
       <find>[0]</find>
@@ -160,6 +192,8 @@
       <find>coll</find>
       <find>append</find>
       <find>collecti</find>
+      <find>_find_source</find>
+      <find>fake_date</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -193,16 +227,16 @@
         <option value="$PROJECT_DIR$/Thread_class.py" />
         <option value="$PROJECT_DIR$/reports.py" />
         <option value="$PROJECT_DIR$/neocontroller.py" />
-        <option value="$PROJECT_DIR$/testing.py" />
-        <option value="$PROJECT_DIR$/references.py" />
-        <option value="$PROJECT_DIR$/threads.py" />
         <option value="$PROJECT_DIR$/project.py" />
         <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/references.py" />
+        <option value="$PROJECT_DIR$/threads.py" />
+        <option value="$PROJECT_DIR$/testing.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="380" />
+    <option name="x" value="458" />
     <option name="y" value="23" />
     <option name="width" value="1819" />
     <option name="height" value="1406" />
@@ -229,6 +263,16 @@
             <path>
               <item name="NetworkConstructor" type="b2602c69:ProjectViewProjectNode" />
               <item name="NetworkConstructor" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NetworkConstructor" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NetworkConstructor" type="462c0819:PsiDirectoryNode" />
+              <item name="Input" type="462c0819:PsiDirectoryNode" />
+            </path>
+            <path>
+              <item name="NetworkConstructor" type="b2602c69:ProjectViewProjectNode" />
+              <item name="NetworkConstructor" type="462c0819:PsiDirectoryNode" />
+              <item name="TestData" type="462c0819:PsiDirectoryNode" />
             </path>
           </expand>
           <select />
@@ -262,7 +306,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python tests.Nosetests in UnitTests.py">
     <configuration name="Nosetests in UnitTests.py" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -337,8 +381,8 @@
     </list>
     <recent_temporary>
       <list size="4">
-        <item index="0" class="java.lang.String" itemvalue="Python.main" />
-        <item index="1" class="java.lang.String" itemvalue="Python tests.Nosetests in UnitTests.py" />
+        <item index="0" class="java.lang.String" itemvalue="Python tests.Nosetests in UnitTests.py" />
+        <item index="1" class="java.lang.String" itemvalue="Python.main" />
         <item index="2" class="java.lang.String" itemvalue="Python.test" />
         <item index="3" class="java.lang.String" itemvalue="Python.test_at_username" />
       </list>
@@ -421,38 +465,45 @@
       <option name="project" value="LOCAL" />
       <updated>1515090867345</updated>
     </task>
-    <option name="localTasksCounter" value="10" />
+    <task id="LOCAL-00010" summary="performance improvements">
+      <created>1515134578801</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1515134578801</updated>
+    </task>
+    <option name="localTasksCounter" value="11" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.04 at 18h 14m 49s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.05 at 09h 07m 59s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.04 at 18h 57m 58s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.05 at 09h 08m 13s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.04 at 19h 01m 53s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.05 at 09h 08m 33s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.04 at 19h 02m 42s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.05 at 09h 24m 42s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.04 at 19h 05m 17s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.05 at 09h 37m 16s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.04 at 19h 06m 00s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.05 at 09h 39m 12s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.04 at 19h 08m 50s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.05 at 09h 39m 25s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.04 at 19h 12m 59s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.05 at 09h 49m 14s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.04 at 19h 17m 10s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.05 at 09h 52m 17s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.04 at 19h 23m 04s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.05 at 10h 01m 35s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
   </component>
@@ -466,15 +517,14 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="380" y="23" width="1819" height="1406" extended-state="0" />
-    <editor active="true" />
+    <frame x="458" y="23" width="1819" height="1406" extended-state="0" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.25998875" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32599726" sideWeight="0.49285147" order="10" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.6795048" sideWeight="0.50646204" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32462174" sideWeight="0.49353796" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34630054" sideWeight="0.48707592" order="6" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.34630054" sideWeight="0.48707592" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11423748" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3287483" sideWeight="0.49353796" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
@@ -563,7 +613,8 @@
     <MESSAGE value="refactored statistics collection, use object injection to collect statistics" />
     <MESSAGE value="minor changes to project stats" />
     <MESSAGE value="refactoring for thread class, first implementation for contextuals detection" />
-    <option name="LAST_COMMIT_MESSAGE" value="refactoring for thread class, first implementation for contextuals detection" />
+    <MESSAGE value="performance improvements" />
+    <option name="LAST_COMMIT_MESSAGE" value="performance improvements" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -586,7 +637,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="215" />
+      <option name="time" value="220" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -597,7 +648,6 @@
         <state relative-caret-position="-734">
           <caret line="16" column="14" lean-forward="true" selection-start-line="16" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
             <element signature="e#1754#2700#0" expanded="false" />
           </folding>
         </state>
@@ -613,7 +663,6 @@
         <state relative-caret-position="285">
           <caret line="19" column="32" lean-forward="false" selection-start-line="19" selection-start-column="32" selection-end-line="19" selection-end-column="32" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
             <element signature="e#1754#2700#0" expanded="false" />
           </folding>
         </state>
@@ -626,7 +675,6 @@
         <state relative-caret-position="60">
           <caret line="4" column="37" lean-forward="true" selection-start-line="4" selection-start-column="37" selection-end-line="4" selection-end-column="37" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
             <element signature="e#1754#2700#0" expanded="false" />
           </folding>
         </state>
@@ -714,13 +762,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/Input/Homebrew_issue_data.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-2244">
-          <caret line="7" column="349" lean-forward="false" selection-start-line="7" selection-start-column="349" selection-end-line="7" selection-end-column="349" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/TestData/test_issue_data.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-169">
@@ -735,17 +776,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TestData/synthetic_issue_data.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="-144">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/frame.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="2138" column="0" lean-forward="false" selection-start-line="2138" selection-start-column="0" selection-end-line="2138" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -753,6 +788,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="136">
           <caret line="1804" column="0" lean-forward="false" selection-start-line="1804" selection-start-column="0" selection-end-line="1804" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -771,13 +807,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/unittest/case.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="277">
-          <caret line="681" column="0" lean-forward="false" selection-start-line="681" selection-start-column="0" selection-end-line="681" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/series.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="277">
@@ -792,56 +821,17 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/references.py">
+    <entry file="file://$PROJECT_DIR$/Input/Homebrew_issue_data.json">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="26" column="47" lean-forward="false" selection-start-line="26" selection-start-column="0" selection-end-line="27" selection-end-column="0" />
+        <state relative-caret-position="238">
+          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="45" />
           <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="578">
-          <caret line="97" column="8" lean-forward="false" selection-start-line="97" selection-start-column="8" selection-end-line="97" selection-end-column="8" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-            <element signature="e#175#1967#0" expanded="false" />
-            <element signature="e#2013#2833#0" expanded="false" />
-            <element signature="e#4269#7178#0" expanded="false" />
-            <element signature="e#8922#9649#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/threads.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1037">
-          <caret line="62" column="0" lean-forward="false" selection-start-line="62" selection-start-column="0" selection-end-line="62" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#2177#2202#0" expanded="false" />
-            <element signature="e#2276#2309#0" expanded="false" />
-            <element signature="e#2362#2592#0" expanded="false" />
-            <element signature="e#2660#3233#0" expanded="false" />
-            <element signature="e#3294#3986#0" expanded="false" />
-            <element signature="e#4045#5264#0" expanded="false" />
-            <element signature="e#5350#7324#0" expanded="false" />
-            <element signature="e#7404#7768#0" expanded="false" />
-            <element signature="e#7860#7986#0" expanded="false" />
-            <element signature="e#8036#9485#0" expanded="false" />
-            <element signature="e#9534#9580#0" expanded="false" />
-            <element signature="e#9635#9843#0" expanded="false" />
-            <element signature="e#9944#10040#0" expanded="false" />
-            <element signature="e#10110#10539#0" expanded="false" />
-            <element signature="e#10610#11004#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/project.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1547">
+        <state relative-caret-position="776">
           <caret line="91" column="0" lean-forward="false" selection-start-line="91" selection-start-column="0" selection-end-line="91" selection-end-column="0" />
           <folding>
             <element signature="e#0#19#0" expanded="true" />
@@ -852,21 +842,26 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/unittest/case.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="22" column="12" lean-forward="false" selection-start-line="22" selection-start-column="12" selection-end-line="22" selection-end-column="12" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#1754#2700#0" expanded="false" />
-          </folding>
+        <state relative-caret-position="277">
+          <caret line="821" column="0" lean-forward="false" selection-start-line="821" selection-start-column="0" selection-end-line="821" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/TestData/synthetic_issue_data.json">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-455">
+          <caret line="40" column="21" lean-forward="false" selection-start-line="40" selection-start-column="21" selection-end-line="40" selection-end-column="21" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/neocontroller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="442">
-          <caret line="164" column="0" lean-forward="false" selection-start-line="164" selection-start-column="0" selection-end-line="164" selection-end-column="0" />
+        <state relative-caret-position="204">
+          <caret line="58" column="26" lean-forward="true" selection-start-line="58" selection-start-column="26" selection-end-line="58" selection-end-column="26" />
           <folding>
             <element signature="e#246#311#0" expanded="false" />
             <element signature="e#349#1827#0" expanded="false" />
@@ -877,6 +872,70 @@
             <element signature="e#3804#4142#0" expanded="false" />
             <element signature="e#4186#4289#0" expanded="false" />
             <element signature="e#4331#6342#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/references.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="629">
+          <caret line="43" column="0" lean-forward="true" selection-start-line="43" selection-start-column="0" selection-end-line="43" selection-end-column="0" />
+          <folding>
+            <element signature="e#917#1180#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="0">
+          <caret line="0" column="19" lean-forward="true" selection-start-line="0" selection-start-column="19" selection-end-line="0" selection-end-column="19" />
+          <folding>
+            <element signature="e#1754#2700#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/threads.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="-131">
+          <caret line="160" column="42" lean-forward="false" selection-start-line="160" selection-start-column="34" selection-end-line="160" selection-end-column="42" />
+          <folding>
+            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#2177#2202#0" expanded="false" />
+            <element signature="e#2276#2309#0" expanded="false" />
+            <element signature="e#2362#2592#0" expanded="false" />
+            <element signature="e#2660#3233#0" expanded="false" />
+            <element signature="e#5329#7433#0" expanded="false" />
+            <element signature="e#7513#7877#0" expanded="false" />
+            <element signature="e#7969#8095#0" expanded="false" />
+            <element signature="e#9636#9682#0" expanded="false" />
+            <element signature="e#9737#9945#0" expanded="false" />
+            <element signature="e#10046#10142#0" expanded="false" />
+            <element signature="e#10212#10641#0" expanded="false" />
+            <element signature="e#10712#11106#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/testing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="731">
+          <caret line="478" column="11" lean-forward="true" selection-start-line="478" selection-start-column="11" selection-end-line="478" selection-end-column="11" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#206#1998#0" expanded="false" />
+            <element signature="e#2044#2864#0" expanded="false" />
+            <element signature="e#2926#4682#0" expanded="false" />
+            <element signature="e#4745#8021#0" expanded="false" />
+            <element signature="e#8079#11342#0" expanded="false" />
+            <element signature="e#11402#12249#0" expanded="false" />
+            <element signature="e#12304#13026#0" expanded="false" />
+            <element signature="e#13091#13818#0" expanded="false" />
+            <element signature="e#13883#14651#0" expanded="false" />
+            <element signature="e#14720#15846#0" expanded="false" />
+            <element signature="e#15901#15985#0" expanded="false" />
+            <element signature="e#16040#21232#0" expanded="false" />
           </folding>
         </state>
       </provider>

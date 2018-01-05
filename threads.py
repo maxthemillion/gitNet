@@ -97,7 +97,7 @@ class Thread:
             cleared_md_list.append(md_list[len(md_list)-1])
         return cleared_md_list
 
-    def _detect_mentions_in_row(self, row, index):
+    def _detect_mentions_in_row(self, row):
         mentions_list = []
 
         body = row["body"]
@@ -110,7 +110,7 @@ class Thread:
             stop_pos = Thread._find_end_username(body, start_pos)
             addressee = str.lower(body[start_pos + 1:stop_pos])
 
-            mention = Mention(commenter, addressee, comment_id, self, self._project_stats, timestamp, index)
+            mention = Mention(commenter, addressee, comment_id, self, self._project_stats, timestamp)
             mention.set_start_pos(start_pos)
 
             if mentions_list:
@@ -148,7 +148,7 @@ class Thread:
 
             addressee = self._find_source(quote_body, index)
 
-            new_quote = Quote(commenter, addressee, comment_id, self, self._project_stats, timestamp, index)
+            new_quote = Quote(commenter, addressee, comment_id, self, self._project_stats, timestamp)
             new_quote.set_start_pos(start_pos)
 
             if quote_list:
@@ -178,7 +178,7 @@ class Thread:
             comment_id = self._thread_data["id"].iloc[r]
             timestamp = self._thread_data["created_at"].iloc[r]
 
-            if len(comment_sequence[0:r].unique()) > 2:
+            if len(comment_sequence[0:r].unique()) > 2 and mentions and quotes:
                 if m_indices[r] > 0 or q_indices[r] > 0:
 
                     create = True
@@ -204,12 +204,14 @@ class Thread:
                                                          timestamp)
 
                 else:
-                    new_contextual = ContextualReply(u_current, u_prev, comment_id, self, self._project_stats, timestamp)
+                    new_contextual = ContextualReply(u_current, u_prev, comment_id, self, self._project_stats,
+                                                     timestamp)
             else:
                 if u_current == u_prev:
                     pass
                 else:
-                    new_contextual = ContextualReply(u_current, u_prev, comment_id, self, self._project_stats, timestamp)
+                    new_contextual = ContextualReply(u_current, u_prev, comment_id, self, self._project_stats,
+                                                     timestamp)
 
             if contextuals_list and new_contextual is not None:
                 contextuals_list.append(new_contextual)
@@ -250,7 +252,7 @@ class Thread:
         for index in range(0, len(self._thread_data)):
             row = self._thread_data.iloc[index]
 
-            mentions = self._detect_mentions_in_row(row, index)
+            mentions = self._detect_mentions_in_row(row)
             mentions = self._remove_invalid_references(mentions)
 
             quotes = self._detect_quotes_in_row(row, index)

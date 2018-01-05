@@ -43,19 +43,13 @@ class Reference:
         pass
 
 
-class DirectReply(Reference):
-    def __init__(self, commenter, addressee, comment_id, parent_thread, project_stats, timestamp, row_index):
-        Reference.__init__(self, commenter, addressee, comment_id, parent_thread, project_stats, timestamp)
-        self._start_pos = row_index
-
-
-class Mention(DirectReply):
+class Mention(Reference):
 
     def _add_to_report(self):
         self._project_stats.add_mentions(self.comment_id, self._valid)
 
 
-class Quote(DirectReply):
+class Quote(Reference):
 
     def _add_to_report(self):
         self._project_stats.add_quote(self.comment_id, self._valid)

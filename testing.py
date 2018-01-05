@@ -1,6 +1,6 @@
 import unittest
-from project import Project
-from references import Mention, Quote
+from project import Project, ProjectStats
+from references import Mention, Quote, ContextualReply
 import pandas as pd
 from threads import Thread
 
@@ -74,35 +74,115 @@ class DataCleaning(unittest.TestCase):
         self.assertTrue(len(data.columns) == 7)
 
 
-class MentionsDetection(unittest.TestCase):
+class MentionsDetectionOutputTests(unittest.TestCase):
     def setUp(self):
         fake_pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_pullreq_data.json"))
         fake_issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_issue_data.json"))
-        self.fake_project = Project(fake_pullreq_data, fake_issue_data)
-        self.fake_issue_thread_list = self.fake_project._split_threads("issue")
+        fake_project = Project(fake_pullreq_data, fake_issue_data)
+        fake_issue_thread_list = fake_project._split_threads("issue")
 
+        fakeuser1 = "fakeuser1"
         self.fake_comment_id = 9999
-        self.fakeuser1 = "fakeuser1"
-        self.addressee1 =  "addressee1"
-        self.fake_body = "A fakebody with some @" + self.addressee1
+        self.addressee1 = "addressee1"
+        fake_body = "A fakebody with some @" + self.addressee1
 
-        self.thread = self.fake_issue_thread_list[0]
-        self.standard_fake_row = {"user": self.fakeuser1,
+        fake_date = "2016-04-04T18:09:46Z"
+
+        self.thread = fake_issue_thread_list[0]
+        self.standard_fake_row = {"user": fakeuser1,
                                   "id": self.fake_comment_id,
-                                  "body": self.fake_body}
+                                  "body": fake_body,
+                                  "created_at": fake_date}
 
-    def test_mentions_detection(self):
-        # TODO: implement unit test for mentions detection
-        self.assertTrue(False)
+    def test_mentions_detection_output_type(self):
+        mentions_list = self.thread._detect_mentions_in_row(self.standard_fake_row)
+        self.assertIsInstance(mentions_list, list)
 
+    def test_mentions_detection_output_list_content_types(self):
+        mentions_list = self.thread._detect_mentions_in_row(self.standard_fake_row)
+        first_mention = mentions_list.pop(0)
+        self.assertIsInstance(first_mention, Mention)
+
+    def test_mentions_detection_input_output_match(self):
+        mentions_list = self.thread._detect_mentions_in_row(self.standard_fake_row)
+        for m in mentions_list:
+            self.assertEqual(m.comment_id, self.fake_comment_id)
+            self.assertEqual(m.addressee, self.addressee1)
+
+    def test_mentions_detection_standard_fake_row(self):
         mentions_list = self.thread._detect_mentions_in_row(self.standard_fake_row)
         self.assertTrue(len(mentions_list) == 1)
 
-    def test_mentions_detection_input_output(self):
-        mentions_list = self.thread._detect_mentions_in_row(self.standard_fake_row)
-        for m in mentions_list:
-            self.assertTrue(m.comment_id == self.fake_comment_id)
-            self.assertTrue(m.addressee == self.addressee1)
+
+class MentionsDetectionFindMentions(unittest.TestCase):
+    def setUp(self):
+        fake_pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_pullreq_data.json"))
+        fake_issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_issue_data.json"))
+        dummy_project = Project(fake_pullreq_data, fake_issue_data)
+        dummy_issue_thread_list = dummy_project._split_threads("issue")
+        self.dummy_thread = dummy_issue_thread_list[0]
+
+        fakeuser1 = "fakeuser1"
+        fakeuser2 = "fakeuser2"
+        fakeuser3 = "fakeuser3"
+
+        self.fake_comment_id = 9999
+
+        fake_date = "2016-04-04T18:09:46Z"
+
+        self.fake_row_1 = pd.Series({"body": "this is a sample comment without mention!",
+                                     "user": fakeuser1,
+                                     "id": 9999,
+                                     "created_at": fake_date})
+
+        self.fake_row_2 = pd.Series({"body": "@{0} this is a sample comment with mention at the beginning!\r\n"
+                                             "And some arbitrary text.".format(fakeuser1),
+                                     "user": fakeuser2,
+                                     "id": 9999,
+                                     "created_at": fake_date})
+
+        self.fake_row_3 = pd.Series({"body": "Arbitrary text. \r\n"
+                                             "this is a sample comment with @{0} at the end!".format(fakeuser1),
+                                     "user": fakeuser2,
+                                     "id": 9999,
+                                     "created_at": fake_date})
+
+        self.fake_row_4 = pd.Series({"body": "Arbitrary text with <html tag> and some email@dress.com",
+                                     "user": fakeuser2,
+                                     "id": 9999,
+                                     "created_at": fake_date})
+
+        self.fake_row_5 = pd.Series({"body": "@{0} first mention and another one @{1}".format(fakeuser1, fakeuser2),
+                                     "user": fakeuser3,
+                                     "id": 9999,
+                                     "created_at": fake_date})
+
+    def test_fake_row_1(self):
+        result = self.dummy_thread._detect_mentions_in_row(self.fake_row_1)
+        self.assertEqual(result, [])
+
+    def test_fake_row_2(self):
+        result = self.dummy_thread._detect_mentions_in_row(self.fake_row_2)
+        self.assertEqual(len(result), 1)
+
+    def test_fake_row_3(self):
+        result = self.dummy_thread._detect_mentions_in_row(self.fake_row_3)
+        self.assertEqual(len(result), 1)
+
+    def test_fake_row_4(self):
+        # TODO: is there a way to distinguish arbitrary usage of @ from @mentions?
+        # currently, this is solved by comparing the found usernames to the names in the discussion participants
+        # list. (validation inside the reference objects)
+        result = self.dummy_thread._detect_mentions_in_row(self.fake_row_4)
+        self.assertEqual(len(result), 1)
+
+    def test_fake_row_4_validation(self):
+        result = self.dummy_thread._detect_mentions_in_row(self.fake_row_4)
+        self.assertFalse(result[0].is_valid())
+
+    def test_fake_row_5(self):
+        result = self.dummy_thread._detect_mentions_in_row(self.fake_row_5)
+        self.assertEqual(len(result), 2)
 
 
 class QuoteDetectionFindQuotes(unittest.TestCase):
@@ -118,28 +198,35 @@ class QuoteDetectionFindQuotes(unittest.TestCase):
         user1 = self.thread_with_quotes.get_participants()[0]
         user2 = self.thread_with_quotes.get_participants()[1]
 
+        fake_date = "2016-04-04T18:09:46Z"
+
         self.fake_row_1 = pd.Series({"body": "this is a sample comment without quote!",
                                      "user": user1,
-                                     "id": 9999})
+                                     "id": 9999,
+                                     "created_at": fake_date})
 
         self.fake_row_2 = pd.Series({"body": ">this is a sample comment with quote at the beginning!\r\n"
                                              "And some arbitrary text.",
                                      "user": user1,
-                                     "id": 9999})
+                                     "id": 9999,
+                                     "created_at": fake_date})
 
         self.fake_row_3 = pd.Series({"body": "Arbitrary text. \r\n"
                                              ">this is a sample comment with quote at the end!",
                                      "user": user1,
-                                     "id": 9999})
+                                     "id": 9999,
+                                     "created_at": fake_date})
 
         self.fake_row_4 = pd.Series({"body": "Arbitrary text with <html tag> and some other >quote-like construct",
                                      "user": user1,
-                                     "id": 9999})
+                                     "id": 9999,
+                                     "created_at": fake_date})
 
         self.fake_row_5 = pd.Series({"body": ">quote1 \r\nArbitrary text with <html tag> and some other "
                                              "\r\n>quote at the end",
                                      "user": user1,
-                                     "id": 9999})
+                                     "id": 9999,
+                                     "created_at": fake_date})
 
     def test_output_datatype(self):
         self.assertIsInstance(self.thread_with_quotes._detect_quotes_in_row(self.fake_row_1, 1), list)
@@ -178,16 +265,17 @@ class QuoteDetectionSourceQuotes(unittest.TestCase):
         self.thread_list = self.new_project._split_threads("issue")
 
         self.thread_with_quotes = self.thread_list[0]
-        self.thread_with_quotes.analyze_references()
+        self.thread_with_quotes.run()
 
     def testGetReferencesOutputType(self):
-        ref_df = self.thread_with_quotes.get_references_as_list()
-        self.assertTrue(type(ref_df) == pd.DataFrame)
+        ref = self.thread_with_quotes.get_references_as_list()
+        self.assertTrue(type(ref) == list)
 
     # TODO: test quote sourcing
     def testSourcing(self):
-        ref_df = self.thread_with_quotes.get_references_as_list()
-        quote_ref = ref_df[ref_df["ref_type"] == Quote]
+        ref = self.thread_with_quotes.get_references_as_list()
+        ref_df = pd.DataFrame(ref)
+        quote_ref = ref_df[ref_df["ref_type"] == "Quote"]
         self.assertTrue(len(quote_ref) == 2)
 
 
@@ -239,13 +327,49 @@ class QuoteDetectionClearMarkdownList(unittest.TestCase):
         self.assertTrue(cleared_list == self.expected_result_3)
 
 
-class ContextualsDetection(unittest.TestCase):
+class ContextualsDetectionOutputTests(unittest.TestCase):
     def setUp(self):
-        pass
+        fake_pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_pullreq_data.json"))
+        fake_issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_issue_data.json"))
+        fake_project = Project(fake_pullreq_data, fake_issue_data)
+        fake_issue_thread_list = fake_project._split_threads("issue")
 
-    def testFoo(self):
+        self.thread = fake_issue_thread_list[0]
+
+    def test_contextuals_detection_output_type(self):
+        contextuals = self.thread._detect_contextuals([], [], [], [])
+        self.assertIsInstance(contextuals, list)
+
+    def test_contextuals_detection_output_list_content_types(self):
+        contextuals = self.thread._detect_contextuals([], [], [], [])
+        self.assertIsInstance(contextuals.pop(0), ContextualReply)
+
+
+class ContextualsDetectionFindContextuals(unittest.TestCase):
+    def setUp(self):
+        fake_pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_pullreq_data.json"))
+        fake_issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_issue_data.json"))
+        fake_project = Project(fake_pullreq_data, fake_issue_data)
+        fake_issue_thread_list = fake_project._split_threads("issue")
+
+        self.thread1 = fake_issue_thread_list[0]
+        self.thread2 = fake_issue_thread_list[1]
+
+    def test_contextuals_detection_in_thread1_simple(self):
+        # don't consider coexisting mentions and quotes
+        contextuals = self.thread1._detect_contextuals([], [], [], [])
+        self.assertEqual(len(contextuals), 4)
+
+    def test_contextuals_detection_in_thread2_simple(self):
+        # don't consider coexisting mentions and quotes
+        contextuals = self.thread2._detect_contextuals([], [], [], [])
+        self.assertEqual(len(contextuals), 6)
+
+    def test_contextuals_detection_in_thread1_with_quotes_and_mentions(self):
         self.assertTrue(False)
-        Thread._detect_contextuals_in_row()
+
+    def test_contextuals_detection_in_thread2_with_quotes_and_mentions(self):
+        self.assertTrue(False)
 
 
 class ConsolidateReferences(unittest.TestCase):
@@ -254,7 +378,6 @@ class ConsolidateReferences(unittest.TestCase):
 
     def testFoo(self):
         self.assertTrue(False)
-        Thread._consolidate_references()
 
 
 class FindReferencesRelaxed(unittest.TestCase):
@@ -262,10 +385,10 @@ class FindReferencesRelaxed(unittest.TestCase):
         test_issue_data = pd.DataFrame(pd.read_json("TestData/test_issue_data.json"))
         test_pullreq_data = pd.DataFrame(pd.read_json("TestData/test_pullreq_data.json"))
 
-        self.new_project = Project(test_pullreq_data, test_issue_data)
-        self.thread_list = self.new_project._split_threads("issue")
-        sample_thread1 = self.thread_list[0]
-        sample_thread2 = self.thread_list[1]
+        new_project = Project(test_pullreq_data, test_issue_data)
+        thread_list = new_project._split_threads("issue")
+        sample_thread1 = thread_list[0]
+        sample_thread2 = thread_list[1]
 
         fakeuser1 = "asdfacasdfdf"
         fakeuser2 = "acaöjaösfkjöajdgf"
@@ -273,19 +396,62 @@ class FindReferencesRelaxed(unittest.TestCase):
         user1_from_t2 = sample_thread2.get_participants()[0]
         user2_from_t2 = sample_thread2.get_participants()[1]
 
+        fake_stats = ProjectStats(new_project)
+        fake_date = "2016-04-04T18:09:46Z"
+
         fakeID = 99999
 
-        self.new_mention_fakeuser = Mention(fakeuser1, fakeuser2, fakeID , sample_thread2)
-        self.new_quote_fakeuser = Quote(fakeuser1, fakeuser2, fakeID, sample_thread2)
+        self.new_mention_fakeuser = Mention(fakeuser1,
+                                            fakeuser2,
+                                            fakeID,
+                                            sample_thread2,
+                                            fake_stats,
+                                            fake_date)
+        self.new_quote_fakeuser = Quote(fakeuser1,
+                                        fakeuser2,
+                                        fakeID,
+                                        sample_thread2,
+                                        fake_stats,
+                                        fake_date)
 
-        self.new_mention_trueuser_not_in_same_thread = Mention(user1_from_t1, user1_from_t2, fakeID, sample_thread2)
-        self.new_quote_trueuser_not_in_same_thread = Quote(user1_from_t1, user1_from_t2, fakeID, sample_thread2)
+        self.new_mention_trueuser_not_in_same_thread = Mention(user1_from_t1,
+                                                               user1_from_t2,
+                                                               fakeID,
+                                                               sample_thread2,
+                                                               fake_stats,
+                                                               fake_date)
+        self.new_quote_trueuser_not_in_same_thread = Quote(user1_from_t1,
+                                                           user1_from_t2,
+                                                           fakeID,
+                                                           sample_thread2,
+                                                           fake_stats,
+                                                           fake_date)
 
-        self.new_mention_trueuser_in_same_thread = Mention(user1_from_t2, user2_from_t2, fakeID, sample_thread2)
-        self.new_quote_trueuser_in_same_thread = Quote(user1_from_t2, user2_from_t2, fakeID, sample_thread2)
+        self.new_mention_trueuser_in_same_thread = Mention(user1_from_t2,
+                                                           user2_from_t2,
+                                                           fakeID,
+                                                           sample_thread2,
+                                                           fake_stats,
+                                                           fake_date)
+        self.new_quote_trueuser_in_same_thread = Quote(user1_from_t2,
+                                                       user2_from_t2,
+                                                       fakeID,
+                                                       sample_thread2,
+                                                       fake_stats,
+                                                       fake_date)
 
-        self.new_mention_trueuser_as_commenter_and_addressee = Mention(user1_from_t2, user1_from_t2, fakeID, sample_thread2)
-        self.new_quote_trueuser_as_commenter_and_addressee = Quote(user1_from_t2, user1_from_t2, fakeID, sample_thread2)
+        self.new_mention_trueuser_as_commenter_and_addressee = Mention(user1_from_t2,
+                                                                       user1_from_t2,
+                                                                       fakeID,
+                                                                       sample_thread2,
+                                                                       fake_stats,
+                                                                       fake_date)
+        self.new_quote_trueuser_as_commenter_and_addressee = Quote(user1_from_t2,
+                                                                   user1_from_t2,
+                                                                   fakeID,
+                                                                   sample_thread2,
+                                                                   fake_stats,
+                                                                   fake_date)
 
 
     def test_assert_type(self):
