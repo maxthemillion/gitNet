@@ -376,8 +376,9 @@ class ConsolidateReferences(unittest.TestCase):
     def setUp(self):
         pass
 
-    def testFoo(self):
-        self.assertTrue(False)
+    def test_consolidate_references_ouptut_type(self):
+        result = Thread._consolidate_references([], [], [])
+        self.assertIsInstance(result, list)
 
 
 class FindReferencesRelaxed(unittest.TestCase):

@@ -1,7 +1,6 @@
-import pandas as pd
-import warnings
 from references import Mention, Quote, ContextualReply
-
+import collectors
+import conf
 
 class Thread:
     """contains a pull request communication thread and its thread analytics"""
@@ -46,7 +45,6 @@ class Thread:
         return result
 
     def get_references_as_list(self):
-        # TODO: get the info as plain dict or list and then create the DF in one go to speed up performance.
         ref_list = []
         if self._references_relaxed:
             for reference in self._references_relaxed:
@@ -185,7 +183,7 @@ class Thread:
 
                     i = 0
                     while create and i < m_indices[r]:
-                        if mentions[m_i + i].get_start_pos() == 0:
+                        if mentions[m_i + i].get_start_pos() == 0 or mentions[m_i + i].addressee == u_prev:
                             create = False
                         i += 1
 
@@ -193,7 +191,7 @@ class Thread:
 
                     i = 0
                     while create and i < q_indices[r]:
-                        if quotes[q_i + i].get_start_pos() == 0:
+                        if quotes[q_i + i].get_start_pos() == 0 or quotes[q_i + i].addressee == u_prev:
                             create = False
                         i += 1
 
@@ -222,6 +220,7 @@ class Thread:
 
     @staticmethod
     def _remove_invalid_references(reference_list):
+
         ind_invalid = []
         for i in range(0, len(reference_list)):
             if not reference_list[i].is_valid():
@@ -231,12 +230,14 @@ class Thread:
                     ind_invalid = [i]
 
         for i in sorted(ind_invalid, reverse=True):
+            if conf.collect_invalid:
+                collectors.add_invalid_reference(reference_list[i])
+
             del reference_list[i]
         return reference_list
 
     @staticmethod
     def _consolidate_references(mentions, quotes, contextuals):
-        # TODO: implement proper consolidation
         reference_list = mentions + quotes + contextuals
 
         return reference_list

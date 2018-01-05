@@ -3,6 +3,8 @@ from project import Project
 from neocontroller import Neo4jController
 import warnings
 import time
+import collectors
+import conf
 import cProfile
 
 # TODO: restructure this code, make it less dependent
@@ -11,23 +13,27 @@ import cProfile
 def main():
     neo_controller = Neo4jController()
 
-    if True:
+    if conf.neo4j_clear_on_startup:
         neo_controller.clear_db()
 
-    if True:
+    if conf.run_analysis:
         run_analysis()
 
-    if True:
+    if conf.neo4j_import:
         neo_controller.import_graph()
 
-    if True:
+    if conf.neo4j_run_louvain:
         neo_controller.run_louvain()
 
-    if False:
+    if conf.neo4j_stream_to_gephi:
         neo_controller.stream_to_gephi()
 
-    if True:
+    if conf.neo4j_export_json:
         neo_controller.export_graphjson()
+
+    if conf.collect_invalid:
+        collectors.analyze()
+
 
     print("------------------------------------------")
     print("Total process time elapsed:        {0:.2f}s".format(time.process_time()))
@@ -61,6 +67,7 @@ def split_projects(owner):
 
         print("time required:                {0:.2f}s".format(time.process_time()-proc_time_start))
         print()
+
 
 def import_owner_data(owner):
     # TODO: implement MongoDB data extractions

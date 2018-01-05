@@ -34,7 +34,6 @@ class Project:
                                        self._issue_data["user"].str.lower()]).unique(), columns=["participants"])
 
         self.stats = ProjectStats(self)
-        self._reference_container = ReferenceContainer()
 
     def run(self):
         self._threads = self._split_threads("pullreq") + \
@@ -258,31 +257,26 @@ class ProjectStats:
         else:
             share_mentions_valid = -999
 
-        print("------ Project Stats Summary -----")
-        print("project name:                " + self._parent_project.owner + "/" + self._parent_project.repo)
+        print("---------------------------------")
+        print("Project Stats Summary")
+        print("---------------------------------")
+        print()
+        print("project name:                    {0}/{1}".format(self._parent_project.owner, self._parent_project.repo))
         print()
         print("number of participants:          {0}".format(self._no_participants))
         print("number of threads analyzed:      {0}".format(self._no_threads_analyzed))
         print("number of comments:              {0}".format(self._no_comments))
         print()
-        print("total number of quotes:          {0}".format(total_no_quotes))
-        print("share of sourced quotes:         {0:.2f}%".format(share_sourced))
-        print("number of valid mentions:        {0}".format(self._mentions_found_valid))
-        print("share of valid mentions:         {0:.2f}".format(share_mentions_valid))
-        print("number of valid contextuals:     {0}".format(self._contextuals_found_valid))
-        print("share of valid contextuals:      {0:.2f}%".format(share_contextuals_valid))
+        print("count sourced quotes:            {0}".format(self._quotes_sourced))
+        print("share sourced quotes:            {0:.2f}%".format(share_sourced))
+        print("count valid mentions:            {0}".format(self._mentions_found_valid))
+        print("share valid mentions:            {0:.2f}%".format(share_mentions_valid))
+        print("number valid contextuals:        {0}".format(self._contextuals_found_valid))
+        print("share valid contextuals:         {0:.2f}%".format(share_contextuals_valid))
+        print()
+        print("total count valid references:    {0}".format(self._quotes_not_sourced
+                                                             + self._mentions_found_valid
+                                                             + self._contextuals_found_valid))
+
         print()
 
-
-class ReferenceContainer:
-    def __init__(self):
-        self._references = []
-
-    def add_reference(self, reference):
-        if self._references:
-            self._references.append(reference)
-        else:
-            self._references = [reference]
-
-    def get_references(self):
-        return self._references
