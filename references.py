@@ -21,12 +21,12 @@ class Reference:
     def get_start_pos(self):
         return self._start_pos
 
-    def get_info_as_series(self):
-        return pd.Series({"commenter": self.commenter,
-                          "addressee": self.addressee,
-                          "comment_id": self.comment_id,
-                          "ref_type": type(self).__name__,
-                          "timestamp": self.timestamp})
+    def get_info_as_dict(self):
+        return ({"commenter": self.commenter,
+                 "addressee": self.addressee,
+                 "comment_id": self.comment_id,
+                 "ref_type": type(self).__name__,
+                 "timestamp": self.timestamp})
 
     def _validate(self):
         if self.addressee != self.commenter and \

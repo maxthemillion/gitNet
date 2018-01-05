@@ -34,6 +34,7 @@ class Project:
                                        self._issue_data["user"].str.lower()]).unique(), columns=["participants"])
 
         self.stats = ProjectStats(self)
+        self._reference_container = ReferenceContainer()
 
     def run(self):
         self._threads = self._split_threads("pullreq") + \
@@ -98,9 +99,15 @@ class Project:
 
         weighted = False
 
-        ref_df = pd.DataFrame()
+        refs = []
         for thread in self._threads:
-            ref_df = ref_df.append(thread.get_references_as_df())
+            ref_list = thread.get_references_as_list()
+            if refs:
+                refs.extend(ref_list)
+            else:
+                refs = ref_list
+
+        ref_df = pd.DataFrame(refs)
 
         if weighted:
             ref_df_weighted = ref_df.groupby(["commenter", "addressee", "ref_type"])\
@@ -267,3 +274,15 @@ class ProjectStats:
         print()
 
 
+class ReferenceContainer:
+    def __init__(self):
+        self._references = []
+
+    def add_reference(self, reference):
+        if self._references:
+            self._references.append(reference)
+        else:
+            self._references = [reference]
+
+    def get_references(self):
+        return self._references

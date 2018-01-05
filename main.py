@@ -3,6 +3,7 @@ from project import Project
 from neocontroller import Neo4jController
 import warnings
 import time
+import cProfile
 
 # TODO: restructure this code, make it less dependent
 
@@ -10,22 +11,22 @@ import time
 def main():
     neo_controller = Neo4jController()
 
-    if False:
+    if True:
         neo_controller.clear_db()
 
     if True:
         run_analysis()
 
-    if False:
+    if True:
         neo_controller.import_graph()
 
-    if False:
+    if True:
         neo_controller.run_louvain()
 
     if False:
         neo_controller.stream_to_gephi()
 
-    if False:
+    if True:
         neo_controller.export_graphjson()
 
     print("------------------------------------------")
@@ -85,4 +86,5 @@ def import_owner_data(owner):
 
 
 if __name__ == '__main__':
+    # cProfile.run("main()", sort="cumtime")
     main()

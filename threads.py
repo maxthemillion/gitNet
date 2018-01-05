@@ -34,8 +34,6 @@ class Thread:
 
     # -------- getters --------
     def get_references(self, which):
-        if not self._analysis_performed:
-            warnings.warn("get_references() called, but analysis has not been performed, yet! \n")
 
         if which == "strict":
             result = self._references_strict
@@ -47,12 +45,18 @@ class Thread:
                              "be returned!")
         return result
 
-    def get_references_as_df(self):
-        df = pd.DataFrame()
+    def get_references_as_list(self):
+        # TODO: get the info as plain dict or list and then create the DF in one go to speed up performance.
+        ref_list = []
         if self._references_relaxed:
             for reference in self._references_relaxed:
-                df = df.append(reference.get_info_as_series(), ignore_index=True)
-        return df
+                ref_dict = reference.get_info_as_dict()
+                if ref_list:
+                    ref_list.append(ref_dict)
+                else:
+                    ref_list = [ref_dict]
+
+        return ref_list
 
     def get_participants(self):
         return self._participants

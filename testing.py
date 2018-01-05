@@ -181,12 +181,12 @@ class QuoteDetectionSourceQuotes(unittest.TestCase):
         self.thread_with_quotes.analyze_references()
 
     def testGetReferencesOutputType(self):
-        ref_df = self.thread_with_quotes.get_references_as_df()
+        ref_df = self.thread_with_quotes.get_references_as_list()
         self.assertTrue(type(ref_df) == pd.DataFrame)
 
     # TODO: test quote sourcing
     def testSourcing(self):
-        ref_df = self.thread_with_quotes.get_references_as_df()
+        ref_df = self.thread_with_quotes.get_references_as_list()
         quote_ref = ref_df[ref_df["ref_type"] == Quote]
         self.assertTrue(len(quote_ref) == 2)
 
