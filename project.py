@@ -1,6 +1,8 @@
 import pandas as pd
 from threads import Thread
 import time
+import conf
+from neocontroller import Neo4jController
 
 
 class Project:
@@ -25,7 +27,7 @@ class Project:
 
         self._pullreq_data = self._clean_input(pullreq_data)
         self._issue_data = self._clean_input(issue_data)
-        # self._commit_data =       TODO: implement support for _commit_data
+        # self._commit_data =
 
         self._threads = None
 
@@ -43,7 +45,11 @@ class Project:
         self.stats.add_participants(len(self._participants))
 
         self._references = self._collect_references()
-        self._export_project()
+
+        if conf.neo4j_import:
+            controller = Neo4jController()
+            controller.import_project(self._references, self._participants, self.owner, self.repo)
+
         self.stats.print_summary()
 
     # -------- is ------
@@ -89,15 +95,6 @@ class Project:
         return thread_list
 
     def _collect_references(self):
-        # TODO: could you pass on an empty reference list, that is filled inside the thread objects?
-        """returns references that were found in all threads of the project as a DataFrame.
-        If parameter 'weighted' is set to False, one row of the df contains one reference found and
-        additionally the comment_id is preserved."""
-        print("start collecting references")
-        proc_time_start = time.process_time()
-
-        weighted = False
-
         refs = []
         for thread in self._threads:
             ref_list = thread.get_references_as_list()
@@ -107,30 +104,7 @@ class Project:
                 refs = ref_list
 
         ref_df = pd.DataFrame(refs)
-
-        if weighted:
-            ref_df_weighted = ref_df.groupby(["commenter", "addressee", "ref_type"])\
-                .size()\
-                .reset_index()
-
-            df_id_strings = ref_df.groupby(["commenter", "addressee", "ref_type"])["comment_id"]\
-                .apply(lambda x: tuple(x))\
-                .reset_index()
-
-            ref_df_weighted = ref_df_weighted.merge(df_id_strings,
-                                                    how="inner",
-                                                    on=["commenter", "addressee", "ref_type"])
-
-            ref_df_weighted.columns = ["commenter", "addressee", "ref_type", "weight", "comment_id"]
-            result = ref_df_weighted
-        else:
-            ref_df["weight"] = 1
-            result = ref_df
-
-        print("time required:       {0:.2f}s".format(time.process_time()-proc_time_start))
-        print()
-
-        return result
+        return ref_df
 
     # -------- data cleaning -------
     @staticmethod
@@ -166,12 +140,12 @@ class Project:
 
         # export the references
         # this is also a prerequisite for the export to Neo4j
-        filename = "references_export.csv"
-        ref_df.to_csv(path_or_buf=self._export_folder + filename, sep=";", index=False, header=True)
+        # filename = "references_export.csv"
+        # ref_df.to_csv(path_or_buf=self._export_folder + filename, sep=";", index=False, header=True)
 
         # export participants
-        filename = "participants_export.csv"
-        part_df["participants"].to_csv(self._export_folder + filename, sep=";", index=False, header=True)
+        # filename = "participants_export.csv"
+        # part_df["participants"].to_csv(self._export_folder + filename, sep=";", index=False, header=True)
 
         print("time required:       {0:.2f}s".format(time.process_time()-proc_time_start))
         print()
@@ -274,7 +248,7 @@ class ProjectStats:
         print("number valid contextuals:        {0}".format(self._contextuals_found_valid))
         print("share valid contextuals:         {0:.2f}%".format(share_contextuals_valid))
         print()
-        print("total count valid references:    {0}".format(self._quotes_not_sourced
+        print("total count valid references:    {0}".format(self._quotes_sourced
                                                              + self._mentions_found_valid
                                                              + self._contextuals_found_valid))
 

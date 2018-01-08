@@ -1,6 +1,7 @@
 from py2neo import Graph
 import json
 import pandas as pd
+import warnings
 
 
 class Neo4jController:
@@ -12,36 +13,46 @@ class Neo4jController:
         query = "MATCH (n) DETACH DELETE n"
         self.graph.run(query)
 
-    def import_graph(self):
-        # TODO: check if it makes sense to transfer the nodes directly to Neo4j
-        # csv export-import could be replaced by something faster.
+    def import_project(self, ref_df, node_df, repo, owner):
+        merge_ref = '''MERGE (a:USER{login:$l_login_a})
+                    MERGE (b:USER{login:$l_login_b})
+                    WITH a, b
+                    CALL apoc.create.relationship(a, $l_ref_type, {weight: $l_weight, timestamp:$l_timestamp}, b)
+                    YIELD rel
+                    RETURN rel'''
 
-        # import the CSV files to Neo4j using Cypher
-        import_path = \
-            "'file:///Users/Max/Desktop/MA/Python/projects/NetworkConstructor/Export/participants_export.csv'"
+        tx = self.graph.begin()
+        for index, row in ref_df.iterrows():
 
-        # create user nodes if these do not already exist
-        # 'MERGE' matches new patterns to existing ones. If it doesn't exist, it creates a new one
-        query_create_users = "LOAD CSV WITH HEADERS FROM " + import_path + \
-                             "AS row FIELDTERMINATOR ';'" \
-                             "MERGE (:USER{login:row.participants})"
-        self.graph.run(query_create_users)
+            tx.evaluate(merge_ref, parameters={'l_login_a': row['commenter'],
+                                               'l_login_b': row['addressee'],
+                                               'l_ref_type': row['ref_type'],
+                                               'l_weight': 1,
+                                               'l_timestamp': row['timestamp'].strftime("%Y-%m-%dT%H:%M:%S%Z")})
+            if (index + 1) % 10000 == 0:
+                tx.commit()
+                warnings.warn("batch commit to neo4j at " + index)
+                tx = self.graph.begin()
+        tx.commit()
 
-        import_path = \
-            "'file:///Users/Max/Desktop/MA/Python/projects/NetworkConstructor/Export/references_export.csv'"
+        merge_nodes = '''MERGE (a:USER{login:$l_login_a})
+                      MERGE (r:REPO{name:$l_repo})
+                      MERGE (o:OWNER{name:$l_owner})
+                      WITH a, r, o
+                      MERGE (a)-[x:TOUCHED]->(r)
+                      MERGE (r)-[y:BELONGS_TO]->(o)
+                      RETURN x, y'''
 
-        query_create_ref = '''LOAD CSV WITH HEADERS FROM ''' + import_path + \
-                           '''AS row FIELDTERMINATOR ';'
-                           MERGE (a:USER{login:row.commenter})
-                           MERGE (b:USER{login:row.addressee})
-                           WITH a, b, row
-                           CALL apoc.create.relationship(a, row.ref_type, {weight: row.weight, timestamp:row.timestamp}, b)
-                           YIELD rel
-                           RETURN rel'''
+        tx = self.graph.begin()
+        for index, row in node_df.iterrows():
+            tx.evaluate(merge_nodes, parameters={'l_login_a': row["participants"],
+                                                 'l_repo': repo,
+                                                 'l_owner': owner,
+                                                 'l_r1': 'Touched',
+                                                 'l_r2': 'Belongs_to'})
+        tx.commit()
 
-        self.graph.run(query_create_ref)
-
-        print("Export to Neo4j succeeded!")
+        print("{0}/{1}: Import to Neo4j succeeded!".format(owner, repo))
         print()
 
     def get_communities(self):
@@ -62,7 +73,7 @@ class Neo4jController:
         # TODO: Check this query! Does it deliver what you expect?
         # From each group, get the node with the highest degree.
         # cut_val = 10
-        query = "MATCH r = (n:USER)-[x]-() " \
+        query = "MATCH r = (n:USER)-[x]-(m:USER) " \
                 "WITH Count(x) as node_degree, n " \
                 "ORDER BY n.community, node_degree DESC " \
                 "WITH n.community AS group, Collect(n)[..1] as topNodes " \
@@ -76,9 +87,8 @@ class Neo4jController:
         return nodes
 
     def get_degree(self):
-        query = "MATCH r = (n:USER)-[x]-() " \
-                "RETURN Count(x) as node_degree, n.login as name" \
-
+        query = "MATCH r = (n:USER)-[x]-(m:USER) " \
+                "RETURN Count(x) as node_degree, n.login as name"
         nodes = pd.DataFrame(self.graph.data(query))
         return nodes
 
@@ -115,7 +125,7 @@ class Neo4jController:
                  "n.community AS group, " \
                  "id(n) AS node_id"
 
-        query2 = "MATCH (a)-[r]->(b) " \
+        query2 = "MATCH (a:USER)-[r]->(b:USER) " \
                  "RETURN a.login AS source, " \
                  "b.login AS target, " \
                  "r.weight AS weight, " \
@@ -161,4 +171,3 @@ class Neo4jController:
 
         with open("Export/data.json", "w") as fp:
             json.dump(data, fp, indent="\t")
-
