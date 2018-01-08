@@ -1,0 +1,815 @@
+[	{
+		"id" : 58363929,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "This is not performance-critical and we don't have to implement this part in Bash, so I think it's best to keep this simple. Meaning: let's just make this redirect to `brew help update` instead of `brew --help` and let `brew help <command>` figure out where to get the help text from (so we have a single place that deals with fetching the help text).",
+		"created_at" : "2016-04-04T11:50:41Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58396296,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "Yeah, I guess, but this is a second faster, not even kidding. So it had some benefit. But if we move the help test into the files them selfs, this definitely needs to go.",
+		"created_at" : "2016-04-04T15:35:46Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58457569,
+		"user" : {
+			"login" : "bfontaine"
+		},
+		"body" : "How does this work with custom commands?",
+		"created_at" : "2016-04-04T22:07:08Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58457630,
+		"user" : {
+			"login" : "bfontaine"
+		},
+		"body" : "You might want to grep on `^#:` to ensure we don’t match e.g. strings that contain this pattern.",
+		"created_at" : "2016-04-04T22:07:35Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58457733,
+		"user" : {
+			"login" : "bfontaine"
+		},
+		"body" : "Also it might be better to include “clean” text right away rather than use `tr`/`sed` at display time.",
+		"created_at" : "2016-04-04T22:08:34Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58498827,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "I'd personally prefer `#/` but don't feel strongly.",
+		"created_at" : "2016-04-05T07:47:12Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58498997,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "I think it'd be good to pull this into `Library/bash/help.sh` and `source` it here.",
+		"created_at" : "2016-04-05T07:48:02Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58499558,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "I'm :-1: to handle help flag on bash script. It's a duplication of the ruby version and fails to provide any advantage. In addition, it makes `brew.sh` more complicate than it used to be.\r\n\r\nAt the same time, I'm :-1: to use grep/cut to read help message. feel a little code smell to me.\r\n\r\nWhy cannot we handle all of these in ruby library and store help message using proper string rather than comments.",
+		"created_at" : "2016-04-05T07:52:58Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58501751,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "To be more specifically, we could create `help_<commandname>` methods for each commands just like the way we implement each commands themselves. \r\n\r\nThen we could simply use `Homebrew.send \"help_#{cmd.to_s.tr(\"-\", \"_\").downcase}\"` to get the help message.",
+		"created_at" : "2016-04-05T08:11:06Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58502139,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "@xu-cheng We can pull it into another bash script. We're going to have to deal with providing help for shell command eventually.\r\n\r\n> Why cannot we handle all of these in ruby library and store help message using proper string rather than comments.\r\n\r\nMaybe we can but PRs for that sort of handling still feels like a long way off and we'll still need to handle Bash command help.",
+		"created_at" : "2016-04-05T08:14:49Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58502361,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "> We're going to have to deal with providing help for shell command eventually.\r\n\r\nFor shell command, we could just redirect them by `brew help <command>`. \r\n\r\nSorry but using comment to store string and then grep them out feels code smell to me.",
+		"created_at" : "2016-04-05T08:16:39Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58502570,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "I've seen it used on multiple projects in the past, for what that's worth, and it's a good way of using code comments and user comments in the same file to keep things easily in sync.",
+		"created_at" : "2016-04-05T08:18:19Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58530174,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "Keeping the documentation at the start of the file preceded by a “special” comment marker has the great benefit of being almost independent of the implementation language. Forcing this into a Ruby string (here doc) won't allow to put the documentation inside `cmd/update.sh`.\r\n\r\nAs for the actual logic that extracts the help text and displays the per-command help, I would prefer it to be implemented in Ruby (in `cmd/help.rb`), even if that comes with a small speed penalty. I think we want to stick with Ruby as our main implementation language and I don't think the benefits of implementing this in Bash are significant enough.",
+		"created_at" : "2016-04-05T12:40:04Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58530562,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "@maxnordlund mentioned he was using `#:` to make RuboCop happy, so I suspect `#/` raises some kind of warning? To me, both look equally readable and are thus fine.",
+		"created_at" : "2016-04-05T12:43:02Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58530762,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "Yeah, you're totally right. This should just pass through to allow external commands to handle help them selfs.",
+		"created_at" : "2016-04-05T12:44:34Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58531016,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "Yes, the `^#:` sounds better, but I think it's going to be very hard to add back the backticks in the markdown. So I'd rather strip them out here, and keep the documentation comment markdown to make the man page easier.",
+		"created_at" : "2016-04-05T12:46:18Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58531265,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "Yes, the rubocop for space after `#` doesn't complain for some special characters, see [leading_comment_space.rb](https://github.com/bbatsov/rubocop/blob/master/lib/rubocop/cop/style/leading_comment_space.rb#L17).",
+		"created_at" : "2016-04-05T12:48:05Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58531282,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "Yes, sounds good.",
+		"created_at" : "2016-04-05T12:48:15Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58531312,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "For bash command, I'm thinking to redirect help flag to `brew help <comand>`.\r\n\r\nIn long term, I think we will move to use `Command` class to handle command, which will provide not only help message, auto manpage(i.e. turn brew.1.md to brew.1.md.erb) but more importantly solving the problem of handling ARGV. ",
+		"created_at" : "2016-04-05T12:48:28Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58531899,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "That's a good question. Currently things like `brew <command> --help` or `brew --help <command>` are handled somewhat transparently by invoking the external command with `--help` as an argument, thus giving it a chance to display its own help text.",
+		"created_at" : "2016-04-05T12:52:59Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58532479,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "> Also it might be better to include “clean” text right away rather than use `tr`/`sed` at display time.\r\n\r\nI think the intention here is for this to be Markdown, so that we can still assemble a complete man page by stitching together the individual help texts. But for display via `brew help` we want to remove some of the markup to make it more readable.",
+		"created_at" : "2016-04-05T12:56:56Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58533296,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "> For bash command, I'm thinking to redirect help flag to `brew help <command>`.\r\n\r\nThat's totally fine and what I'm suggesting, too. But we still have to put the help text for a command, that is implemented in Bash, somewhere. And I think it would be preferable if it could live in the same file that also implements the command. The language-agnostic solution to do this is to put the documentation into a comment (as all languages relevant to us use/accept `#` as a comment character).",
+		"created_at" : "2016-04-05T13:02:40Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58534493,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "Yes, I could understand to put doc along side the implementation. However, by using comment we will face these problems:\r\n* Redundant. It introduces unnecessary IO and string manipulation. \r\n* Fragile. The extract logic won't be simple, hence it introduces possibility for outputting incorrect or bad format result. \r\n* Limit us to add actual comment in the head of file.\r\n* Limit us to dynamic process help string. If we were using ruby string, we could dynamic insert say version number or url based on OS.\r\n* It's not easy to access for other purpose, e.g. generating manpage. ",
+		"created_at" : "2016-04-05T13:11:11Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58534867,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "I can't agree that it's fragile at all. This logic is extremely simple and it's reading a single file so the overhead is almost non-existent.\r\n\r\n> It's not easy to access for other purpose, e.g. generating manpage.\r\n\r\nWhile it would be nice to do this: we're a long way off that point.\r\n",
+		"created_at" : "2016-04-05T13:14:04Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58534937,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "I think we can just silence this RuboCop warning and use `#/`.",
+		"created_at" : "2016-04-05T13:14:36Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58539566,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "In addition to what Mike said, with what I agree completely:\r\n\r\n> Limit us to add actual comment in the head of file.\r\n\r\nI don't think this is limiting us at all. Normal comments will continue to be `# <comment text>` (notice the space) instead of starting with `#:`, so there's no ambiguity there.\r\n\r\n> Limit us to dynamic process help string. If we were using ruby string, we could dynamic insert say version number or url based on OS.\r\n\r\nWhile this has the danger of creating yet another markup language, there's nothing stopping us from doing some simple replacements on patterns that are very unlikely to appear in the help text, e.g., `@OSX_RELEASE@` gets replaced with `10.11.4` or whatever the current value is.\r\n\r\n> It's not easy to access for other purpose, e.g. generating manpage.\r\n\r\nIt's actually very easy. We already do some processing in `brew man` for conversion to a proper man page and its HTML version. There's nothing stopping us from stitching together the Markdown from all `cmd/*.{rb,sh}` files and adding a header and footer in a preprocessing step.",
+		"created_at" : "2016-04-05T13:43:34Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58546724,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "OK, your guys have persuaded me that this is a good short term solution. But it has at least one shortage in long term, it stops us to support localization(I know no one is working on this because i18n need Ruby 2.0, just want to mention long term impact).",
+		"created_at" : "2016-04-05T14:24:38Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58553828,
+		"user" : {
+			"login" : "bfontaine"
+		},
+		"body" : "Yeah it’s a good *short-term* solution; long term we’ll probably use a class-based solution.\r\n\r\n> In long term, I think we will move to use `Command` class to handle command, which will provide not only help message, auto manpage(i.e. turn brew.1.md to brew.1.md.erb) but more importantly solving the problem of handling ARGV.\r\n\r\nAlso automatic Bash/Zsh/etc shell completion scripts generation.",
+		"created_at" : "2016-04-05T15:01:15Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58627167,
+		"user" : {
+			"login" : "bfontaine"
+		},
+		"body" : "I think you can skip this `else` altogether; no need to use `true` here.",
+		"created_at" : "2016-04-05T22:50:10Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58863732,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "This should not be there?",
+		"created_at" : "2016-04-07T12:40:52Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58863769,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "This should be:\r\n```\r\nif help_text.empty?\r\n  puts ARGV.usage\r\nelse\r\n  puts help_text\r\nend\r\nexit 0\r\n```",
+		"created_at" : "2016-04-07T12:41:13Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58863934,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "sub_ext is not available for Ruby 1.8.",
+		"created_at" : "2016-04-07T12:42:25Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58863961,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "Whoops, yeah I'll fix that right away.",
+		"created_at" : "2016-04-07T12:42:34Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58864011,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "Just use `cmd_path.read.split(\"\\n\"). ...`",
+		"created_at" : "2016-04-07T12:42:58Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58864041,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "No, because that would prevent external commands to handle `help` themselves.",
+		"created_at" : "2016-04-07T12:43:12Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58864179,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "Is there any good alternatives?",
+		"created_at" : "2016-04-07T12:44:19Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58864222,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "Oh, I see. But I would suggest to use `internal_cmd` as indicator.  ",
+		"created_at" : "2016-04-07T12:44:34Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58864428,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "You could just `HOMEBREW_LIBRARY_PATH/\"cmd/#{cmd}.sh\"`",
+		"created_at" : "2016-04-07T12:46:12Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58864743,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "Ah, that sounds good.",
+		"created_at" : "2016-04-07T12:48:36Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 58865846,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "OK, didn't know String had that :+1: ",
+		"created_at" : "2016-04-07T12:56:44Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59008376,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "I would prefer this to be called `help_for_command` (more descriptive, no unnecessary abbreviations).",
+		"created_at" : "2016-04-08T10:48:19Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59008520,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "This can be a bit simplified (reducing code duplication) by exploiting that Ruby's control structures are expressions:\r\n\r\n```ruby\r\ncmd_path = if File.exist?(HOMEBREW_LIBRARY_PATH/\"cmd/#{cmd}.sh\")\r\n  HOMEBREW_LIBRARY_PATH/\"cmd/#{cmd}.sh\"\r\nelsif ARGV.homebrew_developer? && File.exist?(HOMEBREW_LIBRARY_PATH/\"dev-cmd/#{cmd}.sh\")\r\n  HOMEBREW_LIBRARY_PATH/\"dev-cmd/#{cmd}.sh\"\r\nelsif File.exist?(HOMEBREW_LIBRARY_PATH/\"cmd/#{cmd}.rb\")\r\n  HOMEBREW_LIBRARY_PATH/\"cmd/#{cmd}.rb\"\r\nelsif ARGV.homebrew_developer? && File.exist?(HOMEBREW_LIBRARY_PATH/\"dev-cmd/#{cmd}.rb\")\r\n  HOMEBREW_LIBRARY_PATH/\"dev-cmd/#{cmd}.rb\"\r\nend\r\nreturn \"\" if cmd_path.nil?\r\n```",
+		"created_at" : "2016-04-08T10:50:06Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59008765,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "You should use internal_cmd as indicator. So I suggest:\r\n```\r\nif cmd.nil?\r\n  puts ARGV.usage\r\n  exit 0\r\nelsif internal_cmd\r\n  require \"cmd/help\"\r\n  puts Homebrew.help_cmd(cmd) || ARGV.usage\r\n  exit 0\r\nend\r\n```",
+		"created_at" : "2016-04-08T10:53:03Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59008868,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "I wonder if `.sub(/^  \\* /, \"\")` should be `.sub(/^  \\* /, \"brew \")` instead? Now we're getting, e.g.:\r\n\r\n```\r\n$ brew help cat\r\ncat <formula>:\r\n    Display the source to <formula>.\r\n```\r\n\r\n… and it feels a bit weird that there's no prefixed `brew` (while in the context of the man page it makes sense). One thing I'm not entirely sure about if that will create confusion for commands with aliases, e.g. printing `brew ls, list` instead of just `ls, list`.",
+		"created_at" : "2016-04-08T10:54:18Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59009091,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "I think it would be a good idea to make the canonical name (`link`) the first and list the aliases (`ln`) afterwards. Otherwise the order in the generated man page will be weird sometimes.",
+		"created_at" : "2016-04-08T10:57:21Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59009110,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "I think it would be a good idea to make the canonical name (`list`) the first and list the aliases (`ls`) afterwards. Otherwise the order in the generated man page will be weird sometimes.",
+		"created_at" : "2016-04-08T10:57:39Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59009143,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "This line and the line above seem to be misplaced and should be removed. Where did they come from?",
+		"created_at" : "2016-04-08T10:58:19Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59009218,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "I think it would be a good idea to make the canonical name (`uninstall`) the first and list the aliases (`rm`, `remove`) afterwards. Otherwise the order in the generated man page will be weird sometimes. (This is the command where this discrepancy is most obvious.)",
+		"created_at" : "2016-04-08T10:59:20Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59009331,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "Not sure where this first block is coming from, but it is duplicating the following two blocks and should probably be removed.",
+		"created_at" : "2016-04-08T11:00:16Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59009555,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "These changes fix a style mismatch, but they don't belong here. Please revert changes to this file. (They are fine as a separate PR.)",
+		"created_at" : "2016-04-08T11:02:42Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59009691,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "I wonder where this trailing `require \"keg\"` came from!? (Re-running `brew man` eliminated it for me.)",
+		"created_at" : "2016-04-08T11:04:19Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59009880,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "For now we're only generating one man page, so let's get rid of the variable `page` completely and substitute the literal `\"brew.1\"` in places where it's currently still used.",
+		"created_at" : "2016-04-08T11:06:43Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59009973,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "Let's make that more like below and exploit the fact that `SOURCE_PATH` is a `Pathname` object, i.e.:\r\n\r\n```ruby\r\ntarget_md = SOURCE_PATH/\"brew.1.md\"\r\ntarget_md.atomic_write(header + sub_commands + footer)\r\n```",
+		"created_at" : "2016-04-08T11:07:53Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59010199,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "That's a bit of a bike-shedding argument, but I'd prefer the files to be named `brew.1.header.md` and `brew.1.footer.md`. Also let's make better use of `Pathname` (our preferred way when working with paths):\r\n\r\n```ruby\r\nheader = (SOURCE_PATH/\"brew.1.header.md\").read\r\nfooter = (SOURCE_PATH/\"brew.1.footer.md\").read\r\n```",
+		"created_at" : "2016-04-08T11:10:32Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59010931,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "A bunch of things regarding this block:\r\n\r\n- I think we can safely shorten `sub_commands` to `commands`.\r\n- Make better use of the power of `Pathname`:\r\n  - `Pathname.glob(\"#{HOMEBREW_LIBRARY_PATH}/cmd/*.{rb,sh}\")` instead of `Dir[]` (also use `HOMEBREW_LIBRARY_PATH` instead of `HOMEBREW_REPOSITORY` for brevity; more explicit about which files we want to inspect).\r\n  - With this, `IO.read(source_file)` can become `source_file.read`.\r\n- For multi-line blocks we prefer `begin`/`end` instead of curly braces.\r\n- Personally, I think it doesn't hurt to split this block into multiple expressions, even if that means assigning the result multiple times. There's a tad bit too much going on in this expression.\r\n- I think we should be sorting via `sort_by { |source_file| source_file.basename.sub(/\\.(rb|sh)$/, \"\") }`, i.e. disregarding the file extension. Otherwise `tap-info` comes before `tap` and it should be the other way round.",
+		"created_at" : "2016-04-08T11:18:13Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59011232,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "Probably a good idea, but requires `help_cmd` to somehow handle the situation that an internal command might not have documentation yet (show the generic help text in this case?).",
+		"created_at" : "2016-04-08T11:21:54Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59011538,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"body" : "We could `puts Homebrew.help_cmd(cmd) || ARGV.usage`, i.e. make `help_cmd` return nil when not found.",
+		"created_at" : "2016-04-08T11:25:52Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59026534,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "No, because that only works for Ruby commands.",
+		"created_at" : "2016-04-08T13:47:24Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59028640,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "👍 ",
+		"created_at" : "2016-04-08T14:01:48Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59028717,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "I reckon you may be able to combine it with some of the existing internal command logic, too.",
+		"created_at" : "2016-04-08T14:02:08Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59028772,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "`.lines` does this",
+		"created_at" : "2016-04-08T14:02:22Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59028926,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "Could this not just be `map { |line| line.sub(/^#: /)`? Not sure I see what more is needed that that.",
+		"created_at" : "2016-04-08T14:03:27Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59029578,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "Could be worth unifying this logic with the one in `brew.rb` somehow.",
+		"created_at" : "2016-04-08T14:08:16Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59030150,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "> No, because that only works for Ruby commands.\r\n\r\nYou're right. We want that to work for *all* internal commands (those in `cmd/` and `dev-cmd/`), not just those implemented in Ruby. We still need to handle the case where a command is an internal command, but not (yet) documented. The code shouldn't skip them as those are not expected to handle the forwarded `--help` (and similar) flags, unlike external commands.",
+		"created_at" : "2016-04-08T14:11:35Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59030323,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "would be good to optimise this so the generated output doesn't change at all.",
+		"created_at" : "2016-04-08T14:12:47Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59030432,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "I mean `help.rb` but it probably wants to have some utility class instead.",
+		"created_at" : "2016-04-08T14:13:24Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59030587,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "I think it's nicer without the bullet points and the big number of backticks that we need to get the formatting of the man page right definitely feels off on the CLI.",
+		"created_at" : "2016-04-08T14:14:21Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59030765,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"body" : "Ok. Might be nice to have one set of \"strips\" per line and add comments explaining why on each one.",
+		"created_at" : "2016-04-08T14:15:30Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59115170,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "This currently creates a regression for undocumented internal commands, e.g., `brew help --cache` is treated as if `--cache` was an external command, effectively resulting in `brew --cache help`. I think this can be addressed by tweaking the output of `help_for_command` and how it affects what happens here:\r\n\r\n- Non-empty string: Documented internal command; show help text and exit.\r\n- Empty string: Undocumented internal command; show something like `No help available for <command>.` followed by generic help and exit.\r\n- `nil`: External command; continue execution and let external command handle the help flag.",
+		"created_at" : "2016-04-09T13:23:30Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59115177,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"body" : "That's a bit nitpicking, but I'd like to see this unrelated change completely reverted.",
+		"created_at" : "2016-04-09T13:24:38Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59135550,
+		"user" : {
+			"login" : "DomT4"
+		},
+		"body" : "This is no longer true. Only `SHA256` is printed now.",
+		"created_at" : "2016-04-10T15:04:41Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59138928,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "Nice, this is from the old man page, good that it gets an look through.",
+		"created_at" : "2016-04-10T18:46:36Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59139162,
+		"user" : {
+			"login" : "DomT4"
+		},
+		"body" : "Should be fixed there as well, really. I can do it but don't know if you'd prefer to just wrap that change into this PR?",
+		"created_at" : "2016-04-10T19:03:55Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	},
+	{
+		"id" : 59140101,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"body" : "It should be picked up by the `brew man` command, but I forgot to run it after this fix. Have done so now.\r\n\r\nIf there's anything else I guess it's easiest if you just fix it in master.",
+		"created_at" : "2016-04-10T19:52:47Z",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"pullreq_id": 10
+	}
+]

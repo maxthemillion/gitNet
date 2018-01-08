@@ -1,0 +1,354 @@
+[
+	{
+		"id" : 205024402,
+		"user" : {
+			"login" : "v1k0d3n"
+		},
+		"created_at" : "2016-04-03T18:19:50Z",
+		"body" : "ah ha! did the trick. i've been using home-brew for a long time, but i think i mixed up the order when running `brew doctor`. repaired permissions and _then_ ran `sudo chown -R $(whoami) /usr/local`. problem solved. thank you for the _gentle_ reminder :)",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 9
+	},
+	{
+		"id" : 205026385,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"created_at" : "2016-04-03T18:36:07Z",
+		"body" : "Thanks for looking into this! I think this TODO was actually meant that at some point we want to make `brew help <command>` and `brew <command> --help` work properly and consistently—and more importantly—show help specific to the given command instead of just printing an overview. What that means is that the TODO you found is, in my understanding, related to [this piece of code from `brew.rb`](https://github.com/Homebrew/brew/blob/fbc5fc3e92587b47ddd8d8a97eb8e3a138d72957/Library/brew.rb#L64-L81). Would you be interested in working on this?\r\n\r\nI'm not sure we want to take your contribution as-is, because it would make the output of `brew update --help` more useful, but unfortunately inconsistent with `brew help update`.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 205026578,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"created_at" : "2016-04-03T18:39:25Z",
+		"body" : "Ah, I see. I'll take a look at right away. It seems like it shouldn't be to hard. However, where should the help text live? In a bunch of small files, or in the man page? The latter will make this a bit tricky, but having a bunch of small files introduces a build step for the man page.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 205033839,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"created_at" : "2016-04-03T18:57:28Z",
+		"body" : "> Ah, I see. I'll take a look at right away.\r\n\r\nThanks! If you can come up with a good solution for this long-standing issue, that would be much appreciated! :heart: \r\n\r\n> However, where should the help text live? In a bunch of small files, or in the man page?\r\n\r\nThat's not easily answered, but ideally we'll find a solution that avoids duplicating the documentation (as separate pieces of documentation tend to diverge easily over time). Maybe you can ponder the different possible options and their pros/cons and present them here. I don't want to stop you, but it might also be a good idea to wait a little bit for other maintainer's opinions.\r\n\r\n> […], but having a bunch of small files introduces a build step for the man page.\r\n\r\nI don't think that's a major issue. We already use `brew man` to regenerate the man page and a corresponding HTML file from the Markdown version of the man page. A step that combines multiple smaller files into a single file could be added to that.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 205042667,
+		"user" : {
+			"login" : "apjanke"
+		},
+		"created_at" : "2016-04-03T19:47:24Z",
+		"body" : "I agree with Martin; I think we'd want to pass on this for now because of the `brew help update` vs `brew --help update` difference; as I understand, they're supposed to be identical. Thank you for the submission though!\r\n\r\n> That's not easily answered, but ideally we'll find a solution that avoids duplicating the documentation (as separate pieces of documentation tend to diverge easily over time).\r\n\r\nThis is a big question and I think it's tied to the need for better processing of command line options, where we'd like to be able to know which options are used by which commands, and provide completion help and feedback on unused/mistyped options.\r\n\r\nI think a good way to do this would be to add support for defining `brew` subcommands as Ruby objects, instead of simple Ruby functions or scripts (with back-compatibility wrappers for the current style of commands and external commands). They could have `helptext()`, `options()`, `summary()` methods, and so on. I think that's probably necessary as a central way of handling the different ways commands can already be implemented now, and need to continue to be supported due to the \"external command\" mechanism. I'm actually working on a proof-of-concept of one way to do this now.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 205047855,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"created_at" : "2016-04-03T20:26:28Z",
+		"body" : "So, I've implemented this properly, and currently regexping the brew.1.md file to do this. But for the long term this needs to live inside the commands, as you said.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 205196622,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"created_at" : "2016-04-04T08:37:40Z",
+		"body" : "I like that you're trying to make a start on subcommand help, well done. Rather that just trying to parse the manpage I think it may be worth having dedicated help perhaps in the file itself. The nicest pattern I've seen for that was using `#/` as comments at the top of the file and then reading those lines just with `grep` and `tr`.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 205262941,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"created_at" : "2016-04-04T11:55:36Z",
+		"body" : "As suggested by @bfontaine, we probably should reimplement our command system using `Command` class. i.e. make each internal command like:\r\n```ruby\r\nclass InstallCommand < Command\r\n  help <<-EOS.undent\r\n    ...\r\n  EOS\r\n\r\n  def run\r\n  end  \r\n  ...\r\nend\r\n```",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 205265794,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"created_at" : "2016-04-04T12:05:13Z",
+		"body" : "> Rather that just trying to parse the manpage I think it may be worth having dedicated help perhaps in the file itself. The nicest pattern I've seen for that was using `#/` as comments at the top of the file and then reading those lines just with `grep` and `tr`.\r\n\r\nI have to agree with Mike. I think this sounds like a nice pattern. It also keeps the help text close to the implementation, which should help with keeping the help text in sync with the code. It's initially a bit more work, as the individual parts of the man page need to be moved to the command files, but it sounds like this will pay off long term.\r\n\r\n@maxnordlund If you agree this is a sensible approach, can you maybe do that for a few commands so that we get a better idea of how the code could look like? That would also require some adjustments to `brew man` to make it assemble the complete Markdown man page from those individual snippets, then proceed to convert this generated file to `brew.1` and `brew.1.html`. If everyone is happy with how that looks, we could proceed to move the help texts for all commands.\r\n\r\n> As suggested by @bfontaine, we probably should reimplement our command system using Command class. i.e. make each internal command like:\r\n\r\nI think this is a good long-term goal, but what is being suggested here is much easier to implement and provides an immediate benefit. It can be modified further once we're ready to provide a better abstraction for our commands, and then moving those help texts into an `help <<-EOS.undent` block is no big deal.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 205381911,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"created_at" : "2016-04-04T16:34:30Z",
+		"body" : "So I've changed it to pull the help text from the top level comment, like @mikemcquaid suggested. It does look a lot nicer, that `sed` was a bit much :smile: \r\n\r\nI've also pulled out the help logic into `brew.sh` to make it snappy, and since I need to read the files anyway, it seemed simpler then doing it in ruby.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 205845183,
+		"user" : {
+			"login" : "apjanke"
+		},
+		"created_at" : "2016-04-05T14:57:15Z",
+		"body" : "This isn't a bad short-term solution, but I think a more robust class-based solution wouldn't be that hard. I've put together a proof-of-concept at #28 for comparison. It lets you define the subcommand help using DSL that looks like that of `Formula`, which might be a nice consistency for Homebrew.\r\n\r\n```\r\nclass ListBrewCmd < BrewCmdClass\r\n  summary \"List installed formulae, or files in installed formula\"\r\n  helptext <<EOS\r\n\r\nbrew list, ls - #{summary}\r\n\r\n  brew list [--full-name]\r\n  brew list --unbrewed\r\n  brew list [--versions [--multiple]] [--verbose] [--pinned] <formulae>\r\n\r\nOptions:\r\n  --full-name  Print fully-qualified formula names\r\n  --unbrewed   List all files in brew prefix not installed by Homebrew\r\n  --versions   Include formula version numbers\r\n  --multiple   Only show formulae with multiple versions installed\r\n  --pinned     Show versions of pinned formulae\r\nEOS\r\n\r\n  def run\r\n    Homebrew.list\r\n  end\r\nend\r\n\r\nmodule Homebrew\r\n  def list\r\n  # ... rest of command definition ...\r\n```\r\n\r\nHave a look and let me know what you think. It could also be expanded to incorporate the syntax discussed here if that's a significant win.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 205927943,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"created_at" : "2016-04-05T18:17:26Z",
+		"body" : "The biggest problem I foresee using a Ruby based approach is that it firmly treats shell based commands as secondary citizen. For external commands, this may not be a big problem iff they can handle help themselves. But as @apjanke said, if they ignore it and have side effects, it can turn south fast.\r\n\r\nI would like to keep the approach as consistent as possible, and having a special top level comment solves that quite neatly.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 205951318,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"created_at" : "2016-04-05T19:08:39Z",
+		"body" : "So I've rewritten into `help.sh`, which I think looks a lot nicer. The only thing left in `brew.sh` is a small normalization to make both `brew help foo` and `brew foo --help` go to `help.sh`.\r\n\r\nAfter thinking a bit more on the command class approach, it makes sense for making autocompletion work smoother, and some other goodies. It'll still make shell commands harder to write, but maybe that's a sacrifice we're willing to make?",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 206118155,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"created_at" : "2016-04-06T04:55:30Z",
+		"body" : ">  that it firmly treats shell based commands as secondary citizen.\r\n\r\nSorry, but shell based commands are the secondary citizen for Homebrew. We won't turn every piece of commands into bash. We only use it for special cases where we cannot use Ruby, like `update` and `install-vendor-ruby`(which will happen in the future). So even, I agree using comment is a good short term solution. I'm still :-1: to implement the logic in bash.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 206198315,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"created_at" : "2016-04-06T08:02:52Z",
+		"body" : "> I'm still  to implement the logic in bash.\r\n\r\nI agree broadly but there's a few command where I can see an argument for doing it in future for speed reasons e.g. `--prefix` with a formula argument or `cleanup` (which I suspect we can make a lot, lot faster than it is currently).",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 206859593,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"created_at" : "2016-04-07T12:32:35Z",
+		"body" : "I've moved back the logic into ruby, which I guess makes sense. But about shell commands being secondary citizen, you also have to think about external commands. If we want the handling of help to be shared with those as well, it makes a lot of sense (at least to me) to make it as language agnostic as possible. By having this comment syntax, ruby, shell and python are naturally covered.\r\n\r\nFor other language they can do something like:\r\n\r\n```c\r\n/**\r\n#:* `foo` [OPTIONS] [FILES]\r\n#:  ...\r\n*/\r\n```",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 206864868,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"created_at" : "2016-04-07T12:37:58Z",
+		"body" : "> you also have to think about external commands.\r\n\r\nFor external commands, the help flag should be handled by themselves as whatever they want. \r\n\r\nMore importantly, we should not introduce similar comment based help message to external command. Otherwise, this will become part of public API and I'm still considering this PR as short-term solution(i.e. it will change in the future). ",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 206917222,
+		"user" : {
+			"login" : "apjanke"
+		},
+		"created_at" : "2016-04-07T13:55:01Z",
+		"body" : "> ...external commands. If we want the handling of help to be shared with those as well, it makes a lot of sense (at least to me) to make it as language agnostic as possible.\r\n\r\nWe support all languages for external commands, including arbitrary executable binary files, and languages which don't use `#` as their comment character. Nothing that parses the command files themselves will support all languages. For the broadest support and to be truly language-agnostic, you'd treat the command file itself as opaque and put the metadata in an separate file or other location, which would work with any language.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 206969116,
+		"user" : {
+			"login" : "apjanke"
+		},
+		"created_at" : "2016-04-07T15:59:02Z",
+		"body" : "> More importantly, we should not introduce similar comment based help message to external command. Otherwise, this will become part of public API and I'm still considering this PR as short-term solution(i.e. it will change in the future).\r\n\r\nAgreed. That's my only major reservation; if we support it for external commands once, we're adding a new custom file format to our public API. Would rather not commit to supporting it permanently, or have a breaking change in the public API if we can see it coming and avoid it.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 206971202,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"created_at" : "2016-04-07T16:05:10Z",
+		"body" : "That's very true, I'm in the middle of moving the rest into comments, and when the time comes for something like #28 then it's super simple to refactor.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 207002234,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"created_at" : "2016-04-07T17:16:51Z",
+		"body" : "I've updated the `brew man` command to extract the sub commands' help from their files, and added the remaining top level comments, so this should be good to go pending review I think.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 207389830,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"created_at" : "2016-04-08T11:27:45Z",
+		"body" : "For manpage, I think instead of creating `header.md` and `footer.md`. How about making it `brew.1.md.erb`? So we will have one single file with the power of erb.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 207391778,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"created_at" : "2016-04-08T11:31:05Z",
+		"body" : "> I've updated the `brew man` command to extract the sub commands' help from their files, and added the remaining top level comments, so this should be good to go pending review I think.\r\n\r\nI added a whole lot of comments and would like to see them addressed, but most of them are minor and of stylistic nature. What that means: I like very much what I'm seeing! Good job thus far! I think we're getting close to the point where this can get merged.\r\n\r\nOne more thing I'd like to see you do before we finalize this: If you're comfortable working with `git` and rewriting history, could you please consolidate the commits as follows?\r\n\r\n- 1st commit: Actual code changes, i.e. primarily `Library/brew.rb`, `cmd/help.rb`, and `cmd/man.rb`.\r\n- 2nd commit: Moving help texts into individual files in `cmd/*.{rb,sh}` and minor adjustments to those.\r\n- 3rd commit: Add regenerated `brew.1.md`, `brew.1`, and `brew.1.html` after running `brew man`.\r\n\r\nDoes organizing things like this make sense to you?",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 207394327,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"created_at" : "2016-04-08T11:35:33Z",
+		"body" : "> How about making it `brew.1.md.erb`? So we will have one single file with the power of erb.\r\n\r\nI'm not opposing this suggestion, but I'm wondering whether we really need this added complexity. The current approach of a header and footer is certainly much easier to understand. Can you make a case that is more compelling than “one file instead of two”?",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 207395306,
+		"user" : {
+			"login" : "xu-cheng"
+		},
+		"created_at" : "2016-04-08T11:40:00Z",
+		"body" : "> Can you make a case that is more compelling than “one file instead of two”?\r\n\r\nMy thinking is it would make `brew.1.md.erb` more easy to read as it will show clear structure on how manpage is organized without reading the code of `brew man`. But sure, this can be done in a follow-up PR.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 207447936,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"created_at" : "2016-04-08T14:16:13Z",
+		"body" : "This is neat. As a random aside I'd still love to see us use `#/` because I've seen it used in multiple other projects, it reads a little nicer to me and I think it would be good to turn off that RuboCop warning anyway",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 207451693,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"created_at" : "2016-04-08T14:25:23Z",
+		"body" : "I've rebased and squashed a bit, and for the rest of the style comments, which I think are mostly good, they can be done in a follow up PR.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 207789863,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"created_at" : "2016-04-09T13:31:27Z",
+		"body" : "> I've rebased and squashed a bit, and for the rest of the style comments, which I think are mostly good, they can be done in a follow up PR.\r\n\r\nThanks, looking good! :+1: I'd like to see the regression that I pointed out in a code comment to be addressed, but otherwise I agree. Unless there's a very substantial veto from another maintainer, I'm intending to pull this as soon as the regression is addressed. (The work that has been done here is a significant improvement and I would strongly prefer to defer refinements to follow-up PRs.)",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 207803947,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"created_at" : "2016-04-09T15:04:52Z",
+		"body" : "I've fixed the regression now, just like @UniqMartin suggested.",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	},
+	{
+		"id" : 208071406,
+		"user" : {
+			"login" : "UniqMartin"
+		},
+		"created_at" : "2016-04-10T21:08:37Z",
+		"body" : "Merged in 10edfcd218daf522db5a9d43a368572441dc0b5a; also took the liberty to make some minor adjustments in 0382134cf87321166fb8f03223e21b1d242ad7cb and to squash your regression fix commit. Thanks a lot for your contribution to Homebrew, @maxnordlund! :tada:\r\n\r\nThe work you've done here is greatly appreciated and I'm happy you followed up on my suggestion to massively expand the scope of your original PR. Looking forward to see more contributions from you! :smile_cat:",
+		"owner" : "Homebrew",
+		"repo" : "brew",
+		"issue_id": 10
+	},
+	{
+		"id" : 208199157,
+		"user" : {
+			"login" : "mikemcquaid"
+		},
+		"created_at" : "2016-04-11T07:25:58Z",
+		"body" : "Great work here @maxnordlund :clap: ",
+		"owner" : "Homebrew",
+		"repo" : "brew",
+		"issue_id": 10
+	},
+	{
+		"id" : 208322088,
+		"user" : {
+			"login" : "maxnordlund"
+		},
+		"created_at" : "2016-04-11T12:45:38Z",
+		"body" : "Thanks, it's so much nicer to help when you receive some love :smile: ",
+		"repo" : "brew",
+		"owner" : "Homebrew",
+		"issue_id": 10
+	}
+]
