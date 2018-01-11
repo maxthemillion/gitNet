@@ -11,14 +11,14 @@ class Project:
 
     _export_folder = "Export/"
 
-    def __init__(self, pullreq_data, issue_data, owner, repo):
+    def __init__(self, pullreq_data, issue_data, commit_data, owner, repo):
 
         self.owner = owner
         self.repo = repo
 
         self._pullreq_data = pullreq_data
         self._issue_data = issue_data
-        # self._commit_data = commit_data
+        self._commit_data = commit_data
 
         self._threads = None
 
@@ -32,8 +32,8 @@ class Project:
 
     def run(self):
         self._threads = self._split_threads("pullreq") + \
-                        self._split_threads("issue")
-        # self._split_threads("commit")
+                        self._split_threads("issue") + \
+                        self._split_threads("commit")
 
         self.stats.add_participants(len(self._participants))
 
@@ -60,6 +60,8 @@ class Project:
             data = self._issue_data
         elif thread_type == "pullreq":
             data = self._pullreq_data
+        elif thread_type == "commit":
+            data = self._commit_data
         else:
             raise ValueError
 
@@ -75,12 +77,21 @@ class Project:
         while i < stop:
             next_thread = thread_ids.item(i)
             thread_data = data[data["thread_id"] == next_thread]
-            new_thread = Thread(thread_data, thread_type, self.stats, self)
-            new_thread.run()
-            if thread_list:
-                thread_list.append(new_thread)
+
+            if thread_type in ["pullreq", "commit"]:
+
+                positions = thread_data["position"].unique()
+                for pos in positions:
+                    thread_position_data = thread_data[thread_data["position"] == pos]
+                    new_thread = Thread(thread_position_data, thread_type, self.stats, self)
+                    new_thread.run()
+                    thread_list.append(new_thread)
+
             else:
-                thread_list = [new_thread]
+                new_thread = Thread(thread_data, thread_type, self.stats, self)
+                new_thread.run()
+                thread_list.append(new_thread)
+
             i = i + 1
 
         print("time required:       {0:.2f}s".format(time.process_time()-proc_time_start))

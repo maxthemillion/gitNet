@@ -27,7 +27,6 @@ def main():
     #    neo_controller.export_graphjson()
 
     collectors.analyze_invalid_refs()
-
     collectors.analyze_position_nan()
 
     print("------------------------------------------")
@@ -56,9 +55,9 @@ def split_projects(owner, repos):
         project_pullreq_data = pullreq_data[pullreq_data["repo"] == repo]
         project_issue_data = issue_data[issue_data["repo"] == repo]
 
-        Project(project_pullreq_data, project_issue_data, owner, repo).run()
-
-        # TODO: implement support for commit data
+        # TODO: feed the correct commit data to the project constructor
+        # at the moment, dummy data (the same data for each repository) is being used
+        Project(project_pullreq_data, project_issue_data, commit_data, owner, repo).run()
 
         print("time required:                {0:.2f}s".format(time.process_time() - proc_time_start))
         print()
@@ -139,6 +138,8 @@ def date_filter(data):
 
 def rename_cols(data):
 
+    # TODO: find another name for thread_id
+    # the name thread_id is incorrect as for cc and pc threads have to be split futher by position. Fi
     column_names = data.columns
     if "pullreq_id" in column_names:
         data = data.rename(index=str, columns={"pullreq_id": "thread_id"})
