@@ -2,8 +2,10 @@ from references import Mention, Quote, ContextualReply
 import collectors
 import conf
 
+
 class Thread:
     """contains a pull request communication thread and its thread analytics"""
+
     def __init__(self, thread_data, thread_type, project_stats, parent_project):
 
         self._thread_data = thread_data.sort_values(by="id", axis="rows", ascending=True)
@@ -68,7 +70,7 @@ class Thread:
         if i >= 2 and s[i - 2:i] == "\r\n":
             return True
         elif i >= 1 and s[i - 1:i] == ">":
-            return Thread._is_quote(s, i-1)
+            return Thread._is_quote(s, i - 1)
         elif i == 0:
             return True
         else:
@@ -86,13 +88,13 @@ class Thread:
             cleared_md_list = md_list
         else:
             for i in range(1, len(md_list)):
-                if md_list[i] - md_list[i-1] > distance:
+                if md_list[i] - md_list[i - 1] > distance:
                     if cleared_md_list:
-                        cleared_md_list.append(md_list[i-1])
+                        cleared_md_list.append(md_list[i - 1])
                     else:
-                        cleared_md_list = [md_list[i-1]]
+                        cleared_md_list = [md_list[i - 1]]
 
-            cleared_md_list.append(md_list[len(md_list)-1])
+            cleared_md_list.append(md_list[len(md_list) - 1])
         return cleared_md_list
 
     def _detect_mentions_in_row(self, row):
@@ -169,7 +171,7 @@ class Thread:
 
             u_prev = self.owner
             if r > 0:
-                u_prev = comment_sequence[r-1]
+                u_prev = comment_sequence[r - 1]
 
             u_current = comment_sequence[r]
 
@@ -310,8 +312,8 @@ class Thread:
         """find the position in s where the username ends. a username ends with one of the
         characters in char_list or with the comment end"""
         char_list = {' ', "'", '.', '@', '`', ',', "!", "?",
-                      "(", ")", "{", "}", "[", "]", "/",
-                      "\\", "\"", "\n", "\t", "\r"}
+                     "(", ")", "{", "}", "[", "]", "/",
+                     "\\", "\"", "\n", "\t", "\r"}
         ind = next((i for i, ch in enumerate(s) if ch in char_list and i > start_pos + 1), len(s))
         return ind
 

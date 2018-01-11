@@ -11,29 +11,22 @@ class Project:
 
     _export_folder = "Export/"
 
-    def __init__(self, pullreq_data, issue_data):
+    def __init__(self, pullreq_data, issue_data, owner, repo):
 
-        # TODO: shift these asserts to unit tests
-        assert len(pullreq_data["repo"].unique()) is 1
-        assert len(issue_data["repo"].unique()) is 1
-        assert issue_data["repo"].at[0] == pullreq_data["repo"].at[0]
+        self.owner = owner
+        self.repo = repo
 
-        assert len(issue_data["owner"].unique()) is 1
-        assert len(pullreq_data["repo"].unique()) is 1
-        assert issue_data["owner"].at[0] == pullreq_data["owner"].at[0]
-
-        self.owner = pullreq_data["owner"].at[0]
-        self.repo = pullreq_data["repo"].at[0]
-
-        self._pullreq_data = self._clean_input(pullreq_data)
-        self._issue_data = self._clean_input(issue_data)
-        # self._commit_data =
+        self._pullreq_data = pullreq_data
+        self._issue_data = issue_data
+        # self._commit_data = commit_data
 
         self._threads = None
 
         self._references = None
         self._participants = pd.DataFrame(pd.concat([self._pullreq_data["user"].str.lower(),
-                                       self._issue_data["user"].str.lower()]).unique(), columns=["participants"])
+                                                     self._issue_data["user"].str.lower()])
+                                          .unique(),
+                                          columns=["participants"])
 
         self.stats = ProjectStats(self)
 
@@ -49,6 +42,7 @@ class Project:
         if conf.neo4j_import:
             controller = Neo4jController()
             controller.import_project(self._references, self._participants, self.owner, self.repo)
+            # TODO: pass the thread type when exporting
 
         self.stats.print_summary()
 
@@ -105,57 +99,6 @@ class Project:
 
         ref_df = pd.DataFrame(refs)
         return ref_df
-
-    # -------- data cleaning -------
-    @staticmethod
-    def _clean_input(data):
-        """removes remaining artifacts originating in the MongoDB data structure"""
-        if type(data["user"].iloc[1]) is dict:
-            for index, row in data.iterrows():
-                data.at[index, "user"] = row["user"].get('login')
-
-        data["user"] = data["user"].str.lower()
-
-        # TODO: do this upon data import!
-        # TODO: pass the thread type when exporting
-        column_names = data.columns
-        if "pullreq_id" in column_names:
-            data = data.rename(index=str, columns={"pullreq_id": "thread_id"})
-        elif "issue_id" in column_names:
-            data = data.rename(index=str, columns={"issue_id": "thread_id"})
-        elif "commit_id" in column_names:
-            data = data.rename(index=str, columns={"commit_id": "thread_id"})
-
-        return data
-
-    # -------- data export --------
-    def _export_project(self):
-        """exports references from all threads of the project."""
-
-        print("start exporting project")
-        proc_time_start = time.process_time()
-
-        ref_df = self._references
-        part_df = self._participants
-
-        # export the references
-        # this is also a prerequisite for the export to Neo4j
-        # filename = "references_export.csv"
-        # ref_df.to_csv(path_or_buf=self._export_folder + filename, sep=";", index=False, header=True)
-
-        # export participants
-        # filename = "participants_export.csv"
-        # part_df["participants"].to_csv(self._export_folder + filename, sep=";", index=False, header=True)
-
-        print("time required:       {0:.2f}s".format(time.process_time()-proc_time_start))
-        print()
-
-    def export_raw_data(self, filename=None):
-        """exports the raw_data DataFrame for control purposes"""
-        if filename is None:
-            filename = "raw_data_export.csv"
-
-        self._raw_data.to_csv(path_or_buf=self._export_folder + filename, sep=";")
 
 
 class ProjectStats:
@@ -231,9 +174,7 @@ class ProjectStats:
         else:
             share_mentions_valid = -999
 
-        print("---------------------------------")
-        print("Project Stats Summary")
-        print("---------------------------------")
+        print("### Project Stats Summary ###")
         print()
         print("project name:                    {0}/{1}".format(self._parent_project.owner, self._parent_project.repo))
         print()

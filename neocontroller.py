@@ -13,7 +13,7 @@ class Neo4jController:
         query = "MATCH (n) DETACH DELETE n"
         self.graph.run(query)
 
-    def import_project(self, ref_df, node_df, repo, owner):
+    def import_project(self, ref_df, node_df, owner, repo):
         merge_ref = '''MERGE (a:USER{login:$l_login_a})
                     MERGE (b:USER{login:$l_login_b})
                     WITH a, b
