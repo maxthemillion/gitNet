@@ -2,6 +2,7 @@ from py2neo import Graph
 import json
 import pandas as pd
 import warnings
+import conf
 
 
 class Neo4jController:
@@ -10,14 +11,26 @@ class Neo4jController:
         # TODO: collect paths as object attributes
 
     def clear_db(self):
-        query = "MATCH (n) DETACH DELETE n"
-        self.graph.run(query)
+        if conf.neo4j_clear_on_startup:
+            print("clearing neo4j database")
+            print()
+
+            query = "MATCH (n) DETACH DELETE n"
+            self.graph.run(query)
 
     def import_project(self, ref_df, node_df, owner, repo):
+        if not conf.neo4j_import:
+            return
+
         merge_ref = '''MERGE (a:USER{login:$l_login_a})
                     MERGE (b:USER{login:$l_login_b})
                     WITH a, b
-                    CALL apoc.create.relationship(a, $l_ref_type, {weight: $l_weight, timestamp:$l_timestamp}, b)
+                    CALL apoc.create.relationship(a, $l_ref_type, 
+                            {weight: $l_weight, 
+                            timestamp:$l_timestamp, 
+                            owner: $l_owner,
+                            repo: $l_repo
+                            }, b)
                     YIELD rel
                     RETURN rel'''
 
@@ -28,7 +41,9 @@ class Neo4jController:
                                                'l_login_b': row['addressee'],
                                                'l_ref_type': row['ref_type'],
                                                'l_weight': 1,
-                                               'l_timestamp': row['timestamp'].strftime("%Y-%m-%dT%H:%M:%S%Z")})
+                                               'l_timestamp': row['timestamp'].strftime("%Y-%m-%dT%H:%M:%S%Z"),
+                                               'l_owner': owner,
+                                               'l_repo': repo})
             if (index + 1) % 10000 == 0:
                 tx.commit()
                 warnings.warn("batch commit to neo4j at " + index)
@@ -57,34 +72,13 @@ class Neo4jController:
 
     def get_communities(self):
 
-        cut_val = 10
         query = "MATCH (n:USER) " \
                 "WITH COUNT(n.community) AS count, n.community as community  " \
                 "WHERE count > 1 " \
                 "RETURN count, community " \
                 "ORDER BY count DESC"
 
-        communities = pd.DataFrame(self.graph.data(query))
-        communities = communities[communities["count"] > cut_val]
-
-        return communities
-
-    def get_high_degree_nodes(self):
-        # TODO: Check this query! Does it deliver what you expect?
-        # From each group, get the node with the highest degree.
-        # cut_val = 10
-        query = "MATCH r = (n:USER)-[x]-(m:USER) " \
-                "WITH Count(x) as node_degree, n " \
-                "ORDER BY n.community, node_degree DESC " \
-                "WITH n.community AS group, Collect(n)[..1] as topNodes " \
-                "UNWIND topNodes as n2 " \
-                "MATCH (n2)-[x]-() " \
-                "RETURN n2.login AS name, n2.community as group, Count(x) AS n_degree " \
-                "ORDER BY n_degree DESC "
-
-        nodes = pd.DataFrame(self.graph.data(query))
-        # nodes = nodes[nodes["n_degree"] > cut_val]
-        return nodes
+        return pd.DataFrame(self.graph.data(query))
 
     def get_degree(self):
         query = "MATCH r = (n:USER)-[x]-(m:USER) " \
@@ -119,55 +113,63 @@ class Neo4jController:
                 return index
 
     def export_graphjson(self):
-        print("exporting data in graphJSON format...")
-        query1 = "MATCH (n:USER) " \
-                 "RETURN n.login AS id, " \
-                 "n.community AS group, " \
-                 "id(n) AS node_id"
 
-        query2 = "MATCH (a:USER)-[r]->(b:USER) " \
-                 "RETURN a.login AS source, " \
-                 "b.login AS target, " \
-                 "r.weight AS weight, " \
-                 "type(r) as rel_type, " \
-                 "r.timestamp as timestamp, " \
-                 "id(r) AS link_id"
+        for e in conf.neo4j_export_json_pnames:
 
-        nodes = self.graph.data(query1)
+            repo = e["repo"]
+            owner = e["owner"]
 
-        communities = self.get_communities()
-        num_no_community = len(communities) + 1
+            print("exporting data in graphJSON format for {0}/{1}".format(owner, repo))
 
-        high_degree_nodes = self.get_high_degree_nodes()
-        node_degree = self.get_degree()
+            # get all users who are attributed to owner/repo
+            node_query = """MATCH (o:OWNER{name: $l_owner}) -- (r:REPO{ name: $l_repo })
+                            WITH r
+                            MATCH (r) -- (u:USER)
+                            RETURN u.login AS id, 
+                            id(u) AS node_id"""
+            #               u.community AS group,
 
-        for node in nodes:
-            if node["group"] in communities["community"].values:
-                idx = communities[communities["community"] == node["group"]].index[0]
-                node["group"] = int(idx)
-                node["hasGroup"] = True
-            else:
-                node["group"] = num_no_community
-                node["hasGroup"] = False
+            link_query = """MATCH (o:OWNER{name: $l_owner}) -- (r:REPO{ name: $l_repo })
+                            WITH r
+                            MATCH (r) -- (u1:USER)
+                            WITH u1
+                            MATCH (u1) -[x:Mention|Quote|ContextualReply{owner: $l_owner, repo: $l_repo}]- (u2:USER)
+                            RETURN u1.login AS source,
+                            u2.login AS target,
+                            x.weight AS weight,
+                            type(x) AS rel_type,
+                            x.timestamp AS timestamp,
+                            id(x) AS link_id"""
 
-            if node["id"] in node_degree["name"].values:
-                idx = node_degree[node_degree["name"] == node["id"]].index[0]
-                node["degree_py"] = int(node_degree["node_degree"].iloc[idx])
-            else:
-                node["degree_py"] = 0
+            nodes = self.graph.data(node_query, parameters={'l_owner': owner, 'l_repo': repo})
 
-            if node["id"] in high_degree_nodes["name"].values:
-                node["highestDegreeInGroup"] = True
-            else:
-                node["highestDegreeInGroup"] = False
+            # communities = self.get_communities()
+            # num_no_community = len(communities) + 1
 
-        links = self.graph.data(query2)
-        for link in links:
-            link["weight"] = int(link["weight"])  # TODO: find the cause for weight being a string
-            # link["source"] = self.find_id(link["source"], nodes)
-            # link["target"] = self.find_id(link["target"], nodes)
+            node_degree = self.get_degree()
 
-        data = {"nodes": nodes, "links": links}
+            for node in nodes:
+                # if node["group"] in communities["community"].values:
+                #   idx = communities[communities["community"] == node["group"]].index[0]
+                #   node["group"] = int(idx)
+                #   node["hasGroup"] = True
+                # else:
+                #   node["group"] = num_no_community
+                #   node["hasGroup"] = False
 
-        with open("Export/data.json", "w") as fp:
-            json.dump(data, fp, indent="\t")
+                if node["id"] in node_degree["name"].values:
+                    idx = node_degree[node_degree["name"] == node["id"]].index[0]
+                    node["degree_py"] = int(node_degree["node_degree"].iloc[idx])
+                else:
+                    node["degree_py"] = 0
+
+            links = self.graph.data(link_query, parameters={'l_owner': owner, 'l_repo': repo})
+            for link in links:
+                link["weight"] = int(link["weight"])  # TODO: find the cause for weight being a string
+
+            info = [{'owner': owner, 'repo': repo}]
+
+            data = {"info": info, "nodes": nodes, "links": links}
+
+            with open("Export/viz/data_{0}_{1}.json".format(owner, repo), "w") as fp:
+                json.dump(data, fp, indent="\t")

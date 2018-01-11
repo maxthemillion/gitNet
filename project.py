@@ -39,10 +39,10 @@ class Project:
 
         self._references = self._collect_references()
 
-        if conf.neo4j_import:
-            controller = Neo4jController()
-            controller.import_project(self._references, self._participants, self.owner, self.repo)
-            # TODO: pass the thread type when exporting
+        controller = Neo4jController()
+        controller.import_project(self._references, self._participants, self.owner, self.repo)
+
+        # TODO: pass the thread type when exporting
 
         self.stats.print_summary()
 

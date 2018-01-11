@@ -10,24 +10,21 @@ import json
 
 def main():
     neo_controller = Neo4jController()
-
-    if conf.neo4j_clear_on_startup:
-        print("clearing neo4j database")
-        print()
-        neo_controller.clear_db()
+    neo_controller.clear_db()
 
     if conf.run_analysis:
         run_analysis()
 
-    # TODO: doesn't make sense here anymore
+    # TODO: doesn't make sense here anymore. move to neo_controller.
     # if conf.neo4j_run_louvain:
     #     neo_controller.run_louvain()
 
-    # if conf.neo4j_export_json:
-    #    neo_controller.export_graphjson()
+    neo_controller.export_graphjson()
 
     collectors.analyze_invalid_refs()
     collectors.analyze_position_nan()
+
+
 
     print("------------------------------------------")
     print("Total process time elapsed:        {0:.2f}s".format(time.process_time()))
