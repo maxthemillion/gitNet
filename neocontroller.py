@@ -107,11 +107,6 @@ class Neo4jController:
         print("Complete!")
         print()
 
-    def find_id(self, id, nodes):
-        for index, node in enumerate(nodes):
-            if node["node_id"] == id:
-                return index
-
     def export_graphjson(self):
 
         for e in conf.neo4j_export_json_pnames:
@@ -125,17 +120,18 @@ class Neo4jController:
             node_query = """MATCH (o:OWNER{name: $l_owner}) -- (r:REPO{ name: $l_repo })
                             WITH r
                             MATCH (r) -- (u:USER)
-                            RETURN u.login AS id, 
-                            id(u) AS node_id"""
+                            RETURN
+                            id(u) AS id"""
             #               u.community AS group,
+            #               u.login AS name
 
             link_query = """MATCH (o:OWNER{name: $l_owner}) -- (r:REPO{ name: $l_repo })
                             WITH r
                             MATCH (r) -- (u1:USER)
                             WITH u1
                             MATCH (u1) -[x:Mention|Quote|ContextualReply{owner: $l_owner, repo: $l_repo}]- (u2:USER)
-                            RETURN u1.login AS source,
-                            u2.login AS target,
+                            RETURN id(u1) AS source,
+                            id(u2) AS target,
                             x.weight AS weight,
                             type(x) AS rel_type,
                             x.timestamp AS timestamp,
