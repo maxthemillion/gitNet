@@ -3,6 +3,33 @@ from project import Project, ProjectStats
 from references import Mention, Quote, ContextualReply
 import pandas as pd
 from threads import Thread
+import json
+from main import clean_data
+
+
+def setup_sample_threads():
+    with open("TestData/syn_data.json") as d:
+        syn_data = json.load(d)
+
+    pc = pd.DataFrame(syn_data['pc'])
+    ic = pd.DataFrame(syn_data['ic'])
+    cc = pd.DataFrame(syn_data['cc'])
+
+    pc, ic, cc = clean_data(pc, ic, cc)
+
+    fake_project = Project(pc, ic, cc, "fooOwner", "fooRepo")
+    return fake_project._split_threads("issue")
+
+
+def setup_sample_data():
+    with open("TestData/syn_data.json") as d:
+        syn_data = json.load(d)
+
+    pc = pd.DataFrame(syn_data['pc'])
+    ic = pd.DataFrame(syn_data['ic'])
+    cc = pd.DataFrame(syn_data['cc'])
+
+    return clean_data(pc, ic, cc)
 
 
 class StringSearch(unittest.TestCase):
@@ -53,33 +80,9 @@ class StringSearch(unittest.TestCase):
             self.assertTrue(result == expected_results[i], "Test failed with i = {0}".format(i))
 
 
-class DataCleaning(unittest.TestCase):
-    def setUp(self):
-        self.fake_pullreq_data = pd.DataFrame(pd.read_json("TestData/test_pullreq_data.json"))
-        self.fake_issue_data = pd.DataFrame(pd.read_json("TestData/test_issue_data.json"))
-
-    def test_data_cleaning_column_names(self):
-        data = Project._clean_input(self.fake_pullreq_data)
-        self.assertTrue("thread_id" in data.columns)
-        self.assertFalse("pullreq_id" in data.columns)
-        self.assertFalse("issue_id" in data.columns)
-        self.assertFalse("commit_id" in data.columns)
-
-        self.assertTrue("repo" in data.columns)
-        self.assertTrue("owner" in data.columns)
-        self.assertTrue("user" in data.columns)
-        self.assertTrue("created_at" in data.columns)
-        self.assertTrue("id" in data.columns)
-
-        self.assertTrue(len(data.columns) == 7)
-
-
 class MentionsDetectionOutputTests(unittest.TestCase):
     def setUp(self):
-        fake_pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_pullreq_data.json"))
-        fake_issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_issue_data.json"))
-        fake_project = Project(fake_pullreq_data, fake_issue_data)
-        fake_issue_thread_list = fake_project._split_threads("issue")
+        fake_issue_thread_list = setup_sample_threads()
 
         fakeuser1 = "fakeuser1"
         self.fake_comment_id = 9999
@@ -116,10 +119,7 @@ class MentionsDetectionOutputTests(unittest.TestCase):
 
 class MentionsDetectionFindMentions(unittest.TestCase):
     def setUp(self):
-        fake_pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_pullreq_data.json"))
-        fake_issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_issue_data.json"))
-        dummy_project = Project(fake_pullreq_data, fake_issue_data)
-        dummy_issue_thread_list = dummy_project._split_threads("issue")
+        dummy_issue_thread_list = setup_sample_threads()
         self.dummy_thread = dummy_issue_thread_list[0]
 
         fakeuser1 = "fakeuser1"
@@ -187,10 +187,10 @@ class MentionsDetectionFindMentions(unittest.TestCase):
 
 class QuoteDetectionFindQuotes(unittest.TestCase):
     def setUp(self):
-        test_issue_data = pd.DataFrame(pd.read_json("TestData/test_issue_data.json"))
-        test_pullreq_data = pd.DataFrame(pd.read_json("TestData/test_pullreq_data.json"))
 
-        self.new_project = Project(test_pullreq_data, test_issue_data)
+        pc, ic, cc = setup_sample_data()
+
+        self.new_project = Project(pc, ic, cc, "fooOwner", "fooRepo")
         self.thread_list = self.new_project._split_threads("issue")
 
         self.thread_with_quotes = self.thread_list[1]
@@ -258,10 +258,9 @@ class QuoteDetectionFindQuotes(unittest.TestCase):
 
 class QuoteDetectionSourceQuotes(unittest.TestCase):
     def setUp(self):
-        test_issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_issue_data.json"))
-        test_pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_pullreq_data.json"))
+        pc, ic, cc = setup_sample_data()
 
-        self.new_project = Project(test_pullreq_data, test_issue_data)
+        self.new_project = Project(pc, ic, cc, "fooOwner", "fooRepo")
         self.thread_list = self.new_project._split_threads("issue")
 
         self.thread_with_quotes = self.thread_list[0]
@@ -329,11 +328,7 @@ class QuoteDetectionClearMarkdownList(unittest.TestCase):
 
 class ContextualsDetectionOutputTests(unittest.TestCase):
     def setUp(self):
-        fake_pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_pullreq_data.json"))
-        fake_issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_issue_data.json"))
-        fake_project = Project(fake_pullreq_data, fake_issue_data)
-        fake_issue_thread_list = fake_project._split_threads("issue")
-
+        fake_issue_thread_list  = setup_sample_threads()
         self.thread = fake_issue_thread_list[0]
 
     def test_contextuals_detection_output_type(self):
@@ -347,23 +342,11 @@ class ContextualsDetectionOutputTests(unittest.TestCase):
 
 class ContextualsDetectionFindContextuals(unittest.TestCase):
     def setUp(self):
-        fake_pullreq_data = pd.DataFrame(pd.read_json("TestData/synthetic_pullreq_data.json"))
-        fake_issue_data = pd.DataFrame(pd.read_json("TestData/synthetic_issue_data.json"))
-        fake_project = Project(fake_pullreq_data, fake_issue_data)
-        fake_issue_thread_list = fake_project._split_threads("issue")
+
+        fake_issue_thread_list = setup_sample_threads()
 
         self.thread1 = fake_issue_thread_list[0]
         self.thread2 = fake_issue_thread_list[1]
-
-    def test_contextuals_detection_in_thread1_simple(self):
-        # don't consider coexisting mentions and quotes
-        contextuals = self.thread1._detect_contextuals([], [], [], [])
-        self.assertEqual(len(contextuals), 4)
-
-    def test_contextuals_detection_in_thread2_simple(self):
-        # don't consider coexisting mentions and quotes
-        contextuals = self.thread2._detect_contextuals([], [], [], [])
-        self.assertEqual(len(contextuals), 6)
 
     def test_contextuals_detection_in_thread1_with_quotes_and_mentions(self):
         self.assertTrue(False)
@@ -383,10 +366,10 @@ class ConsolidateReferences(unittest.TestCase):
 
 class FindReferencesRelaxed(unittest.TestCase):
     def setUp(self):
-        test_issue_data = pd.DataFrame(pd.read_json("TestData/test_issue_data.json"))
-        test_pullreq_data = pd.DataFrame(pd.read_json("TestData/test_pullreq_data.json"))
 
-        new_project = Project(test_pullreq_data, test_issue_data)
+        pc, ic, cc = setup_sample_data()
+
+        new_project = Project(pc, ic, cc, "fooOwner", "fooRepo")
         thread_list = new_project._split_threads("issue")
         sample_thread1 = thread_list[0]
         sample_thread2 = thread_list[1]

@@ -1,0 +1,1105 @@
+{
+	"ic": [
+		{
+			"id": 235901493,
+			"user": {
+				"login": "brutalcrozt"
+			},
+			"created_at": "2016-07-28T13:55:38Z",
+			"body": "Hi i am new comer, but is this [spec](https://dev.w3.org/SVG/modules/renderorder/SVGRenderOrder.html) can be implement?",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 252
+		},
+		{
+			"id": 235903221,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2016-07-28T14:01:29Z",
+			"body": "@brutalcrozt That is dependent on your browser, not D3, which just manipulates the DOM. Also the latest spec is [SVG 2\u2019s z-index property](https://www.w3.org/TR/SVG2/render.html#ZIndexProperty).",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 252
+		},
+		{
+			"id": 226988829,
+			"user": {
+				"login": "timiyay"
+			},
+			"created_at": "2016-06-19T09:54:28Z",
+			"body": "I am currently in the midst of this issue, and I find the use of `.attr()` to be unclear.\r\n\r\nMy use case is using an external `<image>` tag as a `<pattern>`, which is use the fill a `<path>`.\r\n\r\nI try using `attr()` to set the `image.href` like so:\r\n\r\n```js\r\nimageSelection.attr({ 'xlink:href': myUrl })\r\n```\r\n\r\nHowever, the resulting markup only has `<image href=\"myUrl\">` - the `xlink` namespace is dropped.\r\n\r\nWhile this doesn't affect the SVG in the browser, it breaks down when trying to do other stuff like:  \r\n\r\n* pre-render SVGs on the server, and convert them to JPG / PNG\r\n* embed the SVGs inside PDFs\r\n\r\nD3 being the brilliant library that it is, I have no doubt the functionality I need is in there somewhere. I'm not finding it intuitive, and would love some help from folks around this issue.",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 291
+		},
+		{
+			"id": 227010529,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2016-06-19T17:48:24Z",
+			"body": "The extra semicolon tricks D3 into calling:\r\n\r\n```js\r\nelement.setAttribute(\"xlink:href\", url);\r\n```\r\n\r\ninstead of use the correct namespaced attribute, which is:\r\n\r\n```js\r\nelement.setAttributeNS(\"http://www.w3.org/1999/xlink\", \"href\", url);\r\n```\r\n\r\nI suppose that\u2019s a reasonable hack to workaround shortcomings in a server-based DOM implementation that doesn\u2019t support namespaced attributes in SVG. But there\u2019s no guarantee that will continue to work in future D3 releases.",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 291
+		},
+		{
+			"id": 224049568,
+			"user": {
+				"login": "ericmiao"
+			},
+			"created_at": "2016-06-06T18:41:59Z",
+			"body": "Really appreciate the effort here from cpettitt, webgraphviz, webcola, klayjs, ... etc.\r\n\r\nCan I ask what is the latest status? There seem to be many excellent solutions here with external code base, yet I'd really like to see d3 to have its own layout engine to cover this, either from one of these solutions or come up with its own, I don't mind using any of these, as long as it's well integrated.\r\n\r\nIs there any plan for this? Anyone tried to send @mbostock any git pull? Or @mbostock has any concerns or ideas of any better alternative?",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 349
+		},
+		{
+			"id": 226687325,
+			"user": {
+				"login": "testn"
+			},
+			"created_at": "2016-06-17T06:01:41Z",
+			"body": "I also came across https://github.com/mstefaniuk/graph-viz-d3-js",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 349
+		},
+		{
+			"id": 13395983,
+			"user": {
+				"login": "aogriffiths"
+			},
+			"created_at": "2013-02-11T18:54:04Z",
+			"body": "+1 I would find this useful.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 399
+		},
+		{
+			"id": 13407150,
+			"user": {
+				"login": "aogriffiths"
+			},
+			"created_at": "2013-02-11T22:28:59Z",
+			"body": "How about something like this?\r\n```js\r\n d3.selection.prototype.union = function(that) {\r\n    if(that instanceof d3.selection){\r\n      var newselection  = d3.select(null); //ensure the correct prototype\r\n      newselection.splice(0,1);            //empty the selection      \r\n      [].push.apply(newselection, this);   //push in this selection, without loosing the prototype \r\n      [].push.apply(newselection, that);   //push in that selection, without loosing the prototype\r\n      return newselection;\r\n    }else{\r\n      throw new Error(\"Can only union with another d3 selection\"); \r\n    }\r\n  };\r\n```",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 399
+		},
+		{
+			"id": 69799719,
+			"user": {
+				"login": "jmsrpp"
+			},
+			"created_at": "2015-01-13T19:06:02Z",
+			"body": "Any further thoughts on this? I ran into a situation where I want to add the clicked parent node to a node.enter() selection and union would be quite helpful.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 399
+		},
+		{
+			"id": 70431186,
+			"user": {
+				"login": "tenedor"
+			},
+			"created_at": "2015-01-18T23:08:35Z",
+			"body": "Thanks @aogriffiths for this code, I'm now using it! I'd love to know if this feature is added into the d3 source.\r\n\r\nThis feature is useful for nested data-bound elements. When I bind new data, I exit entire groups as well as individual children on updated groups, and I want to treat all exiting children the same way whether they're exiting on their own or exiting as part of their parent group. With `union`, I'm able to apply exit logic to the selection `children.exit().union(groups.exit().selectAll('.child'))`.\r\n\r\nFuller example:\r\n```javascript\r\n// data is an array of groups; each group holds an array of children\r\nvar data = [{groupId: 0, children: [{childId: 4, parentId: 0}, ...]}, ...];\r\n\r\nvar groups = d3.selectAll('.group')\r\n    .bind(data, 'groupId');\r\ngroups.enter().append('g')\r\n    .classed('group', true);\r\n\r\nvar children = groups.selectAll('.child')\r\n    .bind(function(group){return group.children;}, 'childId');\r\nchildren.enter().append('rect')\r\n    .classed('child', true)\r\n    .attr('x', function(child){return child.parentId * 20;})\r\n    .attr('y', function(child){return child.childId * 20;})\r\n    .attr('width', 0)\r\n    .attr('height', 0)\r\n  .transition()\r\n    .attr('width', 10)\r\n    .attr('height', 10);\r\n\r\n// exit logic for all exiting children\r\nchildren.exit().union(groups.exit().selectAll('.child')).transition()\r\n    .attr('width', 0)\r\n    .attr('height', 0)\r\n    .remove();\r\n\r\ngroups.exit().transition()\r\n    .remove();\r\n```",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 399
+		},
+		{
+			"id": 190553976,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2016-03-01T05:40:41Z",
+			"body": "For 4.0, d3-selection now has [*selection*.merge](https://github.com/d3/d3-selection#selection_merge) for merging selections. However, it\u2019s not the same as the union discussed above: given two selections *a* and *b*, elements from *b* are only merged into the returned selection if the corresponding element from *a* is null. Thus, the merged selection is guaranteed to have the same structure and indexes as *a*. This is intended to support the merging of update with the materialized enter selection after the data-join, now that selections are immutable.\r\n\r\nA *selection*.union method would still be possible, though.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 399
+		},
+		{
+			"id": 236759323,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2016-08-02T01:00:25Z",
+			"body": "Moved to d3/d3-selection#89.",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 399
+		},
+		{
+			"id": 3614166,
+			"user": {
+				"login": "bbroeksema"
+			},
+			"created_at": "2012-01-23T14:02:45Z",
+			"body": "Bump.\r\n\r\nAny comments on possible acceptation of this patch (or required improvements for acceptation)?",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 440
+		},
+		{
+			"id": 3622055,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2012-01-23T21:18:57Z",
+			"body": "Sorry, I haven't had time to think about this.\r\n\r\nNot directly related to your needs, but I was thinking the other day that perhaps the Voronoi method should be more like a layout, taking accessor functions to be flexible about the structure of the input. Currently, it assumes that the input is an array of two-element arrays (vertices: [[x1, y1], [x2, y2], \u2026]). Most of the other layouts allow you to define the data in a more flexible way. For example, you might say something like:\r\n\r\n```js\r\nvar voronoi = d3.geom.voronoi()\r\n    .x(function(d) { return d.x; })\r\n    .y(function(d) { return d.y; });\r\n```\r\n\r\nAnd now you'd have a function `voronoi` that you could pass an array of nodes to (say, from a force-directed layout). Potentially the returned polygons could have meta data associated with them. For example, `polygon[i].data` could point back to the corresponding input vertex (`d`) that the polygon contains.\r\n\r\nThat might allow you to annotate the polygon with an array of neighbors, too. `polygon[i].neighbors` could be an array of input vertices. Or perhaps it should be the neighboring polygons? Or the neighboring indexes? I'm not sure.\r\n\r\nAnyway, I'm pretty sure I don't want to pass in callback functions, because that's more white-box inheritance. Just my quick thoughts. Thanks for the pull request! Let me know what you think.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 440
+		},
+		{
+			"id": 3629950,
+			"user": {
+				"login": "bbroeksema"
+			},
+			"created_at": "2012-01-24T09:59:37Z",
+			"body": "I do agree that my approach indeed smells like white-box inheritance, actually it is. For my project I namely just copied the edgehandling code and added the bits and pieces I needed. This is related to your above comments, namely I do so because determining the neighbors of a voronoi site is done during voronoi tessellation. At the point of adding an edge to a cell, the algorithm has information about the start and end points of the edge, the cell to which the edge belongs *and* to which other cell the edge is connected.\r\n\r\nSo the point is that I don't necessary myself want to annotate the polygons with neighbors, it is information I expect to be available after I did a voronoi layout (in order to prevent the costly calculation as a separate step). I might misunderstand your current proposal, but I don't see how this would deliver me the information (or give me the possibility to get it during the layout process).\r\n\r\nAn alternative might be to just store the neighbors in the .data section of vertices as part of the layout algorithm. But then a next requirement could become (not something I need), that one would be able to tell which neighbor reside at which edge. Something you don't solve in a comfortable way when annotating the neighbor at the vertices as each vertex will have two neighbors (except for those at the borders of the image).\r\n\r\nYet another alternative would be to return a list of \"Cell\" objects. Similar to the approach Raymond Hill has in his implementation (http://www.raymondhill.net/voronoi/rhill-voronoi-core.js). But that might be too heavy for d3.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 440
+		},
+		{
+			"id": 3630161,
+			"user": {
+				"login": "bbroeksema"
+			},
+			"created_at": "2012-01-24T10:18:21Z",
+			"body": "Quick note: I do like the idea to make the algorithm more flexible with respect to the data it expects. Actually, one additional extension of your proposal would solve my problem:\r\n\r\n```javascript\r\nvar voronoi = d3.geom.voronoi()\r\n    .x(function(d) { return d.x; })\r\n    .y(function(d) { return d.y; });\r\n    .edge(function(e) { e.d1.neighbor = e.d2; e.d2.neighbor = e.d1; })\r\n```\r\n\r\nThe edge function would be called for every edge added to the layout and would allow me to register neighbors (or build whatever structure one needs). The argument passed to edge would contain the two data objects the edge is separating. Besides that it should of course contain the start and end vertex of the edge.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 440
+		},
+		{
+			"id": 3639710,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2012-01-24T20:25:59Z",
+			"body": "Ah, I see; I misunderstood which data you wanted. Could you elaborate on why you want this data? Perhaps I could suggest a solution better if I understood the application. Thanks!",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 440
+		},
+		{
+			"id": 3640694,
+			"user": {
+				"login": "bbroeksema"
+			},
+			"created_at": "2012-01-24T21:25:06Z",
+			"body": "I implemented a spatial merging algorithm that works as follows:\r\n\r\n* Take the voronoi tessellation of a set of points.\r\n* Sort the cells by size\r\n* Start from the smallest and merge it with all direct neighbors for which the site lies within merging distance D.\r\n   repeat until no further merges occur.\r\n\r\nbeing able to get the neighbors of a given cell is the crucial point here. Of course I keep track which original points fall in a merged cell. It has various applications, can't go into much detail further as I'm working on a paper.\r\n\r\nHope this explains enough what I need and why.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 440
+		},
+		{
+			"id": 3807807,
+			"user": {
+				"login": "christophermanning"
+			},
+			"created_at": "2012-02-04T02:51:22Z",
+			"body": "I like the idea of adding `x` and `y` methods on the Voronoi object. Now I have to transform the data like this: `.data(d3.geom.voronoi(vertices.map(function(o){return [o.x,  o.y]})))`\r\n\r\nI was just researching how to get neighboring Voronoi cells and it doesn't seem possible since the neighbors aren't exposed from the `voronoi` object. I ended up using a Delaunay triangulation to connect nodes in cells that neighbored each other: http://bl.ocks.org/1734663 but that requires a Delaunay calculation during each update. If the edges were exposed, this could probably be simplified.\r\n",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 440
+		},
+		{
+			"id": 6175207,
+			"user": {
+				"login": "bbroeksema"
+			},
+			"created_at": "2012-06-07T13:02:58Z",
+			"body": "I'd still really like to have a solution for this problem. Currently I'm using my own version of the voronoi implementation with the extension as attached to this report.\n\nSo, why did I choose to export the internals? The current voronoi implementation calculates the diagram and forces the user to clip the cells if necessary. For this it is not needed to know the bounding box on forehand. However, when calculating the neighbors, it can happen that two cells are connected *outside* the boundingbox. Obviously, when I know the boundingbox on forehand I don't want these neighbours to be added. So by making some of the internals public I was able to implement my own EdgeHandler, which looks like this:\n\n```javascript\nfunction EdgeHandler(vertices, w, h) {\n    var polygons   = vertices.map(function() { return []; });\n    var neighbours = vertices.map(function() { return []; });\n    \n    this.handle = function (e) {\n      var s1,\n          s2,\n          x1,\n          x2,\n          y1,\n          y2;\n          \n      if (e.a === 1 && e.b >= 0) {\n        s1 = e.ep.r;\n        s2 = e.ep.l;\n      } else {\n        s1 = e.ep.l;\n        s2 = e.ep.r;\n      }\n      if (e.a === 1) {\n        y1 = s1 ? s1.y : -1e6;\n        x1 = e.c - e.b * y1;\n        y2 = s2 ? s2.y : 1e6;\n        x2 = e.c - e.b * y2;\n      } else {\n        x1 = s1 ? s1.x : -1e6;\n        y1 = e.c - e.a * x1;\n        x2 = s2 ? s2.x : 1e6;\n        y2 = e.c - e.a * x2;\n      }\n\n      var v1 = [x1, y1],\n          v2 = [x2, y2];\n      \n      polygons[e.region.l.index].push(v1, v2);\n      polygons[e.region.r.index].push(v1, v2);\n      \n      var v1Inside = !(x1 < 0 || x1 > w || y1 < 0 || y1 > h);\n      var v2Inside = !(x2 < 0 || x2 > w || y2 < 0 || y2 > h);\n      \n      if (v1Inside || v2Inside) {\n        // Only record a neighbour when one of the vertices is within the \n        // bounding box: [0,0,w,h].\n        neighbours[e.region.l.index].push(e.region.r.index);\n        neighbours[e.region.r.index].push(e.region.l.index);\n      }\n    };\n```\n\nObviously, this does some extra work (and needs additional information) compared to the original implementation. I don't see how I could reach the same goal though. If you have suggestions to take a different approach I'm more than happy to implement and try it out.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 440
+		},
+		{
+			"id": 12423926,
+			"user": {
+				"login": "bbroeksema"
+			},
+			"created_at": "2013-01-18T14:29:08Z",
+			"body": "Okay, retry. I still added a(n optional) callback. Differences: this time it is optional, that is, d3.geom.voronoi can still be called with just one argument and will return the same result as before. When the callback is set, this callback will be called for each edge that is encountered and nothing will be returned once the tessellation is finished. This allows for creating a custom data structure during tessellation (e.g. in my case I want to keep track of neighbours of a particular cell).\r\n\r\nplease let me know what you think of this (improved?!) approach.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 440
+		},
+		{
+			"id": 49424437,
+			"user": {
+				"login": "ryanthejuggler"
+			},
+			"created_at": "2014-07-18T12:20:19Z",
+			"body": "This issue could be closed; the `.links()` method exposes this information now.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 440
+		},
+		{
+			"id": 219230084,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2016-05-14T16:39:15Z",
+			"body": "The new [d3-voronoi module](https://github.com/d3/d3-voronoi#voronoi-diagrams) for 4.0 returns the full Voronoi diagram, so it should be possible to track neighbors and other related operations. See the [Voronoi Topology example](https://bl.ocks.org/mbostock/cd52a201d7694eb9d890).",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 440
+		},
+		{
+			"id": 4040449,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2012-02-19T07:33:35Z",
+			"body": "Thanks for the contribution! I'm a bit worried about deviating from the \"standard\" strptime and strftime behavior, but I see there's precedent for this in PHP, django, and datejs\u2026 so it may be worthwhile to include.\r\n\r\nAlso, ideally, there's feature parity between formatting and parsing. So, if you add %s to the format, the parser should probably be able to ignore the ordinal suffix when you parse \"Jan 1st\", e.g.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 495
+		},
+		{
+			"id": 17712670,
+			"user": {
+				"login": "minikomi"
+			},
+			"created_at": "2013-05-10T09:58:33Z",
+			"body": ":+1: I agree with this addition!",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 495
+		},
+		{
+			"id": 23184278,
+			"user": {
+				"login": "langdonx"
+			},
+			"created_at": "2013-08-23T19:02:41Z",
+			"body": "+1",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 495
+		},
+		{
+			"id": 33622102,
+			"user": {
+				"login": "zacwitte"
+			},
+			"created_at": "2014-01-29T19:43:16Z",
+			"body": "Yes please. Any update on this?",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 495
+		},
+		{
+			"id": 33864445,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2014-02-01T05:46:32Z",
+			"body": "This implementation needs to be localized using the new code structure introduced in [release 3.4](https://github.com/mbostock/d3/releases/tag/v3.4.0).\r\n\r\nSomeone with knowledge of ordinal indicators in other languages should comment on whether this is a reasonable approach, and if not suggest a different suitable parameterized implementation. (Wikipedia has some information on [ordinal indicators](http://en.wikipedia.org/wiki/Ordinal_indicator); it looks like some languages use prefixes rather than suffixes. At the least we should be capable of supporting [FIGS](http://en.wikipedia.org/wiki/FIGS), [CJK](http://en.wikipedia.org/wiki/CJK) and Russian.)\r\n\r\nIf having a array of up to ten ordinal suffixes (or prefixes?) is reasonable, then the implementation should also be abbreviated as described in my comment above.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 495
+		},
+		{
+			"id": 33864551,
+			"user": {
+				"login": "ghost"
+			},
+			"created_at": "2014-02-01T05:55:10Z",
+			"body": "Well I just asked some Russians in ##russian on freenode... they don't use date suffixes.  Don't know if that helps.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 495
+		},
+		{
+			"id": 33876109,
+			"user": {
+				"login": "bollwyvl"
+			},
+			"created_at": "2014-02-01T16:35:17Z",
+			"body": "Just poking around: moment.js handles this with a set of tokens for specific date components with ordinals: `Mo`, `Do`, etc. This goes beyond the approach of a \"date suffix\" token pretty significantly, so may not be entirely applicable. Due to this complexity, they accept either `function(number, period)` or a `%`-formatted string.\r\n\r\nHere is a PR that solves some of these issues around [Chinese](https://github.com/moment/moment/pull/750) which leads to one for [Russian and Ukrainian](https://github.com/moment/moment/pull/825).\r\n\r\nPerusing their `lang` files around the 8 languages mentioned above, here's what i can extract for day-of-month:\r\n\r\n- French: `function (number) { return number + (number === 1 ? 'er' : ''); }`\r\n- Italian: `%d\u00ba`\r\n- German: `%d.`\r\n- Chinese: `%d\u65e5 `\r\n- Japanese: N/A\r\n- Korean: `%d\uc77c`\r\n- Russian: `%d-\u0433\u043e`\r\n\r\nHope this helps!",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 495
+		},
+		{
+			"id": 33890463,
+			"user": {
+				"login": "minikomi"
+			},
+			"created_at": "2014-02-02T02:52:14Z",
+			"body": "%d\u65e5 is accurate for Japanese also\r\n\r\nOn Sunday, February 2, 2014, bollwyvl <notifications@github.com> wrote:\r\n\r\n> Just poking around: moment.js handles this with a set of tokens for\r\n> specific date components with ordinals: Mo, Do, etc. This goes beyond the\r\n> approach of a \"date suffix\" token pretty significantly, so may not be\r\n> entirely applicable. Due to this complexity, they accept either function(number,\r\n> period) or a %-formatted string.\r\n>\r\n> Here is a PR that solves some of these issues around Chinese<https://github.com/moment/moment/pull/750>which leads to one for Russian\r\n> and Ukrainian <https://github.com/moment/moment/pull/825>.\r\n>\r\n> Perusing their lang files around the 8 languages mentioned above, here's\r\n> what i can extract for day-of-month:\r\n>\r\n>    - French: function (number) { return number + (number === 1 ? 'er' :\r\n>    ''); }\r\n>    - Italian: %d\u00ba\r\n>    - German: %d.\r\n>    - Chinese: %d\u65e5\r\n>    - Japanese: N/A\r\n>    - Korean: %d\uc77c\r\n>    - Russian: %d-\u0433\u043e\r\n>\r\n> Hope this helps!\r\n>\r\n> \u2014\r\n> Reply to this email directly or view it on GitHub<https://github.com/mbostock/d3/pull/495#issuecomment-33876109>\r\n> .\r\n>",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 495
+		},
+		{
+			"id": 39388571,
+			"user": {
+				"login": "ghost"
+			},
+			"created_at": "2014-04-02T21:51:16Z",
+			"body": "I really wish we could just get this into d3.  It is common in other libraries, and I'm sure lots of you have managers/designers that require your date to be something like \"April 2nd, 2014\" not \"April 2, 2014.\"\r\n\r\nI feel like this has been held back for way too long, especially if its functioning, and we have other languages chiming in.  And from what I here, the other languages may just not even have this, so could easily just have it be replaced with nothing, if not in a language that supports this.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 495
+		},
+		{
+			"id": 155522629,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2015-11-10T18:26:22Z",
+			"body": "I will be working on this for 4.0, over in the [d3-time-format](https://github.com/d3/d3-time-format) repo.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 495
+		},
+		{
+			"id": 232765811,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2016-07-14T19:21:50Z",
+			"body": "Superseded by d3/d3-time-format#10.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 495
+		},
+		{
+			"id": 4070127,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2012-02-21T07:09:22Z",
+			"body": "Neat. I think we'd need to update `d3.interpolators` as well, so that it can detect HSV colors and interpolate them automatically. You'd probably also want a `d3.interpolateHsv` method.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 517
+		},
+		{
+			"id": 4078089,
+			"user": {
+				"login": "alex"
+			},
+			"created_at": "2012-02-21T16:23:36Z",
+			"body": "I've added support for interpolating HSV colors.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 517
+		},
+		{
+			"id": 224760945,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2016-06-08T23:24:51Z",
+			"body": "With some help from @brewmook, I\u2019ve created the [d3-hsv](https://github.com/d3/d3-hsv) module. Should be easy to implement d3.interpolateHsv and d3.interpolateHsvLong there, too.",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 517
+		},
+		{
+			"id": 225208522,
+			"user": {
+				"login": "SalahAdDin"
+			},
+			"created_at": "2016-06-10T15:07:36Z",
+			"body": "What's about this man?",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 598
+		},
+		{
+			"id": 225211063,
+			"user": {
+				"login": "curran"
+			},
+			"created_at": "2016-06-10T15:16:25Z",
+			"body": "This issue has been superceded by this other one https://github.com/d3/d3-scale/pull/60 There you can find an active effort towards this by @jheer and @mbostock .\r\n\r\nIt looks like ordinal scale inversion will land in D3 4.0.",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 598
+		},
+		{
+			"id": 225211523,
+			"user": {
+				"login": "curran"
+			},
+			"created_at": "2016-06-10T15:18:01Z",
+			"body": "Also here's an example that pretty much does invert an ordinal scale:\r\n\r\nhttp://bl.ocks.org/mbostock/4349509",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 598
+		},
+		{
+			"id": 231812182,
+			"user": {
+				"login": "chazzmoney"
+			},
+			"created_at": "2016-07-11T17:53:34Z",
+			"body": "Wanted to share what made the difference for me for the svg to start showing up:\r\n\r\n`document.createElementNS(\"http://www.w3.org/2000/svg\", \"svg\")`",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 638
+		},
+		{
+			"id": 8027005,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2012-08-25T20:17:30Z",
+			"body": "This seems like a useful enhancement. Thanks!",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 786
+		},
+		{
+			"id": 219229856,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2016-05-14T16:35:08Z",
+			"body": "The new [d3.stack](https://github.com/d3/d3-shape#stacks) for 4.0 outputs [*y0*, *y1*].",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 786
+		},
+		{
+			"id": 247633185,
+			"user": {
+				"login": "ming-codes"
+			},
+			"created_at": "2016-09-16T15:38:08Z",
+			"body": "Yup, @mootari has the correct syntax. But you can shorten it.\r\n\r\n```js\r\ndocument.createElementNS(d3.ns.prefix.svg, 'g')\r\n```\r\n\r\nStill, I wish there's an easier way.",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 825
+		},
+		{
+			"id": 221711118,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2016-05-25T21:20:21Z",
+			"body": "This has been implemented as *zoom*.extent and *zoom*.translateExtent in [d3-zoom](https://github.com/d3/d3-zoom) for D3 4.0.",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 1084
+		},
+		{
+			"id": 221711160,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2016-05-25T21:20:32Z",
+			"body": "This has been implemented as *zoom*.extent and *zoom*.translateExtent in [d3-zoom](https://github.com/d3/d3-zoom) for D3 4.0.",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 1087
+		},
+		{
+			"id": 242855337,
+			"user": {
+				"login": "richiepreece"
+			},
+			"created_at": "2016-08-26T21:23:17Z",
+			"body": "@mbostock Quick thought here.\r\n\r\nWe're running into an issue where we are formatting with `.3s`, but when the number is less than 0, we get outputs such as `0.500`, `0.020` etc.\r\n\r\nAs per your statement above, it's best to have numbers line up, but we get:\r\n\r\n`120`\r\n`12.0`\r\n`1.20`\r\n`0.120`\r\n\r\nWhich ruins the aesthetic. Is there a good way to trim either the leading or trailing 0? Or are we simply in a situation where we need to`substr` the result from `.format` ourselves?",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 1152
+		},
+		{
+			"id": 242860930,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2016-08-26T21:52:23Z",
+			"body": "The `s` [format type](https://github.com/d3/d3-format#locale_format) is for decimal notation with an SI prefix, rounded to significant digits. So what you describe is the expected behavior. The leading zero does not count as a significant digit, and the presence or absence of the leading zero, the decimal separator, and the SI prefix can cause the resulting string to have variable length.\r\n\r\nIf you want the strings to have the same length, you might want to specify a width in addition to a precision. For example, `4.3s` will right-align and fill with spaces, resulting in:\r\n\r\n```\r\n 120\r\n12.0\r\n1.20\r\n120m\r\n```\r\n\r\nOr with `5.3g`, to use significant digits but without the SI prefix:\r\n\r\n```\r\n  120\r\n 12.0\r\n 1.20\r\n0.120\r\n```\r\n\r\nYou can also use `4.3` to trim the insignificant trailing zeros:\r\n\r\n```\r\n 120\r\n  12\r\n 1.2\r\n0.12\r\n```\r\n\r\nI suggest reviewing the documentation:\r\n\r\nhttps://github.com/d3/d3-format#locale_format\r\n\r\nOf course you can also post-process the string returned by a format to modify it however you like if the built-in format types aren\u2019t doing it for you.\r\n\r\nMore generally, please use [Stack Overflow tag d3.js](https://stackoverflow.com/tags/d3.js) to ask for help. Although I make an effort to assist everyone that asks, I am not always available to provide help promptly or directly. Stack Overflow provides a better collaborative forum for self-help: tens of thousands of D3-related questions have already been asked there, and some answered questions may be relevant to you.\r\n\r\nIf you have a question about D3\u2019s behavior and want to discuss it with other users, also consider the [d3-js Google Group](https://groups.google.com/forum/#!forum/d3-js) or [joining](https://d3-slackin.herokuapp.com/) the [d3-js Slack](https://d3js.slack.com/).\r\n\r\nThank you! \ud83e\udd17",
+			"repo": "d3",
+			"owner": "d3",
+			"issue_id": 1152
+		},
+		{
+			"id": 16334217,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2013-04-13T14:41:32Z",
+			"body": "While Chrome should be using BST, I don\u2019t think Firefox is correct here, either, since the date is not in midnight local time. I noticed some weird behavior:\r\n\r\n```\r\n> new Date(1970, 0)\r\nThu Jan 01 1970 01:00:00 GMT+0100 (BST)\r\n> new Date(1970, 0, 0)\r\nWed Dec 31 1969 00:00:00 GMT+0000 (BST)\r\n> new Date(1970, 0, 1)\r\nThu Jan 01 1970 01:00:00 GMT+0100 (BST)\r\n> new Date(1970, 0, 2)\r\nFri Jan 02 1970 00:00:00 GMT+0100 (BST)\r\n```\r\n\r\nNot to mention:\r\n\r\n```\r\n> var d = new Date(1970, 0, 1);\r\nThu Jan 01 1970 01:00:00 GMT+0100 (BST)\r\n> d.getHours();\r\n1\r\n> d.setHours(0);\r\n0\r\n> d.getHours();\r\n1\r\n```\r\n\r\nSo your code works, but only because the year you\u2019re setting isn\u2019t 1970. If you were to call d3.time.day on a 1970 date, you\u2019d still get the wrong answer (at 1 AM local rather than midnight).\r\n\r\n```\r\n> var d = new Date(0);\r\nThu Jan 01 1970 01:00:00 GMT+0100 (BST)\r\n> d.setFullYear(2000, 0, 1);\r\n946688400000\r\n> d\r\nSat Jan 01 2000 01:00:00 GMT+0000 (GMT)\r\n> d.setHours(0, 0, 0, 0);\r\n946684800000\r\n> d\r\nSat Jan 01 2000 00:00:00 GMT+0000 (GMT)\r\n```\r\n\r\nHere\u2019s it not working:\r\n\r\n```\r\n> var d = new Date(0);\r\nThu Jan 01 1970 01:00:00 GMT+0100 (BST)\r\n> d.setFullYear(1970, 0, 1);\r\n0\r\n> d.setHours(0, 0, 0, 0);\r\n0\r\n> d\r\nThu Jan 01 1970 01:00:00 GMT+0100 (BST)\r\n```\r\n",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 16334933,
+			"user": {
+				"login": "jasondavies"
+			},
+			"created_at": "2013-04-13T15:22:30Z",
+			"body": "Related: [Firefox bug 718175](https://bugzilla.mozilla.org/show_bug.cgi?id=718175) and [487897](https://bugzilla.mozilla.org/show_bug.cgi?id=487897) (unresolved, unfortunately).\r\n\r\nI think the problem is that there is no such thing as a local time of midnight, from the point of view of Firefox:\r\n\r\n```js\r\n> new Date(-1)\r\nWed Dec 31 1969 23:59:59 GMT+0000 (BST)\r\n> new Date(0)\r\nThu Jan 01 1970 01:00:00 GMT+0100 (BST)\r\n```\r\n\r\nPerhaps it's a valid question of how to handle a local timezone that has no midnight e.g. due to a DST change.  One possibility is to detect the beginning of a day by subtracting a single millisecond and checking for a change in getDate.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 16335200,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2013-04-13T15:38:29Z",
+			"body": "So what about a simpler fix that avoids the summer time weirdness: constructing the date as `new Date(2000, 0)` rather than `new Date(1970, 0)`? That would still have the bug for dates in 1970, but that would be Firefox\u2019s fault, and we would at least avoid Firefox\u2019s bug in the common case.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 16335828,
+			"user": {
+				"login": "jasondavies"
+			},
+			"created_at": "2013-04-13T16:14:20Z",
+			"body": "I\u2019m thinking we may need the boundary detection fix because I think there\u2019s a general issue with any local timezones that don\u2019t have a midnight due to the DST boundary, e.g. `TZ=Asia/Amman node`:\r\n\r\n```js\r\n> new Date(2014, 2, 28, 0, 0, 0)\r\nThu Mar 27 2014 23:00:00 GMT+0200 (EET)\r\n```\r\n\r\nThere is effectively no local midnight, because it jumps to 01:00:00 when you would otherwise expect 00:00:00.  So the problem is twofold: firstly generating a date object with the right fields set (e.g. day=28 in the above example), and secondly detecting a boundary date for the purposes of formatting.\r\n\r\nThere is also the possibility of [days being skipped entirely](http://www.bbc.co.uk/news/world-asia-16351377). :)",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 16372339,
+			"user": {
+				"login": "jasondavies"
+			},
+			"created_at": "2013-04-15T08:18:51Z",
+			"body": "So, I\u2019m proposing:\r\n\r\n1. We modify the definition of a [time interval](https://github.com/mbostock/d3/wiki/Time-Intervals) to take into account non-midnight boundaries between days (and possibly even weirder situations such as a missing 1st day for a month). So *day.floor* should return the smallest Date object for that particular day, which could have a non-midnight time.\r\n2. The simple checks e.g. in `d3_time_scaleLocalFormats` should check for a boundary instead, e.g. subtract one millisecond and see if the field in question changes.  A single Date object could be reused for efficiency.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 16669466,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2013-04-19T18:03:00Z",
+			"body": "> So day.floor should return the smallest Date object for that particular day, which could have a non-midnight time.\r\n\r\nThat\u2019s already the case, is it not? So you\u2019re saying that the current behavior of d3.time.day.floor is correct (Thu Jan 01 1970 01:00:00 GMT+0100 (BST)), it\u2019s just that d3_time_scaleLocalFormats isn\u2019t detecting this as a day boundary because date.getHours returns a non-zero value.\r\n\r\nAnother way of checking if a given date is a boundary is by comparing it to the floored value, since floor is idempotent. For example, `d3.time.day(d) >= d`. (Note: you can\u2019t use `==` to test dates for equality.) But I expect your suggestion of decrementing the time by one millisecond and seeing if the field changes is more efficient.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 16670594,
+			"user": {
+				"login": "jasondavies"
+			},
+			"created_at": "2013-04-19T18:12:37Z",
+			"body": "> That\u2019s already the case, is it not? So you\u2019re saying that the current behavior of d3.time.day.floor is correct (Thu Jan 01 1970 01:00:00 GMT+0100 (BST))\r\n\r\nIt is correct for this case, yes, but not for the Asia/Amman example, e.g.\r\n\r\n```sh\r\n$ TZ=Asia/Amman node -p 'require(\"./\").time.day(new Date(2014, 2, 28, 5, 0, 0))'\r\nThu Mar 27 2014 23:00:00 GMT+0200 (EET)\r\n```\r\n\r\nSolving this is a bit trickier, but I imagine it can be done efficiently for the common case.  If the boundary check below fails, then some kind of binary search might be necessary.  It would be nice to handle the case of missing days too; maybe test for these weird cases using a mock Date class.\r\n\r\n> it\u2019s just that d3_time_scaleLocalFormats isn\u2019t detecting this as a day boundary because date.getHours returns a non-zero value.\r\n\r\nYes, this is the second issue.  I like the use of floor but it probably is more efficient to decrement milliseconds (at least this avoids creating a new Date object).",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 16703252,
+			"user": {
+				"login": "jasondavies"
+			},
+			"created_at": "2013-04-20T12:28:35Z",
+			"body": "OK, force-pushed a fix for all of the above.  Binary search could probably be made more efficient, but on the other hand it's going to be very rarely used.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 17585575,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2013-05-08T04:08:33Z",
+			"body": "Can we have tests for this, both for `d3.time.day` and `d3.time.days`?",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 17586168,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2013-05-08T04:35:18Z",
+			"body": "Also, `d3.time.day.ceil` is still broken, since, like `d3.time.days` it depends on the current day step implementation, which doesn\u2019t advance in a way that is consistent with the fixed `d3.time.day`:\r\n\r\n```js\r\nfunction(date, offset) {\r\n  date.setDate(date.getDate() + offset);\r\n}\r\n```\r\n\r\nFor example, in `TZ=Asia/Amman node`, you can see how setDate doesn\u2019t advance correctly to the next day:\r\n\r\n```js\r\n> d = d3.time.day(new Date(2014, 2, 27, 5, 0, 0))\r\nThu Mar 27 2014 00:00:00 GMT+0200 (EET)\r\n> d.getDate()\r\n27\r\n> d.setDate(28)\r\n1395954000000\r\n> d\r\nThu Mar 27 2014 23:00:00 GMT+0200 (EET)\r\n> d.getDate()\r\n27\r\n```\r\n\r\nAnd likewise for d3.time.days, the current behavior is:\r\n\r\n```js\r\n> d3.time.days(new Date(2014, 2, 26, 12), new Date(2014, 2, 31, 12))\r\n[ Thu Mar 27 2014 00:00:00 GMT+0200 (EET),\r\n  Thu Mar 27 2014 23:00:00 GMT+0200 (EET),\r\n  Fri Mar 28 2014 23:00:00 GMT+0300 (EEST),\r\n  Sat Mar 29 2014 23:00:00 GMT+0300 (EEST),\r\n  Sun Mar 30 2014 23:00:00 GMT+0300 (EEST) ]\r\n```\r\n\r\nThe desired behavior is:\r\n\r\n```js\r\n> d3.time.days(new Date(2014, 2, 26), new Date(2014, 2, 31))\r\n[ Thu Mar 27 2014 00:00:00 GMT+0200 (EET),\r\n  Fri Mar 28 2014 01:00:00 GMT+0300 (EEST),\r\n  Sat Mar 29 2014 00:00:00 GMT+0300 (EEST),\r\n  Sun Mar 30 2014 00:00:00 GMT+0300 (EEST) ]\r\n```",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 17615353,
+			"user": {
+				"login": "jasondavies"
+			},
+			"created_at": "2013-05-08T15:59:46Z",
+			"body": "I\u2019ve added a time.dst helper for testing, which defines a DST change where `date0` becomes `date1`, and adjusts all internal fields accordingly.\r\n\r\nNow we just need to fix interval.ceil.  This is now used by interval.range, which is why `d3.time.days(new Date(2014, 2, 26, 12), new Date(2014, 2, 31, 12))` still fails for `Asia/Amman`.\r\n\r\nI think it\u2019s okay that day.offset may not necessarily increment the day field, since this is already the case for hour during DST.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 17615485,
+			"user": {
+				"login": "jasondavies"
+			},
+			"created_at": "2013-05-08T16:01:30Z",
+			"body": "Rebased against master.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 17618263,
+			"user": {
+				"login": "jasondavies"
+			},
+			"created_at": "2013-05-08T16:41:48Z",
+			"body": "All tests pass, but probably want to give it another check over and add more tests before merging.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 17682417,
+			"user": {
+				"login": "mbostock"
+			},
+			"created_at": "2013-05-09T18:52:03Z",
+			"body": "If there are cases where the DST change coincides with a week, month or year boundary, then would this same bug apply to those larger intervals?\r\n\r\nI have to say, this is turning into quite a complicated fix! It seems like JavaScript runtimes could do a better job of this rather than us having to employ elaborate workarounds.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		},
+		{
+			"id": 17716675,
+			"user": {
+				"login": "jasondavies"
+			},
+			"created_at": "2013-05-10T12:03:56Z",
+			"body": "In theory yes.  I don\u2019t know if this occurs in practice for any time zones at the moment, but if it\u2019s simple to be future-proof, we may as well.\r\n\r\nOne interesting thing that I found out when researching the Firefox bug, is that ECMAScript only expects the *current* DST rules to be applied to all previous years:\r\n\r\n> The implementation of ECMAScript should not try to determine whether the exact time was subject to daylight saving time, but just whether daylight saving time would have been in effect if the current daylight saving time algorithm had been used at the time. This avoids complications such as taking into account the years that the locale observed daylight saving time year round.\r\n\r\nSo Firefox does seem to be a deviation from the spec. for the 1970 date.  But that\u2019s just an aside, as there is a real issue for DST changes that occur at midnight, e.g. Asia/Amman.\r\n\r\nWe could always temporarily apply your `new Date(2000, 0)` fix for Firefox+England/London, while we cogitate on this patch.  I\u2019m not 100% sure about the way I\u2019ve implemented ceil, but it seems to work fine.",
+			"owner": "d3",
+			"repo": "d3",
+			"issue_id": 1197
+		}
+	],
+	"pc": [
+		{
+			"id": 465241,
+			"position": 18,
+			"user": {
+				"login": "mbostock"
+			},
+			"body": "I might reduce this like follows:\n\n```js\nvar d3_time_suffixes = [\"th\", \"st\", \"nd\", \"rd\"];\n\nfunction d3_time_suffix(number) {\n  var tail = number % 100;\n  return d3_time_suffixes[tail < 11 || tail > 13 && tail % 10] || d3_time_suffixes[0];\n}\n```",
+			"created_at": "2012-02-19T07:31:08Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 495
+		},
+		{
+			"id": 4127913,
+			"position": null,
+			"user": {
+				"login": "mbostock"
+			},
+			"body": "This shouldn\u2019t be necessary; the return value of `m` should be floored already. If that\u2019s not the case, then we should fix it in `m`\u2014that is, fix d3.time.days rather than flooring all ticks.",
+			"created_at": "2013-05-08T04:00:59Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1197
+		},
+		{
+			"id": 4127922,
+			"position": null,
+			"user": {
+				"login": "mbostock"
+			},
+			"body": "`new Date` would work too, right? Since this date instance\u2019s time should always be set before being used.",
+			"created_at": "2013-05-08T04:03:11Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1197
+		},
+		{
+			"id": 4129865,
+			"position": null,
+			"user": {
+				"login": "jasondavies"
+			},
+			"body": "I believe `new Date(0)` is slightly faster (almost 2x; I guess it doesn\u2019t need to grab the current time).",
+			"created_at": "2013-05-08T08:13:24Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1197
+		},
+		{
+			"id": 4129871,
+			"position": null,
+			"user": {
+				"login": "jasondavies"
+			},
+			"body": "Although speed doesn\u2019t really matter for this line!",
+			"created_at": "2013-05-08T08:13:53Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1197
+		},
+		{
+			"id": 4131200,
+			"position": null,
+			"user": {
+				"login": "jasondavies"
+			},
+			"body": "Fixed.",
+			"created_at": "2013-05-08T10:02:15Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1197
+		},
+		{
+			"id": 4136637,
+			"position": null,
+			"user": {
+				"login": "jasondavies"
+			},
+			"body": "Fixed.",
+			"created_at": "2013-05-08T15:41:31Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1197
+		},
+		{
+			"id": 4158570,
+			"position": 12,
+			"user": {
+				"login": "mbostock"
+			},
+			"body": "Wouldn\u2019t it be better to fix this in src/time/day.js? It feels to me like this is applying the work-around to all intervals, when the only one that actually needs the interval fix is d3.time.day. Although, I guess any interval larger than d3.time.day has the same problem\u2026",
+			"created_at": "2013-05-09T18:49:47Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1197
+		},
+		{
+			"id": 4169496,
+			"position": 12,
+			"user": {
+				"login": "jasondavies"
+			},
+			"body": "Yeah, I was thinking other intervals could have issues too, e.g. a DST change occurring at 00:00:00 on New Year\u2019s Day!  So in theory, using setFullYear would not be sufficient, because it would \u201croll back\u201d to the previous year because 00:00:00 is actually 23:00:00 in local time (in the previous year).",
+			"created_at": "2013-05-10T11:54:29Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1197
+		},
+		{
+			"id": 4169572,
+			"position": 12,
+			"user": {
+				"login": "jasondavies"
+			},
+			"body": "I was thinking we should apply this to intervals smaller than a day for consistency, but I don\u2019t know if that\u2019s necessary.",
+			"created_at": "2013-05-10T12:02:11Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1197
+		},
+		{
+			"id": 6718261,
+			"position": null,
+			"user": {
+				"login": "mbostock"
+			},
+			"body": "The `if (i)` here is redundant. The post-decrement operator returns the value of `i` before decrementing, so the first test of the while loop fails. You could create an infinite loop by constructing malformed input (e.g., `indexes = {length: Infinity}`) but that should never happen for an actual array input.",
+			"created_at": "2013-10-02T15:30:27Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1557
+		},
+		{
+			"id": 6718350,
+			"position": null,
+			"user": {
+				"login": "mbostock"
+			},
+			"body": "The variable `node` here is undefined.",
+			"created_at": "2013-10-02T15:33:23Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1557
+		},
+		{
+			"id": 6718413,
+			"position": null,
+			"user": {
+				"login": "mbostock"
+			},
+			"body": "Post-decrement is generally slower than pre-decrement.",
+			"created_at": "2013-10-02T15:35:09Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1557
+		},
+		{
+			"id": 6735209,
+			"position": null,
+			"user": {
+				"login": "mbostock"
+			},
+			"body": "This doesn\u2019t look like an optimization to me; I expect the performance is nearly identical. And the benchmark you linked to applies to an earlier change (to preallocate the array rather than use push), not to the change you are making.",
+			"created_at": "2013-10-03T05:47:42Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1557
+		},
+		{
+			"id": 6738051,
+			"position": null,
+			"user": {
+				"login": "Yahasana"
+			},
+			"body": "it's ok, no need to update for this.\r\n\r\ni change to this as you'd like the  `pre-decrement` over `post-decrement` ;-)",
+			"created_at": "2013-10-03T10:04:49Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1557
+		},
+		{
+			"id": 14048217,
+			"position": null,
+			"user": {
+				"login": "mbostock"
+			},
+			"body": "Seems like a shame to set these even when these functions won\u2019t be used. I wonder if there\u2019s a way to restructure the code slightly. (I guess it\u2019s also a shame that these closures are instantiated even though they won\u2019t be used, too, though I\u2019m not sure what the performance implications would be of extracting them.)",
+			"created_at": "2014-06-21T03:54:55Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1912
+		},
+		{
+			"id": 14048230,
+			"position": null,
+			"user": {
+				"login": "mbostock"
+			},
+			"body": "Pretty sure we want the value returned by transition.attr to be the string-coerced value, not the input value. In other words, `f.__value__ = b += \"\"`.",
+			"created_at": "2014-06-21T03:59:00Z",
+			"owner": "d3",
+			"repo": "d3",
+			"pullreq_id": 1912
+		}
+	],
+	"cc": [
+		{
+			"id": 18460459,
+			"user": {
+				"login": "MikeMcQuaid"
+			},
+			"position": null,
+			"commit_id": "0a33cc591d258e07f2279bc0440d62e38983fd67",
+			"created_at": "2016-07-30T13:48:09Z",
+			"body": "@UniqMartin Nice work here, thanks!"
+		},
+		{
+			"id": 18460784,
+			"user": {
+				"login": "xu-cheng"
+			},
+			"position": 18,
+			"commit_id": "0a33cc591d258e07f2279bc0440d62e38983fd67",
+			"created_at": "2016-07-30T15:47:46Z",
+			"body": "Why 1 instead of 0?"
+		},
+		{
+			"id": 18461364,
+			"user": {
+				"login": "UniqMartin"
+			},
+			"position": 18,
+			"commit_id": "0a33cc591d258e07f2279bc0440d62e38983fd67",
+			"created_at": "2016-07-30T19:02:14Z",
+			"body": "Because of this (see code comment):\r\n\r\n> - Location of caller of deprecated method (if all else fails)."
+		},
+		{
+			"id": 18462097,
+			"user": {
+				"login": "MikeMcQuaid"
+			},
+			"position": 18,
+			"commit_id": "0a33cc591d258e07f2279bc0440d62e38983fd67",
+			"created_at": "2016-07-31T00:59:56Z",
+			"body": "Otherwise it shows the location in `compat/`"
+		},
+		{
+			"id": 18763519,
+			"user": {
+				"login": "maletor"
+			},
+			"position": null,
+			"commit_id": "0c6e307eef57c48d03e1213112d3edd597ce5a7b",
+			"created_at": "2016-08-24T17:36:01Z",
+			"body": "I was stuck on this commit for 2 weeks before I realized my `brew update` commands weren't working."
+		},
+		{
+			"id": 18764234,
+			"user": {
+				"login": "jawshooah"
+			},
+			"position": null,
+			"commit_id": "0c6e307eef57c48d03e1213112d3edd597ce5a7b",
+			"created_at": "2016-08-24T18:11:26Z",
+			"body": "[We know](https://github.com/Homebrew/brew/blob/1e76a207b5bfacebee0a7198318230446be8da47/README.md#update-bug)."
+		},
+		{
+			"id": 17192889,
+			"user": {
+				"login": "unbroken2700"
+			},
+			"position": 17,
+			"commit_id": "0c85113053a08c270a8068d4af2013f5758b3a21",
+			"created_at": "2016-04-21T09:33:55Z",
+			"body": "User name file"
+		},
+		{
+			"id": 17192893,
+			"user": {
+				"login": "unbroken2700"
+			},
+			"position": 21,
+			"commit_id": "0c85113053a08c270a8068d4af2013f5758b3a21",
+			"created_at": "2016-04-21T09:34:33Z",
+			"body": "Nodes"
+		},
+		{
+			"id": 17192901,
+			"user": {
+				"login": "unbroken2700"
+			},
+			"position": 42,
+			"commit_id": "0c85113053a08c270a8068d4af2013f5758b3a21",
+			"created_at": "2016-04-21T09:35:12Z",
+			"body": "Cd"
+		},
+		{
+			"id": 17192911,
+			"user": {
+				"login": "unbroken2700"
+			},
+			"position": 13,
+			"commit_id": "0c85113053a08c270a8068d4af2013f5758b3a21",
+			"created_at": "2016-04-21T09:36:11Z",
+			"body": "User code"
+		},
+		{
+			"id": 19311280,
+			"user": {
+				"login": "stouset"
+			},
+			"position": null,
+			"commit_id": "12aad5c65fee39c5f044e39ca1efcbed58aebd39",
+			"created_at": "2016-10-05T23:55:32Z",
+			"body": "Why does Xcode need to be up-to-date if we have the latest version of the CLT?"
+		},
+		{
+			"id": 19311286,
+			"user": {
+				"login": "stouset"
+			},
+			"position": null,
+			"commit_id": "12aad5c65fee39c5f044e39ca1efcbed58aebd39",
+			"created_at": "2016-10-05T23:56:04Z",
+			"body": "We're trying to script a system-wide version of homebrew, and we can't necessarily rely on everyone having updated their version of Xcode. We can, however, ensure the latest CLT are installed via `softwareupdate`."
+		},
+		{
+			"id": 19311329,
+			"user": {
+				"login": "jawshooah"
+			},
+			"position": null,
+			"commit_id": "12aad5c65fee39c5f044e39ca1efcbed58aebd39",
+			"created_at": "2016-10-06T00:00:32Z",
+			"body": "> we can't necessarily rely on everyone having updated their version of Xcode\r\n\r\nCouldn't you use [`mas`](https://github.com/mas-cli/mas) to script that as well?"
+		},
+		{
+			"id": 19311333,
+			"user": {
+				"login": "stouset"
+			},
+			"position": null,
+			"commit_id": "12aad5c65fee39c5f044e39ca1efcbed58aebd39",
+			"created_at": "2016-10-06T00:01:18Z",
+			"body": "That would require us having a functional homebrew. Chicken, egg."
+		},
+		{
+			"id": 19311339,
+			"user": {
+				"login": "stouset"
+			},
+			"position": null,
+			"commit_id": "12aad5c65fee39c5f044e39ca1efcbed58aebd39",
+			"created_at": "2016-10-06T00:01:49Z",
+			"body": "Also, some developers may wish to stay on older version of Xcode for whatever reason."
+		},
+		{
+			"id": 19311440,
+			"user": {
+				"login": "jawshooah"
+			},
+			"position": null,
+			"commit_id": "12aad5c65fee39c5f044e39ca1efcbed58aebd39",
+			"created_at": "2016-10-06T00:13:17Z",
+			"body": "> That would require us having a functional homebrew\r\n\r\nNot necessarily, they provide binaries through [GitHub Releases](https://github.com/mas-cli/mas/releases) as well.\r\n\r\n> Also, some developers may wish to stay on older version of Xcode for whatever reason.\r\n\r\nNot much to be done about that. If you want to know more about the Xcode requirement, I'd suggest checking out https://github.com/Homebrew/brew/issues/972 and the various issues that link to it."
+		},
+		{
+			"id": 19314682,
+			"user": {
+				"login": "MikeMcQuaid"
+			},
+			"position": null,
+			"commit_id": "12aad5c65fee39c5f044e39ca1efcbed58aebd39",
+			"created_at": "2016-10-06T07:54:13Z",
+			"body": "> Also, some developers may wish to stay on older version of Xcode for whatever reason.\r\n\r\nThis is unsupported as it breaks many packages. We only make drastic failure like this when they are the hard-to-debug cause of many, many build issues. You need to either delete Xcode or update it to the latest version.\r\n\r\n> Couldn't you use mas to script that as well?\r\n\r\nYou could install/download a `mas` binary without Homebrew itself being installed."
+		},
+		{
+			"id": 17224074,
+			"user": {
+				"login": "xu-cheng"
+			},
+			"position": null,
+			"commit_id": "1451553188276117a574b2abe8957cb60ef7ced7",
+			"created_at": "2016-04-23T15:10:28Z",
+			"body": "Should we send a new Twitter and email for this."
+		},
+		{
+			"id": 17224094,
+			"user": {
+				"login": "mikemcquaid"
+			},
+			"position": null,
+			"commit_id": "1451553188276117a574b2abe8957cb60ef7ced7",
+			"created_at": "2016-04-23T15:17:23Z",
+			"body": "I don't think it's necessary; there wasn't much response for the previous ones and they were seen by all the same people."
+		},
+		{
+			"id": 17225448,
+			"user": {
+				"login": "kevinburke"
+			},
+			"position": null,
+			"commit_id": "1451553188276117a574b2abe8957cb60ef7ced7",
+			"created_at": "2016-04-23T22:05:45Z",
+			"body": "any chance we can donate, and/or opt out via donation? "
+		}
+	]
+}
