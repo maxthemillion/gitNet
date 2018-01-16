@@ -69,7 +69,6 @@ class Neo4jController:
                                                  'l_r2': 'Belongs_to'})
         tx.commit()
 
-
         parse_dates = '''MATCH (n:USER)-[x]-(m:USER)
                         WITH x
                         RETURN CALL apoc.date.parse(x.timestamp, 's',"yyyy-MM-dd'T'HH:mm:ss") as parsed
@@ -104,6 +103,32 @@ class Neo4jController:
         self.graph.run(query_part)
         print("Complete!")
         print()
+
+    def run_louvain_on_subgraph(self, date, owner, repo):
+
+        squery_nodes = '''MATCH (u) -[x]-> (u2:USER) 
+                       WHERE x.owner = {0} and x.repo = {1}
+                       RETURN id(u) as id'''.format(owner, repo)
+
+        squery_links = '''WITH apoc.date.parse({0}, 's', "yyyy-MM-dd") AS dateEnd 
+                          WITH dateEnd,  apoc.date.add(dateEnd, 's', -30, 'd') AS dateStart
+                          MATCH (u1:USER)-[x]->(u2:USER)
+                          WHERE x.owner = {1}
+                          and x.repo = {2}
+                          and x.tscomp < dateEnd
+                          and x.tscomp > dateStart
+                          RETURN id(u1) as source, id(u2) as target'''.format(owner, repo, date)
+
+        query = '''CALL algo.louvain.stream(
+                    $l_node_query, 
+                    $l_link_query,   
+                    {weightProperty:'weight', graph:'cypher'})
+                    YIELD nodeId, community
+                    RETURN nodeId, community                      
+                '''
+
+        res = self.graph.run(query, parameters=({'l_node_query': squery_nodes, 'l_link_query': squery_links})).data()
+        return res
 
     def stream_to_gephi(self):
         print("Streaming network to Gephi...")

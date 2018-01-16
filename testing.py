@@ -5,6 +5,9 @@ import pandas as pd
 from threads import Thread
 import json
 from main import clean_data
+from neocontroller import Neo4jController
+import datetime
+from datetime import tzinfo
 
 
 def setup_sample_threads():
@@ -31,6 +34,20 @@ def setup_sample_data():
 
     return clean_data(pc, ic, cc)
 
+
+class Neo4jQueriesLouvain(unittest.TestCase):
+    def setUp(self):
+        self.controller = Neo4jController()
+        self.owner = "Homebrew"
+        self.repo = "brew"
+
+        date = datetime.date(year=2016, month=10, day=1)
+        self.datestring = date.strftime("%Y-%m-%d")
+
+
+    def testPartialLouvain(self):
+        res = self.controller.run_louvain_on_subgraph(self.datestring, self.owner, self.repo)
+        self.assertTrue(False)
 
 class StringSearch(unittest.TestCase):
 
