@@ -1,8 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f06550ee-959a-491f-9cb8-acfc389fafa4" name="Default" comment="">
+    <list default="true" id="f06550ee-959a-491f-9cb8-acfc389fafa4" name="Default" comment="slight changes to the viz export">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf.py" afterPath="$PROJECT_DIR$/conf.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/neocontroller.py" afterPath="$PROJECT_DIR$/neocontroller.py" />
     </list>
@@ -18,35 +19,23 @@
       <file leaf-file-name="neocontroller.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/neocontroller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1184">
-              <caret line="126" column="0" lean-forward="false" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
+            <state relative-caret-position="1431">
+              <caret line="274" column="85" lean-forward="false" selection-start-line="274" selection-start-column="0" selection-end-line="275" selection-end-column="0" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
-                <marker date="1515761748000" expanded="true" signature="6772:6872" ph="..." />
+                <element signature="e#6069#9123#0" expanded="false" />
+                <marker date="1516138456000" expanded="true" signature="12261:12361" ph="..." />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="case.py" pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/unittest/case.py">
+      <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/py2neo/database/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="422">
-              <caret line="681" column="0" lean-forward="false" selection-start-line="681" selection-start-column="0" selection-end-line="681" selection-end-column="0" />
+            <state relative-caret-position="447">
+              <caret line="960" column="0" lean-forward="false" selection-start-line="960" selection-start-column="0" selection-end-line="960" selection-end-column="0" />
               <folding />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file leaf-file-name="project.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/project.py">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="422">
-              <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-              <folding>
-                <element signature="e#0#19#0" expanded="true" />
-                <element signature="e#5110#7202#0" expanded="false" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -54,11 +43,19 @@
       <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="388">
-              <caret line="35" column="37" lean-forward="true" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
-              <folding>
-                <element signature="e#0#19#0" expanded="true" />
-              </folding>
+            <state relative-caret-position="289">
+              <caret line="23" column="35" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="conf.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/conf.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="408">
+              <caret line="24" column="24" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -74,9 +71,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>export_project</find>
-      <find>_filename_lst</find>
-      <find>_detect_contextuals</find>
       <find>parent_project</find>
       <find>analyze_threads</find>
       <find>participants</find>
@@ -104,6 +98,9 @@
       <find>collect</find>
       <find>&quot;pc</find>
       <find>fake_stats</find>
+      <find>parameters</find>
+      <find>strftime</find>
+      <find>strf</find>
     </findStrings>
   </component>
   <component name="Git.Settings">
@@ -144,19 +141,19 @@
         <option value="$PROJECT_DIR$/threads.py" />
         <option value="$PROJECT_DIR$/collectors.py" />
         <option value="$PROJECT_DIR$/project.py" />
-        <option value="$PROJECT_DIR$/conf.py" />
         <option value="$PROJECT_DIR$/TestData/mongo_d3_syn.json" />
-        <option value="$PROJECT_DIR$/main.py" />
         <option value="$PROJECT_DIR$/testing.py" />
+        <option value="$PROJECT_DIR$/main.py" />
+        <option value="$PROJECT_DIR$/conf.py" />
         <option value="$PROJECT_DIR$/neocontroller.py" />
       </list>
     </option>
   </component>
-  <component name="ProjectFrameBounds">
-    <option name="x" value="63" />
+  <component name="ProjectFrameBounds" fullScreen="true">
+    <option name="x" value="163" />
     <option name="y" value="23" />
-    <option name="width" value="2384" />
-    <option name="height" value="1387" />
+    <option name="width" value="2155" />
+    <option name="height" value="1255" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -174,7 +171,7 @@
       <foldersAlwaysOnTop value="true" />
     </navigator>
     <panes>
-      <pane id="Scratches" />
+      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <expand>
@@ -191,7 +188,7 @@
           <select />
         </subPane>
       </pane>
-      <pane id="Scope" />
+      <pane id="Scratches" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -218,7 +215,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python tests.Nosetests in UnitTests.py">
+  <component name="RunManager" selected="Python.main">
     <configuration name="Nosetests in UnitTests.py" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -311,8 +308,8 @@
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python tests.Nosetests in UnitTests.py" />
-        <item index="1" class="java.lang.String" itemvalue="Python.main" />
+        <item index="0" class="java.lang.String" itemvalue="Python.main" />
+        <item index="1" class="java.lang.String" itemvalue="Python tests.Nosetests in UnitTests.py" />
         <item index="2" class="java.lang.String" itemvalue="Python.mongocontroller" />
         <item index="3" class="java.lang.String" itemvalue="Python.test" />
         <item index="4" class="java.lang.String" itemvalue="Python.test_at_username" />
@@ -459,38 +456,59 @@
       <option name="project" value="LOCAL" />
       <updated>1515764338809</updated>
     </task>
-    <option name="localTasksCounter" value="19" />
+    <task id="LOCAL-00019" summary="slight changes to the viz export">
+      <created>1515764580383</created>
+      <option name="number" value="00019" />
+      <option name="presentableId" value="LOCAL-00019" />
+      <option name="project" value="LOCAL" />
+      <updated>1515764580383</updated>
+    </task>
+    <task id="LOCAL-00020" summary="added timestamp conversion">
+      <created>1516111345108</created>
+      <option name="number" value="00020" />
+      <option name="presentableId" value="LOCAL-00020" />
+      <option name="project" value="LOCAL" />
+      <updated>1516111345108</updated>
+    </task>
+    <task id="LOCAL-00021" summary="added louvain run on subgraph method">
+      <created>1516118811879</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1516118811879</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.12 at 14h 08m 50s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 03m 39s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.12 at 14h 10m 37s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 04m 45s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.12 at 14h 13m 23s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 48m 22s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.12 at 14h 24m 18s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 52m 12s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.12 at 14h 27m 31s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 53m 17s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.12 at 14h 28m 48s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 56m 09s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.12 at 14h 30m 53s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 57m 30s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.12 at 14h 31m 55s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 17h 01m 05s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.12 at 14h 35m 55s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 17h 02m 56s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.12 at 14h 37m 31s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 17h 17m 09s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
   </component>
@@ -504,21 +522,21 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="63" y="23" width="2384" height="1387" extended-state="0" />
+    <frame x="0" y="0" width="2560" height="1440" extended-state="0" />
     <editor active="true" />
     <layout>
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16140051" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15250199" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3259587" sideWeight="0.49285147" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34513274" sideWeight="0.5129241" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32430342" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.36379164" sideWeight="0.48707592" order="5" side_tool="false" content_ui="tabs" x="0" y="23" width="445" height="696" />
+      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28514695" sideWeight="0.48707592" order="5" side_tool="false" content_ui="tabs" x="0" y="23" width="445" height="696" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32380217" sideWeight="0.49353796" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3274648" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11423748" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32743362" sideWeight="0.49353796" order="3" side_tool="false" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.24072476" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" x="21" y="274" width="1238" height="271" />
+      <window_info id="Debug" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3610008" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" x="21" y="274" width="1238" height="271" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.42320967" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.42295474" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -609,20 +627,23 @@
     <MESSAGE value="supports commit data analysis" />
     <MESSAGE value="export selected repos for netViz" />
     <MESSAGE value="maintain tests" />
-    <option name="LAST_COMMIT_MESSAGE" value="maintain tests" />
+    <MESSAGE value="slight changes to the viz export" />
+    <MESSAGE value="added timestamp conversion" />
+    <MESSAGE value="added louvain run on subgraph method" />
+    <option name="LAST_COMMIT_MESSAGE" value="added louvain run on subgraph method" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
       <breakpoints>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
-          <url>file://$PROJECT_DIR$/testing.py</url>
-          <line>363</line>
-          <option name="timeStamp" value="220" />
-        </line-breakpoint>
-        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/mongocontroller.py</url>
           <line>27</line>
           <option name="timeStamp" value="238" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/neocontroller.py</url>
+          <line>192</line>
+          <option name="timeStamp" value="280" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -632,19 +653,17 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="266" />
+      <option name="time" value="286" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/Analyzer_classes.py" />
-    <entry file="file://$PROJECT_DIR$/Project_class.py" />
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="60">
           <caret line="4" column="37" lean-forward="true" selection-start-line="4" selection-start-column="37" selection-end-line="4" selection-end-column="37" />
           <folding>
-            <element signature="e#0#19#0" expanded="true" />
+            <element signature="e#0#19#0" expanded="false" />
           </folding>
         </state>
       </provider>
@@ -691,13 +710,6 @@
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/Analyzer_classes.py" />
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Run_Report_class.py" />
     <entry file="file://$PROJECT_DIR$/Neo4j_controller.py" />
     <entry file="file://$PROJECT_DIR$/Project_class.py" />
@@ -739,24 +751,10 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/mongocontroller.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="181">
-          <caret line="20" column="0" lean-forward="false" selection-start-line="20" selection-start-column="0" selection-end-line="21" selection-end-column="44" />
-          <folding>
-            <element signature="e#268#282#0" expanded="true" />
-            <element signature="e#1809#18012#0" expanded="false" />
-            <element signature="e#20436#21276#0" expanded="false" />
-            <element signature="e#21310#21557#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/references.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="200">
           <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -764,7 +762,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="18">
           <caret line="308" column="0" lean-forward="false" selection-start-line="308" selection-start-column="0" selection-end-line="308" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -772,15 +769,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="377">
           <caret line="977" column="0" lean-forward="false" selection-start-line="977" selection-start-column="0" selection-end-line="977" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1065">
-          <caret line="1598" column="0" lean-forward="false" selection-start-line="1598" selection-start-column="0" selection-end-line="1599" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -788,10 +776,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="85">
           <caret line="21" column="0" lean-forward="false" selection-start-line="21" selection-start-column="0" selection-end-line="21" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#54#0" expanded="false" />
-            <element signature="e#10084#10180#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -799,23 +783,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="418">
           <caret line="343" column="0" lean-forward="false" selection-start-line="343" selection-start-column="0" selection-end-line="344" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/py2neo/database/__init__.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="411">
-          <caret line="960" column="0" lean-forward="false" selection-start-line="960" selection-start-column="0" selection-end-line="960" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/collectors.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -823,42 +790,13 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="217">
           <caret line="1120" column="0" lean-forward="false" selection-start-line="1120" selection-start-column="0" selection-end-line="1120" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/TestData/synthetic_issue_data.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="811">
-          <caret line="94" column="44" lean-forward="false" selection-start-line="94" selection-start-column="24" selection-end-line="94" selection-end-column="44" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TestData/synthetic_pullreq_data.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1070">
-          <caret line="98" column="23" lean-forward="false" selection-start-line="98" selection-start-column="23" selection-end-line="98" selection-end-column="23" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TestData/mongo_ghtorrent_syn.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/TestData/mongo_Homebrew_syn.json">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="0">
-          <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
+    <entry file="file://$PROJECT_DIR$/TestData/synthetic_issue_data.json" />
+    <entry file="file://$PROJECT_DIR$/TestData/synthetic_pullreq_data.json" />
+    <entry file="file://$PROJECT_DIR$/TestData/mongo_ghtorrent_syn.json" />
+    <entry file="file://$PROJECT_DIR$/TestData/mongo_Homebrew_syn.json" />
     <entry file="file://$PROJECT_DIR$/TestData/syn_data.json">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="1729">
@@ -871,7 +809,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
         </state>
       </provider>
     </entry>
@@ -879,40 +816,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="0">
           <caret line="0" column="0" lean-forward="false" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/project.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="422">
-          <caret line="25" column="0" lean-forward="false" selection-start-line="25" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-            <element signature="e#5110#7202#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/unittest/case.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="422">
-          <caret line="681" column="0" lean-forward="false" selection-start-line="681" selection-start-column="0" selection-end-line="681" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/testing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1089">
-          <caret line="119" column="55" lean-forward="false" selection-start-line="119" selection-start-column="55" selection-end-line="119" selection-end-column="55" />
-          <folding>
-            <element signature="e#0#15#0" expanded="true" />
-            <element signature="e#876#2668#0" expanded="false" />
-            <element signature="e#4282#7289#0" expanded="false" />
-            <element signature="e#12078#12805#0" expanded="false" />
-            <element signature="e#13887#14076#0" expanded="false" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -924,31 +827,130 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/collectors.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="18" column="0" lean-forward="false" selection-start-line="18" selection-start-column="0" selection-end-line="18" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/mongocontroller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="527">
+          <caret line="31" column="47" lean-forward="false" selection-start-line="31" selection-start-column="47" selection-end-line="31" selection-end-column="47" />
+          <folding>
+            <element signature="e#268#282#0" expanded="true" />
+            <element signature="e#1809#18012#0" expanded="false" />
+            <element signature="e#20436#21276#0" expanded="false" />
+            <element signature="e#21310#21557#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/contextlib.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="583">
+          <caret line="93" column="0" lean-forward="false" selection-start-line="93" selection-start-column="0" selection-end-line="93" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/project.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="58">
+          <caret line="9" column="62" lean-forward="true" selection-start-line="9" selection-start-column="62" selection-end-line="9" selection-end-column="62" />
+          <folding>
+            <element signature="e#0#19#0" expanded="false" />
+            <element signature="e#5110#7202#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/unittest/case.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="447">
+          <caret line="604" column="0" lean-forward="false" selection-start-line="604" selection-start-column="0" selection-end-line="605" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/testing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="431">
+          <caret line="48" column="0" lean-forward="false" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#15#0" expanded="false" />
+            <element signature="e#320#660#0" expanded="false" />
+            <element signature="e#692#915#0" expanded="false" />
+            <element signature="e#1404#3196#0" expanded="false" />
+            <element signature="e#3258#4747#0" expanded="false" />
+            <element signature="e#4810#7817#0" expanded="false" />
+            <element signature="e#7875#11003#0" expanded="false" />
+            <element signature="e#11063#11764#0" expanded="false" />
+            <element signature="e#11819#12541#0" expanded="false" />
+            <element signature="e#12606#13333#0" expanded="false" />
+            <element signature="e#13398#13899#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="442">
+          <caret line="1025" column="0" lean-forward="false" selection-start-line="1025" selection-start-column="0" selection-end-line="1025" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/_pydev_imps/_pydev_execfile.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="0" lean-forward="false" selection-start-line="17" selection-start-column="0" selection-end-line="17" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/dateutil/rrule.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="440">
+          <caret line="102" column="0" lean-forward="false" selection-start-line="102" selection-start-column="0" selection-end-line="102" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/conf.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="255">
-          <caret line="15" column="58" lean-forward="true" selection-start-line="15" selection-start-column="58" selection-end-line="15" selection-end-column="58" />
+        <state relative-caret-position="408">
+          <caret line="24" column="24" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/py2neo/database/__init__.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="447">
+          <caret line="960" column="0" lean-forward="false" selection-start-line="960" selection-start-column="0" selection-end-line="960" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="388">
-          <caret line="35" column="37" lean-forward="true" selection-start-line="35" selection-start-column="37" selection-end-line="35" selection-end-column="37" />
-          <folding>
-            <element signature="e#0#19#0" expanded="true" />
-          </folding>
+        <state relative-caret-position="289">
+          <caret line="23" column="35" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/neocontroller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1184">
-          <caret line="126" column="0" lean-forward="false" selection-start-line="126" selection-start-column="0" selection-end-line="126" selection-end-column="0" />
+        <state relative-caret-position="1431">
+          <caret line="274" column="85" lean-forward="false" selection-start-line="274" selection-start-column="0" selection-end-line="275" selection-end-column="0" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <marker date="1515761748000" expanded="true" signature="6772:6872" ph="..." />
+            <element signature="e#6069#9123#0" expanded="false" />
+            <marker date="1516138456000" expanded="true" signature="12261:12361" ph="..." />
           </folding>
         </state>
       </provider>

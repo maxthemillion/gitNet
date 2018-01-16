@@ -3,6 +3,11 @@ import json
 import pandas as pd
 import warnings
 import conf
+from dateutil import rrule
+from datetime import datetime, timedelta
+import time
+import networkx as nx
+import community as nxlouvain
 
 
 class Neo4jController:
@@ -77,57 +82,116 @@ class Neo4jController:
         print("{0}/{1}: Import to Neo4j succeeded!".format(owner, repo))
         print()
 
-    def get_communities(self):
-
-        query = "MATCH (n:USER) " \
-                "WITH COUNT(n.community) AS count, n.community as community  " \
-                "WHERE count > 1 " \
-                "RETURN count, community " \
-                "ORDER BY count DESC"
-
-        return pd.DataFrame(self.graph.data(query))
-
     def get_degree(self):
         query = "MATCH r = (n:USER)-[x]-(m:USER) " \
                 "RETURN Count(x) as node_degree, n.login as name"
         nodes = pd.DataFrame(self.graph.data(query))
         return nodes
 
-    def run_louvain(self):
-        print("Running Louvain algorithm on Neo4j...")
-        query_part = "CALL algo.louvain(" \
-                     "'MATCH (u:USER) RETURN id(p) as id', " \
-                     "'MATCH (u1:USER)-[rel]-(u2:USER) " \
-                     "RETURN id(u1) as source, id(u2) as target', " \
-                     "{weightProperty:'weight', write: true, writeProperty:'community', graph:'cypher'})"
-        self.graph.run(query_part)
-        print("Complete!")
-        print()
+    def louvain_networkx(self, owner, repo):
+        date_query = '''MATCH (u:USER) -[x]-> (u2:USER) 
+                                    WHERE x.owner = "{0}" and x.repo = "{1}"
+                                    UNWIND x.tscomp as ts
+                                    RETURN 
+                                    apoc.date.format( min(ts),'s', 'yyyy-MM-dd') AS startdt, 
+                                    apoc.date.format(max(ts), 's', 'yyyy-MM-dd') AS enddt'''.format(owner, repo)
 
-    def run_louvain_on_subgraph(self, date, owner, repo):
+        dates = self.graph.run(date_query).data()[0]
 
-        squery_nodes = '''MATCH (u) -[x]-> (u2:USER) 
-                       WHERE x.owner = {0} and x.repo = {1}
-                       RETURN id(u) as id'''.format(owner, repo)
+        startdt = datetime.strptime(dates["startdt"], "%Y-%m-%d").date()
+        enddt = datetime.strptime(dates["enddt"], "%Y-%m-%d").date()
 
-        squery_links = '''WITH apoc.date.parse({0}, 's', "yyyy-MM-dd") AS dateEnd 
-                          WITH dateEnd,  apoc.date.add(dateEnd, 's', -30, 'd') AS dateStart
-                          MATCH (u1:USER)-[x]->(u2:USER)
-                          WHERE x.owner = {1}
-                          and x.repo = {2}
-                          and x.tscomp < dateEnd
-                          and x.tscomp > dateStart
-                          RETURN id(u1) as source, id(u2) as target'''.format(owner, repo, date)
+        print("Running NX Louvain algorithm for {0}/{1} and timeframe length {2}".format(owner, repo,
+                                                                                         conf.neo4j_length_timeframe))
+        res = []
+        for dt in rrule.rrule(rrule.WEEKLY, dtstart=startdt, until=enddt):
+            time_start = time.time()
 
-        query = '''CALL algo.louvain.stream(
-                    $l_node_query, 
-                    $l_link_query,   
-                    {weightProperty:'weight', graph:'cypher'})
-                    YIELD nodeId, community
-                    RETURN nodeId, community                      
-                '''
+            squery_links = '''WITH apoc.date.parse($l_dt, 's', "yyyy-MM-dd") AS dateEnd 
+                                      WITH dateEnd,  apoc.date.add(dateEnd, 's', $l_tf_length, 'd') AS dateStart
+                                      MATCH (u1:USER)-[x]->(u2:USER)
+                                      WHERE x.owner = $l_owner
+                                      and x.repo = $l_repo
+                                      and x.tscomp < dateEnd
+                                      and x.tscomp > dateStart
+                                      RETURN id(u1) as source, id(u2) as target'''
 
-        res = self.graph.run(query, parameters=({'l_node_query': squery_nodes, 'l_link_query': squery_links})).data()
+            links = pd.DataFrame(self.graph.run(squery_links,
+                                                parameters={"l_owner": owner,
+                                                            "l_repo": repo,
+                                                            "l_tf_length": conf.neo4j_length_timeframe * -1,
+                                                            "l_dt": dt.strftime("%Y-%m-%d")}
+                                                ).data())
+
+            if not links.empty:
+                nxgraph = nx.from_pandas_dataframe(links, source="source", target="target")
+
+                partition = nxlouvain.best_partition(nxgraph)
+
+                partition = Neo4jController.convert_keys_to_string(partition)
+
+                res.append({dt.strftime("%Y-%m-%d"): partition})
+
+            print("current: {0} - time: {1}".format(dt.date(), time.time() - time_start))
+
+        return res
+
+    def run_louvain_on_subgraph(self, owner, repo):
+        warnings.warn("buggy louvain implementation on Neo4j. "
+                      "louvain runs on complete graph despite selection of subgraph")
+
+        date_query = '''MATCH (u:USER) -[x]-> (u2:USER) 
+                            WHERE x.owner = "{0}" and x.repo = "{1}"
+                            UNWIND x.tscomp as ts
+                            RETURN 
+                            apoc.date.format( min(ts),'s', 'yyyy-MM-dd') AS startdt, 
+                            apoc.date.format(max(ts), 's', 'yyyy-MM-dd') AS enddt'''.format(owner, repo)
+
+        dates = self.graph.run(date_query).data()[0]
+
+        startdt = datetime.strptime(dates["startdt"], "%Y-%m-%d").date()
+        enddt = datetime.strptime(dates["enddt"], "%Y-%m-%d").date()
+
+        startdt = datetime.strptime("2016-09-01", "%Y-%m-%d").date()
+
+        print("Running Louvain algorithm for {0}/{1} and timeframe length {2}".format(owner, repo,
+                                                                                      conf.neo4j_length_timeframe))
+        res = []
+        for dt in rrule.rrule(rrule.WEEKLY, dtstart=startdt, until=enddt):
+            time_start = time.time()
+
+            squery_nodes = '''WITH apoc.date.parse('2016-09-01', 's', 'yyyy-MM-dd') AS dateEnd 
+                              WITH dateEnd,  apoc.date.add(dateEnd, 's', -30, 'd') AS dateStart
+                              MATCH (u:USER) -[x]- (u2:USER) 
+                              WHERE x.owner = {0}
+                              and x.repo = {1}
+                              and x.tscomp < dateEnd
+                              and x.tscomp > dateStart
+                              RETURN Distinct id(u) as id'''.format(owner, repo)
+
+            squery_links = '''WITH apoc.date.parse({0}, 's', "yyyy-MM-dd") AS dateEnd 
+                              WITH dateEnd,  apoc.date.add(dateEnd, 's', {1}, 'd') AS dateStart
+                              MATCH (u1:USER)-[x]->(u2:USER)
+                              WHERE x.owner = {2}
+                              and x.repo = {3}
+                              and x.tscomp < dateEnd
+                              and x.tscomp > dateStart
+                              RETURN id(u1) as source, id(u2) as target''' \
+                .format(dt, conf.neo4j_length_timeframe * -1, owner, repo)
+
+            query = '''CALL algo.louvain.stream(
+                        $l_node_query, 
+                        $l_link_query,   
+                        {graph:'cypher', concurrency:4})
+                        YIELD nodeId, community
+                        RETURN nodeId as id, community as group                      
+                    '''
+
+            res.append({dt.strftime("%Y-%m-%d"): self.graph.run(query,
+                                                                parameters=({'l_node_query': squery_nodes,
+                                                                             'l_link_query': squery_links})).data()})
+            print("current: {0} - time: {1}".format(dt.date(), time.time() - time_start))
+
         return res
 
     def stream_to_gephi(self):
@@ -140,7 +204,18 @@ class Neo4jController:
         print("Complete!")
         print()
 
+    @staticmethod
+    def convert_keys_to_string(dictionary):
+        """Recursively converts dictionary keys to strings."""
+        if not isinstance(dictionary, dict):
+            return dictionary
+        return dict((str(k), Neo4jController.convert_keys_to_string(v))
+                    for k, v in dictionary.items())
+
     def export_graphjson(self):
+
+        if not conf.neo4j_export_json:
+            return
 
         for e in conf.neo4j_export_json_pnames:
 
@@ -172,19 +247,9 @@ class Neo4jController:
 
             nodes = self.graph.data(node_query, parameters={'l_owner': owner, 'l_repo': repo})
 
-            # communities = self.get_communities()
-            # num_no_community = len(communities) + 1
-
             node_degree = self.get_degree()
 
             for node in nodes:
-                # if node["group"] in communities["community"].values:
-                #   idx = communities[communities["community"] == node["group"]].index[0]
-                #   node["group"] = int(idx)
-                #   node["hasGroup"] = True
-                # else:
-                #   node["group"] = num_no_community
-                #   node["hasGroup"] = False
 
                 if node["id"] in node_degree["name"].values:
                     idx = node_degree[node_degree["name"] == node["id"]].index[0]
@@ -201,7 +266,11 @@ class Neo4jController:
                      'total_nodes': len(nodes),
                      'total_links': len(links)}]
 
-            data = {"info": info, "nodes": nodes, "links": links}
+            groups = []
+            if conf.neo4j_run_louvain:
+                groups = self.louvain_networkx(owner, repo)
+
+            data = {"info": info, "nodes": nodes, "links": links, "groups": groups}
 
             with open("Export/viz/data_{0}_{1}.json".format(owner, repo), "w") as fp:
                 json.dump(data, fp, indent="\t")

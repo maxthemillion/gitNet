@@ -19,11 +19,16 @@ maxDate = pd.Timestamp('2017-01-01 00:00:00.000', tz=None)
 # ---- neo4j parameters ----
 neo4j_clear_on_startup = False
 neo4j_import = True
-neo4j_run_louvain = False
+
 neo4j_stream_to_gephi = False
+
 neo4j_export_json = True
+neo4j_run_louvain = True
 neo4j_export_json_pnames = [{"owner": "Homebrew", "repo": "brew"},
                             {"owner": "d3", "repo": "d3"}]
+
+neo4j_resolution = 7  # resolution in days
+neo4j_length_timeframe = 30  # length of time period to consider
 
 
 def get_import_path(owner):

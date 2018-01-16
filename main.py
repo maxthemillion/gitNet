@@ -61,6 +61,7 @@ def split_projects(owner, repos):
         print("---------------------------------")
         print()
 
+
 def import_owner_data(owner):
     with open(conf.get_import_path(owner)) as json_data:
         d = json.load(json_data)
@@ -136,7 +137,7 @@ def date_filter(data):
 def rename_cols(data):
 
     # TODO: find another name for thread_id
-    # the name thread_id is incorrect as for cc and pc threads have to be split futher by position. Fi
+    # the name thread_id is incorrect as for cc and pc threads have to be split further by position. Fi
     column_names = data.columns
     if "pullreq_id" in column_names:
         data = data.rename(index=str, columns={"pullreq_id": "thread_id"})
