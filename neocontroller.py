@@ -32,6 +32,8 @@ class Neo4jController:
                             repo: $l_repo
                             }, b)
                     YIELD rel
+                    WITH rel
+                    SET rel.tscomp = apoc.date.parse(rel.timestamp, 's',"yyyy-MM-dd'T'HH:mm:ss")
                     RETURN rel'''
 
         tx = self.graph.begin()
@@ -66,6 +68,12 @@ class Neo4jController:
                                                  'l_r1': 'Touched',
                                                  'l_r2': 'Belongs_to'})
         tx.commit()
+
+
+        parse_dates = '''MATCH (n:USER)-[x]-(m:USER)
+                        WITH x
+                        RETURN CALL apoc.date.parse(x.timestamp, 's',"yyyy-MM-dd'T'HH:mm:ss") as parsed
+                        '''
 
         print("{0}/{1}: Import to Neo4j succeeded!".format(owner, repo))
         print()
@@ -163,7 +171,10 @@ class Neo4jController:
             for link in links:
                 link["weight"] = int(link["weight"])  # TODO: find the cause for weight being a string
 
-            info = [{'owner': owner, 'repo': repo}]
+            info = [{'owner': owner,
+                     'repo': repo,
+                     'total_nodes': len(nodes),
+                     'total_links': len(links)}]
 
             data = {"info": info, "nodes": nodes, "links": links}
 
