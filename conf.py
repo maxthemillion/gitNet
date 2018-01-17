@@ -1,7 +1,7 @@
 import pandas as pd
 
 # ---- network construction parameters ----
-construct_network = False
+construct_network = True
 
 # data source
 use_synthetic_data = False
@@ -35,6 +35,9 @@ a_length_timeframe = 30  # length of time period to consider
 a_louvain = True
 a_degree_centrality = True
 a_betweenness_centrality = True
+
+# ---- output parameters ----
+output_verbose = False
 
 
 def get_import_path(owner):

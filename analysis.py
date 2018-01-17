@@ -28,28 +28,37 @@ def analyze_owners():
 
 class Analyzer:
     def __init__(self, owner, repo):
-        self.owner = owner
-        self.repo = repo
+        self._owner = owner
+        self._repo = repo
 
-        self.controller = neocontroller.Neo4jController()
-        self.startdt, self.enddt = self.controller.get_timeframe(self.owner, self.repo)
-        self.partition = None
-        self.degree_centrality = None
-        self.betweenness_centrality = None
+        self._controller = neocontroller.Neo4jController()
+        self._startdt, self._enddt = self._controller.get_timeframe(self._owner, self._repo)
+        self._partition = None
+        self._degree_centrality = None
+        self._betweenness_centrality = None
 
     def run(self):
         # self.partition = self.louvain_networkx()
-        self.partition, self.degree_centrality, self.betweenness_centrality = self.run_all()
+        self._partition, self._degree_centrality, self._betweenness_centrality = self._individual_measures()
 
-    def louvain_networkx(self):
+    def get_groups(self):
+        return self._partition
 
-        print("Running NX Louvain algorithm for {0}/{1} and timeframe length {2}".format(self.owner, self.repo,
+    def get_betweenness_centrality(self):
+        return self._betweenness_centrality
+
+    def get_degree_centrality(self):
+        return self._degree_centrality
+
+    def _louvain_networkx(self):
+
+        print("Running NX Louvain algorithm for {0}/{1} and timeframe length {2}".format(self._owner, self._repo,
                                                                                          conf.a_length_timeframe))
         res = {}
-        for dt in rrule.rrule(rrule.WEEKLY, dtstart=self.startdt, until=self.enddt):
+        for dt in rrule.rrule(rrule.WEEKLY, dtstart=self._startdt, until=self._enddt):
             time_start = time.time()
 
-            links = self.controller.get_subgraph(self.owner, self.repo, dt)
+            links = self._controller.get_subgraph(self._owner, self._repo, dt)
 
             if not links.empty:
                 nxgraph = nx.from_pandas_dataframe(links, source="source", target="target", create_using=nx.MultiGraph())
@@ -64,18 +73,20 @@ class Analyzer:
 
         return res
 
+    def _individual_measures(self):
 
-    def run_all(self):
-
-        print("Running NX analysis for {0}/{1} and timeframe length {2}".format(self.owner, self.repo,
-                                                                                        conf.a_length_timeframe))
+        print("Running NX analysis for {0}/{1} and timeframe length {2}".format(self._owner,
+                                                                                self._repo,
+                                                                                conf.a_length_timeframe))
         res_louvain = {}
         res_degree_centrality = {}
         res_betweenness_centrality = {}
-        for dt in rrule.rrule(rrule.WEEKLY, dtstart=self.startdt, until=self.enddt):
-            time_start = time.time()
 
-            links = self.controller.get_subgraph(self.owner, self.repo, dt)
+        time_start = time.time()
+        for dt in rrule.rrule(rrule.WEEKLY, dtstart=self._startdt, until=self._enddt):
+            lap_time = time.time()
+
+            links = self._controller.get_subgraph(self._owner, self._repo, dt)
 
             if not links.empty:
                 nxgraph = nx.from_pandas_dataframe(links, source="source", target="target", create_using=nx.MultiGraph())
@@ -93,12 +104,18 @@ class Analyzer:
                     dc = nx.degree_centrality(nxgraph)
                     res_degree_centrality[dt.strftime("%Y-%m-%d")] = dc
 
-            print("current: {0} - time: {1}".format(dt.date(), time.time() - time_start))
+            if conf.output_verbose:
+                print("current: {0} - time: {0:.2f}s".format(dt.date(), time.time() - lap_time))
+
+        print("{0:.2f}s".format(time.time()-time_start))
+        print()
 
         return res_louvain, res_degree_centrality, res_betweenness_centrality
 
+    def _export_measures(self):
+        pass
+
 
 if __name__ == '__main__':
-    # cProfile.run("main()", sort="cumtime")
     analyze_repos()
     # analyze_owners()

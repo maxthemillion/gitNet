@@ -46,11 +46,11 @@ class AnalyzerTests(unittest.TestCase):
 
     @unittest.skip
     def testNxLouvain(self):
-        res = self.analyzer.louvain_networkx()
+        res = self.analyzer._louvain_networkx()
         self.assertIsInstance(res, list)
 
     def testrunnal(self):
-        louvain, dc, bc = self.analyzer.run_all()
+        louvain, dc, bc = self.analyzer._individual_measures()
         self.assertTrue(True)
 
 class StringSearch(unittest.TestCase):

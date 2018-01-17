@@ -31,13 +31,12 @@ class Neo4jController:
                     WITH a, b
                     CALL apoc.create.relationship(a, $l_ref_type, 
                             {weight: $l_weight, 
-                            timestamp:$l_timestamp, 
+                            tscomp: apoc.date.parse($l_timestamp, 's',"yyyy-MM-dd"), 
                             owner: $l_owner,
                             repo: $l_repo
                             }, b)
                     YIELD rel
                     WITH rel
-                    SET rel.tscomp = apoc.date.parse(rel.timestamp, 's',"yyyy-MM-dd'T'HH:mm:ss")
                     RETURN rel'''
 
         tx = self.graph.begin()
@@ -47,7 +46,7 @@ class Neo4jController:
                                                'l_login_b': row['addressee'],
                                                'l_ref_type': row['ref_type'],
                                                'l_weight': 1,
-                                               'l_timestamp': row['timestamp'].strftime("%Y-%m-%dT%H:%M:%S%Z"),
+                                               'l_timestamp': row['timestamp'].strftime("%Y-%m-%d"),
                                                'l_owner': owner,
                                                'l_repo': repo})
             if (index + 1) % 10000 == 0:
@@ -68,15 +67,8 @@ class Neo4jController:
         for index, row in node_df.iterrows():
             tx.evaluate(merge_nodes, parameters={'l_login_a': row["participants"],
                                                  'l_repo': repo,
-                                                 'l_owner': owner,
-                                                 'l_r1': 'Touched',
-                                                 'l_r2': 'Belongs_to'})
+                                                 'l_owner': owner})
         tx.commit()
-
-        parse_dates = '''MATCH (n:USER)-[x]-(m:USER)
-                        WITH x
-                        RETURN CALL apoc.date.parse(x.timestamp, 's',"yyyy-MM-dd'T'HH:mm:ss") as parsed
-                        '''
 
         print("{0}/{1}: Import to Neo4j succeeded!".format(owner, repo))
         print()
@@ -92,7 +84,7 @@ class Neo4jController:
                                     WHERE x.owner = "{0}" and x.repo = "{1}"
                                     UNWIND x.tscomp as ts
                                     RETURN 
-                                    apoc.date.format( min(ts),'s', 'yyyy-MM-dd') AS startdt, 
+                                    apoc.date.format(min(ts),'s', 'yyyy-MM-dd') AS startdt, 
                                     apoc.date.format(max(ts), 's', 'yyyy-MM-dd') AS enddt'''.format(owner, repo)
 
         dates = self.graph.run(date_query).data()[0]
@@ -212,21 +204,25 @@ class Neo4jController:
             node_query = """MATCH (o:OWNER{name: $l_owner}) -- (r:REPO{ name: $l_repo })
                             WITH r
                             MATCH (r) -- (u:USER)
-                            RETURN
-                            id(u) AS id"""
-            #               u.community AS group,
-            #               u.login AS name
+                            RETURN id(u) AS id, u.login AS name """
+
+            node_query = """MATCH (u1:USER) -[x]- (u2:USER)
+                            WHERE x.owner = $l_owner
+                            and x.repo = $l_repo
+                            WITH DISTINCT u1
+                            RETURN id(u1) AS id, u1.login AS name """
 
             link_query = """MATCH (o:OWNER{name: $l_owner}) -- (r:REPO{ name: $l_repo })
                             WITH r
                             MATCH (r) -- (u1:USER)
                             WITH u1
                             MATCH (u1) -[x:Mention|Quote|ContextualReply{owner: $l_owner, repo: $l_repo}]- (u2:USER)
-                            RETURN id(u1) AS source,
+                            RETURN 
+                            id(u1) AS source,
                             id(u2) AS target,
                             x.weight AS weight,
                             type(x) AS rel_type,
-                            x.timestamp AS timestamp,
+                            apoc.date.format(x.tscomp, 's', 'yyyy-MM-dd') AS timestamp,
                             id(x) AS link_id"""
 
             nodes = self.graph.data(node_query, parameters={'l_owner': owner, 'l_repo': repo})
@@ -251,9 +247,18 @@ class Neo4jController:
                      'total_links': len(links)}]
 
             a = Analyzer(owner, repo)
-            groups = self.convert_keys_to_string(a.louvain_networkx())
+            a.run()
 
-            data = {"info": info, "nodes": nodes, "links": links, "groups": groups}
+            groups = self.convert_keys_to_string(a.get_groups())
+            d_centrality = self.convert_keys_to_string(a.get_degree_centrality())
+            b_centrality = self.convert_keys_to_string(a.get_betweenness_centrality())
+
+            data = {"info": info,
+                    "nodes": nodes,
+                    "links": links,
+                    "groups": groups,
+                    "d_centrality": d_centrality,
+                    "b_centrality": b_centrality}
 
             with open("Export/viz/data_{0}_{1}.json".format(owner, repo), "w") as fp:
                 json.dump(data, fp, indent="\t")
