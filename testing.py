@@ -1,13 +1,13 @@
 import unittest
+import pandas as pd
+import json
+import datetime
 from project import Project, ProjectStats
 from references import Mention, Quote, ContextualReply
-import pandas as pd
 from threads import Thread
-import json
 from main import clean_data
+from analysis import Analyzer
 from neocontroller import Neo4jController
-import datetime
-from datetime import tzinfo
 
 
 def setup_sample_threads():
@@ -35,19 +35,23 @@ def setup_sample_data():
     return clean_data(pc, ic, cc)
 
 
-class Neo4jQueriesLouvain(unittest.TestCase):
+class AnalyzerTests(unittest.TestCase):
     def setUp(self):
-        self.controller = Neo4jController()
         self.owner = "Homebrew"
         self.repo = "brew"
+        self.analyzer = Analyzer(self.owner, self.repo)
 
         date = datetime.date(year=2016, month=10, day=1)
         self.datestring = date.strftime("%Y-%m-%d")
 
+    @unittest.skip
+    def testNxLouvain(self):
+        res = self.analyzer.louvain_networkx()
+        self.assertIsInstance(res, list)
 
-    def testPartialLouvain(self):
-        res = self.controller.run_louvain_on_subgraph(self.datestring, self.owner, self.repo)
-        self.assertTrue(False)
+    def testrunnal(self):
+        louvain, dc, bc = self.analyzer.run_all()
+        self.assertTrue(True)
 
 class StringSearch(unittest.TestCase):
 

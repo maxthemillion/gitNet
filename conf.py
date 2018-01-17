@@ -1,7 +1,7 @@
 import pandas as pd
 
-# ---- analysis parameters ----
-run_analysis = False
+# ---- network construction parameters ----
+construct_network = False
 
 # data source
 use_synthetic_data = False
@@ -17,18 +17,24 @@ minDate = pd.Timestamp('2014-01-01 00:00:00.000', tz=None)
 maxDate = pd.Timestamp('2017-01-01 00:00:00.000', tz=None)
 
 # ---- neo4j parameters ----
-neo4j_clear_on_startup = False
-neo4j_import = True
+neo4j_import = construct_network
+neo4j_clear_on_startup = construct_network
 
 neo4j_stream_to_gephi = False
 
+# visualization export
 neo4j_export_json = True
-neo4j_run_louvain = True
 neo4j_export_json_pnames = [{"owner": "Homebrew", "repo": "brew"},
                             {"owner": "d3", "repo": "d3"}]
 
-neo4j_resolution = 7  # resolution in days
-neo4j_length_timeframe = 30  # length of time period to consider
+# ---- analysis parameters ---
+
+# a_resolution = 7  # resolution in days
+a_length_timeframe = 30  # length of time period to consider
+
+a_louvain = True
+a_degree_centrality = True
+a_betweenness_centrality = True
 
 
 def get_import_path(owner):

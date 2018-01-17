@@ -12,26 +12,22 @@ def main():
     neo_controller = Neo4jController()
     neo_controller.clear_db()
 
-    if conf.run_analysis:
-        run_analysis()
-
-    # TODO: doesn't make sense here anymore. move to neo_controller.
-    # if conf.neo4j_run_louvain:
-    #     neo_controller.run_louvain()
+    construct_network()
 
     neo_controller.export_graphjson()
 
     collectors.analyze_invalid_refs()
     collectors.analyze_position_nan()
 
-
-
     print("------------------------------------------")
     print("Total process time elapsed:        {0:.2f}s".format(time.process_time()))
     print("------------------------------------------")
 
 
-def run_analysis():
+def construct_network():
+    if not conf.construct_network:
+        return
+
     import_repos = pd.read_csv("Input/owners.csv", sep=',', header=0)
     owners = import_repos["owners"].unique()
 

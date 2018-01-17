@@ -1,11 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="f06550ee-959a-491f-9cb8-acfc389fafa4" name="Default" comment="slight changes to the viz export">
+    <list default="true" id="f06550ee-959a-491f-9cb8-acfc389fafa4" name="Default" comment="">
+      <change type="NEW" beforePath="" afterPath="$PROJECT_DIR$/analysis.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf.py" afterPath="$PROJECT_DIR$/conf.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/neocontroller.py" afterPath="$PROJECT_DIR$/neocontroller.py" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testing.py" afterPath="$PROJECT_DIR$/testing.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -16,15 +18,56 @@
   </component>
   <component name="FileEditorManager">
     <leaf SIDE_TABS_SIZE_LIMIT_KEY="300">
-      <file leaf-file-name="neocontroller.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="neocontroller.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/neocontroller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="1431">
-              <caret line="274" column="85" lean-forward="false" selection-start-line="274" selection-start-column="0" selection-end-line="275" selection-end-column="0" />
+            <state relative-caret-position="1089">
+              <caret line="253" column="67" lean-forward="false" selection-start-line="253" selection-start-column="51" selection-end-line="253" selection-end-column="67" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
-                <element signature="e#6069#9123#0" expanded="false" />
-                <marker date="1516138456000" expanded="true" signature="12261:12361" ph="..." />
+                <element signature="e#373#552#0" expanded="false" />
+                <element signature="e#622#3195#0" expanded="false" />
+                <element signature="e#3231#3415#0" expanded="false" />
+                <element signature="e#5332#8378#0" expanded="false" />
+                <element signature="e#8419#8757#0" expanded="false" />
+                <marker date="1516184101000" expanded="true" signature="11479:11579" ph="..." />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="analysis.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/analysis.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="289">
+              <caret line="17" column="26" lean-forward="true" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
+              <folding>
+                <element signature="e#0#20#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="testing.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/testing.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="567">
+              <caret line="55" column="0" lean-forward="false" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+              <folding>
+                <element signature="e#0#15#0" expanded="true" />
+                <element signature="e#322#662#0" expanded="false" />
+                <element signature="e#694#917#0" expanded="false" />
+                <element signature="e#1495#3287#0" expanded="false" />
+                <element signature="e#3349#4838#0" expanded="false" />
+                <element signature="e#4901#7908#0" expanded="false" />
+                <element signature="e#7966#11094#0" expanded="false" />
+                <element signature="e#11154#11855#0" expanded="false" />
+                <element signature="e#11910#12632#0" expanded="false" />
+                <element signature="e#12697#13424#0" expanded="false" />
+                <element signature="e#13489#13990#0" expanded="false" />
+                <element signature="e#14059#14451#0" expanded="false" />
+                <element signature="e#14506#14695#0" expanded="false" />
+                <element signature="e#14750#19807#0" expanded="false" />
               </folding>
             </state>
           </provider>
@@ -33,18 +76,18 @@
       <file leaf-file-name="__init__.py" pinned="false" current-in-tab="false">
         <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/py2neo/database/__init__.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="447">
-              <caret line="960" column="0" lean-forward="false" selection-start-line="960" selection-start-column="0" selection-end-line="960" selection-end-column="0" />
+            <state relative-caret-position="440">
+              <caret line="1285" column="0" lean-forward="false" selection-start-line="1285" selection-start-column="0" selection-end-line="1285" selection-end-column="0" />
               <folding />
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/main.py">
+      <file leaf-file-name="bolt.py" pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/py2neo/packages/neo4j/v1/bolt.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="289">
-              <caret line="23" column="35" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+            <state relative-caret-position="447">
+              <caret line="343" column="0" lean-forward="false" selection-start-line="343" selection-start-column="0" selection-end-line="343" selection-end-column="0" />
               <folding />
             </state>
           </provider>
@@ -53,8 +96,18 @@
       <file leaf-file-name="conf.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/conf.py">
           <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="442">
+              <caret line="26" column="66" lean-forward="true" selection-start-line="26" selection-start-column="66" selection-end-line="26" selection-end-column="66" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
+        <entry file="file://$PROJECT_DIR$/main.py">
+          <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="408">
-              <caret line="24" column="24" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+              <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="36" selection-end-column="36" />
               <folding />
             </state>
           </provider>
@@ -71,7 +124,6 @@
   </component>
   <component name="FindInProjectRecents">
     <findStrings>
-      <find>parent_project</find>
       <find>analyze_threads</find>
       <find>participants</find>
       <find>ProjectStats</find>
@@ -100,6 +152,7 @@
       <find>fake_stats</find>
       <find>parameters</find>
       <find>strftime</find>
+      <find>neo4j_run_louvain</find>
       <find>strf</find>
     </findStrings>
   </component>
@@ -142,10 +195,11 @@
         <option value="$PROJECT_DIR$/collectors.py" />
         <option value="$PROJECT_DIR$/project.py" />
         <option value="$PROJECT_DIR$/TestData/mongo_d3_syn.json" />
-        <option value="$PROJECT_DIR$/testing.py" />
         <option value="$PROJECT_DIR$/main.py" />
-        <option value="$PROJECT_DIR$/conf.py" />
+        <option value="$PROJECT_DIR$/testing.py" />
         <option value="$PROJECT_DIR$/neocontroller.py" />
+        <option value="$PROJECT_DIR$/conf.py" />
+        <option value="$PROJECT_DIR$/analysis.py" />
       </list>
     </option>
   </component>
@@ -215,7 +269,7 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Python.main">
+  <component name="RunManager" selected="Python.analysis">
     <configuration name="Nosetests in UnitTests.py" type="tests" factoryName="Nosetests" temporary="true" nameIsGenerated="true">
       <option name="INTERPRETER_OPTIONS" value="" />
       <option name="PARENT_ENVS" value="true" />
@@ -230,6 +284,23 @@
       <option name="_new_additionalArguments" value="&quot;&quot;" />
       <option name="_new_target" value="&quot;$PROJECT_DIR$/testing.py&quot;" />
       <option name="_new_targetType" value="&quot;PATH&quot;" />
+    </configuration>
+    <configuration name="analysis" type="PythonConfigurationType" factoryName="Python" temporary="true">
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <module name="NetworkConstructor" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/analysis.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" temporary="true">
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -282,37 +353,20 @@
       <option name="SHOW_COMMAND_LINE" value="false" />
       <option name="EMULATE_TERMINAL" value="false" />
     </configuration>
-    <configuration name="test_at_username" type="PythonConfigurationType" factoryName="Python" temporary="true">
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <option name="PARENT_ENVS" value="true" />
-      <envs>
-        <env name="PYTHONUNBUFFERED" value="1" />
-      </envs>
-      <option name="SDK_HOME" value="" />
-      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="IS_MODULE_SDK" value="true" />
-      <option name="ADD_CONTENT_ROOTS" value="true" />
-      <option name="ADD_SOURCE_ROOTS" value="true" />
-      <module name="NetworkConstructor" />
-      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Project_class.py" />
-      <option name="PARAMETERS" value="" />
-      <option name="SHOW_COMMAND_LINE" value="false" />
-      <option name="EMULATE_TERMINAL" value="false" />
-    </configuration>
     <list size="5">
-      <item index="0" class="java.lang.String" itemvalue="Python.test_at_username" />
-      <item index="1" class="java.lang.String" itemvalue="Python.main" />
-      <item index="2" class="java.lang.String" itemvalue="Python.test" />
-      <item index="3" class="java.lang.String" itemvalue="Python tests.Nosetests in UnitTests.py" />
-      <item index="4" class="java.lang.String" itemvalue="Python.mongocontroller" />
+      <item index="0" class="java.lang.String" itemvalue="Python.main" />
+      <item index="1" class="java.lang.String" itemvalue="Python.test" />
+      <item index="2" class="java.lang.String" itemvalue="Python tests.Nosetests in UnitTests.py" />
+      <item index="3" class="java.lang.String" itemvalue="Python.mongocontroller" />
+      <item index="4" class="java.lang.String" itemvalue="Python.analysis" />
     </list>
     <recent_temporary>
       <list size="5">
-        <item index="0" class="java.lang.String" itemvalue="Python.main" />
-        <item index="1" class="java.lang.String" itemvalue="Python tests.Nosetests in UnitTests.py" />
-        <item index="2" class="java.lang.String" itemvalue="Python.mongocontroller" />
-        <item index="3" class="java.lang.String" itemvalue="Python.test" />
-        <item index="4" class="java.lang.String" itemvalue="Python.test_at_username" />
+        <item index="0" class="java.lang.String" itemvalue="Python.analysis" />
+        <item index="1" class="java.lang.String" itemvalue="Python.main" />
+        <item index="2" class="java.lang.String" itemvalue="Python tests.Nosetests in UnitTests.py" />
+        <item index="3" class="java.lang.String" itemvalue="Python.mongocontroller" />
+        <item index="4" class="java.lang.String" itemvalue="Python.test" />
       </list>
     </recent_temporary>
   </component>
@@ -477,38 +531,45 @@
       <option name="project" value="LOCAL" />
       <updated>1516118811879</updated>
     </task>
-    <option name="localTasksCounter" value="22" />
+    <task id="LOCAL-00022" summary="substituted Neo4j louvain with NetworkX Louvain">
+      <created>1516138515556</created>
+      <option name="number" value="00022" />
+      <option name="presentableId" value="LOCAL-00022" />
+      <option name="project" value="LOCAL" />
+      <updated>1516138515556</updated>
+    </task>
+    <option name="localTasksCounter" value="23" />
     <servers />
   </component>
   <component name="TestHistory">
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 03m 39s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.17 at 09h 51m 25s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 04m 45s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.17 at 10h 36m 17s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 48m 22s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.17 at 10h 36m 31s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 52m 12s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.17 at 10h 37m 21s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 53m 17s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.17 at 10h 38m 46s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 56m 09s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.17 at 10h 39m 49s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 16h 57m 30s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.17 at 10h 59m 20s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 17h 01m 05s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.17 at 11h 00m 26s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 17h 02m 56s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.17 at 11h 02m 55s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
-    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.16 at 17h 17m 09s.xml">
+    <history-entry file="Nosetests_in_UnitTests_py - 2018.01.17 at 11h 14m 59s.xml">
       <configuration name="Nosetests in UnitTests.py" configurationId="tests" />
     </history-entry>
   </component>
@@ -523,13 +584,12 @@
   </component>
   <component name="ToolWindowManager">
     <frame x="0" y="0" width="2560" height="1440" extended-state="0" />
-    <editor active="true" />
     <layout>
       <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.15250199" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3259587" sideWeight="0.49285147" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34513274" sideWeight="0.5129241" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32430342" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.28514695" sideWeight="0.48707592" order="5" side_tool="false" content_ui="tabs" x="0" y="23" width="445" height="696" />
+      <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3240673" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Run" active="true" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.41858616" sideWeight="0.48707592" order="5" side_tool="false" content_ui="tabs" x="0" y="23" width="445" height="696" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32380217" sideWeight="0.49353796" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3274648" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11423748" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
@@ -630,7 +690,8 @@
     <MESSAGE value="slight changes to the viz export" />
     <MESSAGE value="added timestamp conversion" />
     <MESSAGE value="added louvain run on subgraph method" />
-    <option name="LAST_COMMIT_MESSAGE" value="added louvain run on subgraph method" />
+    <MESSAGE value="substituted Neo4j louvain with NetworkX Louvain" />
+    <option name="LAST_COMMIT_MESSAGE" value="substituted Neo4j louvain with NetworkX Louvain" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -642,8 +703,23 @@
         </line-breakpoint>
         <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
           <url>file://$PROJECT_DIR$/neocontroller.py</url>
-          <line>192</line>
+          <line>177</line>
           <option name="timeStamp" value="280" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/testing.py</url>
+          <line>53</line>
+          <option name="timeStamp" value="290" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/neocontroller.py</url>
+          <line>97</line>
+          <option name="timeStamp" value="292" />
+        </line-breakpoint>
+        <line-breakpoint enabled="true" suspend="THREAD" type="python-line">
+          <url>file://$PROJECT_DIR$/neocontroller.py</url>
+          <line>253</line>
+          <option name="timeStamp" value="293" />
         </line-breakpoint>
       </breakpoints>
       <default-breakpoints>
@@ -653,21 +729,11 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="286" />
+      <option name="time" value="294" />
     </breakpoint-manager>
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="60">
-          <caret line="4" column="37" lean-forward="true" selection-start-line="4" selection-start-column="37" selection-end-line="4" selection-end-column="37" />
-          <folding>
-            <element signature="e#0#19#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/Analyzer_classes.py" />
     <entry file="file://$PROJECT_DIR$/Project_class.py" />
     <entry file="file://$PROJECT_DIR$/Project_class.py" />
@@ -769,6 +835,7 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="377">
           <caret line="977" column="0" lean-forward="false" selection-start-line="977" selection-start-column="0" selection-end-line="977" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -779,17 +846,11 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/py2neo/packages/neo4j/v1/bolt.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="418">
-          <caret line="343" column="0" lean-forward="false" selection-start-line="343" selection-start-column="0" selection-end-line="344" selection-end-column="0" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/pandas/core/generic.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="217">
           <caret line="1120" column="0" lean-forward="false" selection-start-line="1120" selection-start-column="0" selection-end-line="1120" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>
@@ -875,26 +936,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/testing.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="431">
-          <caret line="48" column="0" lean-forward="false" selection-start-line="48" selection-start-column="0" selection-end-line="48" selection-end-column="0" />
-          <folding>
-            <element signature="e#0#15#0" expanded="false" />
-            <element signature="e#320#660#0" expanded="false" />
-            <element signature="e#692#915#0" expanded="false" />
-            <element signature="e#1404#3196#0" expanded="false" />
-            <element signature="e#3258#4747#0" expanded="false" />
-            <element signature="e#4810#7817#0" expanded="false" />
-            <element signature="e#7875#11003#0" expanded="false" />
-            <element signature="e#11063#11764#0" expanded="false" />
-            <element signature="e#11819#12541#0" expanded="false" />
-            <element signature="e#12606#13333#0" expanded="false" />
-            <element signature="e#13398#13899#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$APPLICATION_HOME_DIR$/helpers/pydev/pydevd.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="442">
@@ -919,38 +960,83 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/conf.py">
+    <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="408">
-          <caret line="24" column="24" lean-forward="true" selection-start-line="24" selection-start-column="0" selection-end-line="25" selection-end-column="0" />
+          <caret line="30" column="0" lean-forward="false" selection-start-line="30" selection-start-column="0" selection-end-line="36" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/testing.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="567">
+          <caret line="55" column="0" lean-forward="false" selection-start-line="55" selection-start-column="0" selection-end-line="55" selection-end-column="0" />
+          <folding>
+            <element signature="e#0#15#0" expanded="true" />
+            <element signature="e#322#662#0" expanded="false" />
+            <element signature="e#694#917#0" expanded="false" />
+            <element signature="e#1495#3287#0" expanded="false" />
+            <element signature="e#3349#4838#0" expanded="false" />
+            <element signature="e#4901#7908#0" expanded="false" />
+            <element signature="e#7966#11094#0" expanded="false" />
+            <element signature="e#11154#11855#0" expanded="false" />
+            <element signature="e#11910#12632#0" expanded="false" />
+            <element signature="e#12697#13424#0" expanded="false" />
+            <element signature="e#13489#13990#0" expanded="false" />
+            <element signature="e#14059#14451#0" expanded="false" />
+            <element signature="e#14506#14695#0" expanded="false" />
+            <element signature="e#14750#19807#0" expanded="false" />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/py2neo/packages/neo4j/v1/bolt.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="447">
+          <caret line="343" column="0" lean-forward="false" selection-start-line="343" selection-start-column="0" selection-end-line="343" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$USER_HOME$/anaconda3/lib/python3.6/site-packages/py2neo/database/__init__.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="447">
-          <caret line="960" column="0" lean-forward="false" selection-start-line="960" selection-start-column="0" selection-end-line="960" selection-end-column="0" />
+        <state relative-caret-position="440">
+          <caret line="1285" column="0" lean-forward="false" selection-start-line="1285" selection-start-column="0" selection-end-line="1285" selection-end-column="0" />
           <folding />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
+    <entry file="file://$PROJECT_DIR$/conf.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="289">
-          <caret line="23" column="35" lean-forward="false" selection-start-line="23" selection-start-column="0" selection-end-line="24" selection-end-column="0" />
+        <state relative-caret-position="442">
+          <caret line="26" column="66" lean-forward="true" selection-start-line="26" selection-start-column="66" selection-end-line="26" selection-end-column="66" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/neocontroller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1431">
-          <caret line="274" column="85" lean-forward="false" selection-start-line="274" selection-start-column="0" selection-end-line="275" selection-end-column="0" />
+        <state relative-caret-position="1089">
+          <caret line="253" column="67" lean-forward="false" selection-start-line="253" selection-start-column="51" selection-end-line="253" selection-end-column="67" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
-            <element signature="e#6069#9123#0" expanded="false" />
-            <marker date="1516138456000" expanded="true" signature="12261:12361" ph="..." />
+            <element signature="e#373#552#0" expanded="false" />
+            <element signature="e#622#3195#0" expanded="false" />
+            <element signature="e#3231#3415#0" expanded="false" />
+            <element signature="e#5332#8378#0" expanded="false" />
+            <element signature="e#8419#8757#0" expanded="false" />
+            <marker date="1516184101000" expanded="true" signature="11479:11579" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="289">
+          <caret line="17" column="26" lean-forward="true" selection-start-line="17" selection-start-column="26" selection-end-line="17" selection-end-column="26" />
+          <folding>
+            <element signature="e#0#20#0" expanded="true" />
           </folding>
         </state>
       </provider>

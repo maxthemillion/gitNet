@@ -4,10 +4,9 @@ import pandas as pd
 import warnings
 import conf
 from dateutil import rrule
-from datetime import datetime, timedelta
+from datetime import datetime
 import time
-import networkx as nx
-import community as nxlouvain
+from analysis import Analyzer
 
 
 class Neo4jController:
@@ -88,7 +87,7 @@ class Neo4jController:
         nodes = pd.DataFrame(self.graph.data(query))
         return nodes
 
-    def louvain_networkx(self, owner, repo):
+    def get_timeframe(self, owner, repo):
         date_query = '''MATCH (u:USER) -[x]-> (u2:USER) 
                                     WHERE x.owner = "{0}" and x.repo = "{1}"
                                     UNWIND x.tscomp as ts
@@ -101,40 +100,26 @@ class Neo4jController:
         startdt = datetime.strptime(dates["startdt"], "%Y-%m-%d").date()
         enddt = datetime.strptime(dates["enddt"], "%Y-%m-%d").date()
 
-        print("Running NX Louvain algorithm for {0}/{1} and timeframe length {2}".format(owner, repo,
-                                                                                         conf.neo4j_length_timeframe))
-        res = []
-        for dt in rrule.rrule(rrule.WEEKLY, dtstart=startdt, until=enddt):
-            time_start = time.time()
+        return startdt, enddt
 
-            squery_links = '''WITH apoc.date.parse($l_dt, 's', "yyyy-MM-dd") AS dateEnd 
-                                      WITH dateEnd,  apoc.date.add(dateEnd, 's', $l_tf_length, 'd') AS dateStart
-                                      MATCH (u1:USER)-[x]->(u2:USER)
-                                      WHERE x.owner = $l_owner
-                                      and x.repo = $l_repo
-                                      and x.tscomp < dateEnd
-                                      and x.tscomp > dateStart
-                                      RETURN id(u1) as source, id(u2) as target'''
+    def get_subgraph(self, owner, repo, dt):
+        squery_links = '''WITH apoc.date.parse($l_dt, 's', "yyyy-MM-dd") AS dateEnd 
+                                          WITH dateEnd,  apoc.date.add(dateEnd, 's', $l_tf_length, 'd') AS dateStart
+                                          MATCH (u1:USER)-[x]->(u2:USER)
+                                          WHERE x.owner = $l_owner
+                                          and x.repo = $l_repo
+                                          and x.tscomp < dateEnd
+                                          and x.tscomp > dateStart
+                                          RETURN id(u1) as source, id(u2) as target'''
 
-            links = pd.DataFrame(self.graph.run(squery_links,
-                                                parameters={"l_owner": owner,
-                                                            "l_repo": repo,
-                                                            "l_tf_length": conf.neo4j_length_timeframe * -1,
-                                                            "l_dt": dt.strftime("%Y-%m-%d")}
-                                                ).data())
+        links = pd.DataFrame(self.graph.run(squery_links,
+                                            parameters={"l_owner": owner,
+                                                        "l_repo": repo,
+                                                        "l_tf_length": conf.a_length_timeframe * -1,
+                                                        "l_dt": dt.strftime("%Y-%m-%d")}
+                                            ).data())
 
-            if not links.empty:
-                nxgraph = nx.from_pandas_dataframe(links, source="source", target="target")
-
-                partition = nxlouvain.best_partition(nxgraph)
-
-                partition = Neo4jController.convert_keys_to_string(partition)
-
-                res.append({dt.strftime("%Y-%m-%d"): partition})
-
-            print("current: {0} - time: {1}".format(dt.date(), time.time() - time_start))
-
-        return res
+        return links
 
     def run_louvain_on_subgraph(self, owner, repo):
         warnings.warn("buggy louvain implementation on Neo4j. "
@@ -155,7 +140,7 @@ class Neo4jController:
         startdt = datetime.strptime("2016-09-01", "%Y-%m-%d").date()
 
         print("Running Louvain algorithm for {0}/{1} and timeframe length {2}".format(owner, repo,
-                                                                                      conf.neo4j_length_timeframe))
+                                                                                      conf.a_length_timeframe))
         res = []
         for dt in rrule.rrule(rrule.WEEKLY, dtstart=startdt, until=enddt):
             time_start = time.time()
@@ -177,7 +162,7 @@ class Neo4jController:
                               and x.tscomp < dateEnd
                               and x.tscomp > dateStart
                               RETURN id(u1) as source, id(u2) as target''' \
-                .format(dt, conf.neo4j_length_timeframe * -1, owner, repo)
+                .format(dt, conf.a_length_timeframe * -1, owner, repo)
 
             query = '''CALL algo.louvain.stream(
                         $l_node_query, 
@@ -204,12 +189,11 @@ class Neo4jController:
         print("Complete!")
         print()
 
-    @staticmethod
-    def convert_keys_to_string(dictionary):
+    def convert_keys_to_string(self, dictionary):
         """Recursively converts dictionary keys to strings."""
         if not isinstance(dictionary, dict):
             return dictionary
-        return dict((str(k), Neo4jController.convert_keys_to_string(v))
+        return dict((str(k), self.convert_keys_to_string(v))
                     for k, v in dictionary.items())
 
     def export_graphjson(self):
@@ -266,9 +250,8 @@ class Neo4jController:
                      'total_nodes': len(nodes),
                      'total_links': len(links)}]
 
-            groups = []
-            if conf.neo4j_run_louvain:
-                groups = self.louvain_networkx(owner, repo)
+            a = Analyzer(owner, repo)
+            groups = self.convert_keys_to_string(a.louvain_networkx())
 
             data = {"info": info, "nodes": nodes, "links": links, "groups": groups}
 
