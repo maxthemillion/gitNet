@@ -5,7 +5,7 @@ import datetime
 from project import Project, ProjectStats
 from references import Mention, Quote, ContextualReply
 from threads import Thread
-from main import clean_data
+from main import _clean_comment_data
 from analysis import Analyzer
 from neocontroller import Neo4jController
 
@@ -18,7 +18,7 @@ def setup_sample_threads():
     ic = pd.DataFrame(syn_data['ic'])
     cc = pd.DataFrame(syn_data['cc'])
 
-    pc, ic, cc = clean_data(pc, ic, cc)
+    pc, ic, cc = _clean_comment_data(pc, ic, cc)
 
     fake_project = Project(pc, ic, cc, "fooOwner", "fooRepo")
     return fake_project._split_threads("issue")
@@ -32,7 +32,7 @@ def setup_sample_data():
     ic = pd.DataFrame(syn_data['ic'])
     cc = pd.DataFrame(syn_data['cc'])
 
-    return clean_data(pc, ic, cc)
+    return _clean_comment_data(pc, ic, cc)
 
 
 class AnalyzerTests(unittest.TestCase):

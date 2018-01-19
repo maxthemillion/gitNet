@@ -13,7 +13,7 @@ class Thread:
         assert len(thread_data["thread_id"].unique()) is 1  # TODO: move to testing file
         self.no_comments = len(self._thread_data)
 
-        self.owner = "fooOwner"
+        self.owner = "fooOwner"  #TODO: add support for thread_owners
 
         self._type = thread_type
         self.parent_project = parent_project
@@ -23,15 +23,12 @@ class Thread:
         self._references_strict = None
         self._references_relaxed = None
 
-        self._analysis_performed = False  # TODO: remove, if not needed
-
         self._project_stats = project_stats
         self._project_stats.add_thread()
         self._project_stats.add_comments(len(self._thread_data))
 
     def run(self):
         self._references_relaxed = self._find_references_relaxed()
-        self._analysis_performed = True
 
     # -------- getters --------
     def get_references(self, which):
@@ -110,7 +107,7 @@ class Thread:
             stop_pos = Thread._find_end_username(body, start_pos)
             addressee = str.lower(body[start_pos + 1:stop_pos])
 
-            mention = Mention(commenter, addressee, comment_id, self, self._project_stats, timestamp)
+            mention = Mention(commenter, addressee, comment_id, self, self._project_stats, timestamp, self._type)
             mention.set_start_pos(start_pos)
 
             if mentions_list:
@@ -148,7 +145,7 @@ class Thread:
 
             addressee = self._find_source(quote_body, index)
 
-            new_quote = Quote(commenter, addressee, comment_id, self, self._project_stats, timestamp)
+            new_quote = Quote(commenter, addressee, comment_id, self, self._project_stats, timestamp, self._type)
             new_quote.set_start_pos(start_pos)
 
             if quote_list:
@@ -201,17 +198,17 @@ class Thread:
 
                     if create:
                         new_contextual = ContextualReply(u_current, u_prev, comment_id, self, self._project_stats,
-                                                         timestamp)
+                                                         timestamp, self._type)
 
                 else:
                     new_contextual = ContextualReply(u_current, u_prev, comment_id, self, self._project_stats,
-                                                     timestamp)
+                                                     timestamp, self._type)
             else:
                 if u_current == u_prev:
                     pass
                 else:
                     new_contextual = ContextualReply(u_current, u_prev, comment_id, self, self._project_stats,
-                                                     timestamp)
+                                                     timestamp, self._type)
 
             if contextuals_list and new_contextual is not None:
                 contextuals_list.append(new_contextual)

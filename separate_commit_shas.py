@@ -1,3 +1,7 @@
+"""This script takes a list of commits provided and exports them repository wise to json files.
+The list comprises shas of all commits to which commit comments exist"""
+
+
 import json
 import pandas as pd
 

@@ -22,7 +22,7 @@ class Neo4jController:
             query = "MATCH (n) DETACH DELETE n"
             self.graph.run(query)
 
-    def import_project(self, ref_df, node_df, owner, repo):
+    def import_project(self, ref_df, node_df, owner, repo, stats):
         if not conf.neo4j_import:
             return
 
@@ -33,7 +33,8 @@ class Neo4jController:
                             {weight: $l_weight, 
                             tscomp: apoc.date.parse($l_timestamp, 's',"yyyy-MM-dd"), 
                             owner: $l_owner,
-                            repo: $l_repo
+                            repo: $l_repo,
+                            thread_type: $l_thread_type
                             }, b)
                     YIELD rel
                     WITH rel
@@ -48,7 +49,8 @@ class Neo4jController:
                                                'l_weight': 1,
                                                'l_timestamp': row['timestamp'].strftime("%Y-%m-%d"),
                                                'l_owner': owner,
-                                               'l_repo': repo})
+                                               'l_repo': repo,
+                                               'l_thread_type': row['thread_type']})
             if (index + 1) % 10000 == 0:
                 tx.commit()
                 warnings.warn("batch commit to neo4j at " + index)
@@ -56,10 +58,13 @@ class Neo4jController:
         tx.commit()
 
         merge_nodes = '''MERGE (a:USER{login:$l_login_a})
-                      MERGE (r:REPO{name:$l_repo})
+                      MERGE (r:REPO{
+                      name:$l_repo, 
+                      no_threads: $l_no_threads,
+                      no_comments: $l_no_comments})
                       MERGE (o:OWNER{name:$l_owner})
                       WITH a, r, o
-                      MERGE (a)-[x:TOUCHED]->(r)
+                      MERGE (a)-[x:DISCUSSED_IN]->(r)
                       MERGE (r)-[y:BELONGS_TO]->(o)
                       RETURN x, y'''
 
@@ -67,7 +72,9 @@ class Neo4jController:
         for index, row in node_df.iterrows():
             tx.evaluate(merge_nodes, parameters={'l_login_a': row["participants"],
                                                  'l_repo': repo,
-                                                 'l_owner': owner})
+                                                 'l_owner': owner,
+                                                 'l_no_comments': stats.get_no_comments(),
+                                                 'l_no_threads': stats.get_no_threads()})
         tx.commit()
 
         print("{0}/{1}: Import to Neo4j succeeded!".format(owner, repo))
@@ -200,23 +207,17 @@ class Neo4jController:
 
             print("exporting data in graphJSON format for {0}/{1}".format(owner, repo))
 
-            # get all users who are attributed to owner/repo
-            node_query = """MATCH (o:OWNER{name: $l_owner}) -- (r:REPO{ name: $l_repo })
-                            WITH r
-                            MATCH (r) -- (u:USER)
-                            RETURN id(u) AS id, u.login AS name """
-
             node_query = """MATCH (u1:USER) -[x]- (u2:USER)
                             WHERE x.owner = $l_owner
                             and x.repo = $l_repo
                             WITH DISTINCT u1
                             RETURN id(u1) AS id, u1.login AS name """
 
-            link_query = """MATCH (o:OWNER{name: $l_owner}) -- (r:REPO{ name: $l_repo })
+            link_query = """MATCH (r:REPO{ name: $l_repo }) --> (o:OWNER{name: $l_owner})
                             WITH r
-                            MATCH (r) -- (u1:USER)
+                            MATCH (u1:USER) --> (r)
                             WITH u1
-                            MATCH (u1) -[x:Mention|Quote|ContextualReply{owner: $l_owner, repo: $l_repo}]- (u2:USER)
+                            MATCH (u1) -[x:Mention|Quote|ContextualReply{owner: $l_owner, repo: $l_repo}]-> (u2:USER)
                             RETURN 
                             id(u1) AS source,
                             id(u2) AS target,
@@ -241,10 +242,19 @@ class Neo4jController:
             for link in links:
                 link["weight"] = int(link["weight"])  # TODO: find the cause for weight being a string
 
+            info_query = '''MATCH (r:REPO)
+                            WHERE r.name = $l_repo
+                            RETURN r.no_comments as no_comments, r.no_threads as no_threads'''
+
+            info_res = self.graph.data(info_query, parameters={'l_repo': repo})[0]
+
             info = [{'owner': owner,
                      'repo': repo,
                      'total_nodes': len(nodes),
-                     'total_links': len(links)}]
+                     'total_links': len(links),
+                     'no_threads': info_res["no_threads"],
+                     'no_comments': info_res["no_comments"]
+                     }]
 
             a = Analyzer(owner, repo)
             a.run()

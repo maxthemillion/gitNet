@@ -40,9 +40,7 @@ class Project:
         self._references = self._collect_references()
 
         controller = Neo4jController()
-        controller.import_project(self._references, self._participants, self.owner, self.repo)
-
-        # TODO: pass the thread type when exporting
+        controller.import_project(self._references, self._participants, self.owner, self.repo, self.stats)
 
         self.stats.print_summary()
 
@@ -94,7 +92,7 @@ class Project:
 
             i = i + 1
 
-        print("time required:       {0:.2f}s".format(time.process_time()-proc_time_start))
+        print("time required:       {0:.2f}s".format(time.process_time() - proc_time_start))
         print()
 
         return thread_list
@@ -116,7 +114,7 @@ class ProjectStats:
     def __init__(self, parent_project):
         self._parent_project = parent_project
 
-        self._no_threads_analyzed = 0
+        self._no_threads = 0
         self._no_comments = 0
         self._no_participants = 0
 
@@ -133,8 +131,22 @@ class ProjectStats:
         self._contextuals_found_total = 0
         self._contextuals_found_valid = 0
 
+        self._contextuals_total = {"issue": 0, "pullreq": 0, "commit": 0}
+        self._mentions_total = {"issue": 0, "pullreq": 0, "commit": 0}
+        self._quotes_total = {"issue": 0, "pullreq": 0, "commit": 0}
+
+        self._contextuals_valid = {"issue": 0, "pullreq": 0, "commit": 0}
+        self._mentions_valid = {"issue": 0, "pullreq": 0, "commit": 0}
+        self._quotes_valid = {"issue": 0, "pullreq": 0, "commit": 0}
+
+    def get_no_comments(self):
+        return self._no_comments
+
+    def get_no_threads(self):
+        return self._no_threads
+
     def add_thread(self):
-        self._no_threads_analyzed += 1
+        self._no_threads += 1
 
     def add_comments(self, no_comments):
         self._no_comments += no_comments
@@ -142,24 +154,30 @@ class ProjectStats:
     def add_participants(self, no_participants):
         self._no_participants += no_participants
 
-    def add_quote(self, comment_id, sourced):
+    def add_quote(self, comment_id, sourced, thread_type):
         self._quotes.append([comment_id])
         if sourced:
             self._quotes_sourced += 1
         else:
             self._quotes_not_sourced += 1
 
-    def add_mentions(self, comment_id, valid):
+        self._quotes_total[thread_type] += 1
+
+    def add_mentions(self, comment_id, valid, thread_type):
         self._mentions.append([comment_id])
         self._mentions_found_total += 1
         if valid:
             self._mentions_found_valid += 1
 
-    def add_contextual(self, comment_id, valid):
+        self._mentions_total[thread_type] += 1
+
+    def add_contextual(self, comment_id, valid, thread_type):
         self._contextuals.append([comment_id])
         self._contextuals_found_total += 1
         if valid:
             self._contextuals_found_valid += 1
+
+        self._contextuals_total[thread_type] += 1
 
     def export_summary(self):
         pass
@@ -190,19 +208,16 @@ class ProjectStats:
         print("project name:                    {0}/{1}".format(self._parent_project.owner, self._parent_project.repo))
         print()
         print("number of participants:          {0}".format(self._no_participants))
-        print("number of threads analyzed:      {0}".format(self._no_threads_analyzed))
+        print("number of threads analyzed:      {0}".format(self._no_threads))
         print("number of comments:              {0}".format(self._no_comments))
         print()
         print("count sourced quotes:            {0}".format(self._quotes_sourced))
         print("share sourced quotes:            {0:.2f}%".format(share_sourced))
         print("count valid mentions:            {0}".format(self._mentions_found_valid))
         print("share valid mentions:            {0:.2f}%".format(share_mentions_valid))
-        print("number valid contextuals:        {0}".format(self._contextuals_found_valid))
-        print("share valid contextuals:         {0:.2f}%".format(share_contextuals_valid))
         print()
         print("total count valid references:    {0}".format(self._quotes_sourced
-                                                             + self._mentions_found_valid
-                                                             + self._contextuals_found_valid))
+                                                            + self._mentions_found_valid
+                                                            + self._contextuals_found_valid))
 
-        print()
 
