@@ -2,18 +2,10 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="f06550ee-959a-491f-9cb8-acfc389fafa4" name="Default" comment="">
-      <change type="DELETED" beforePath="$PROJECT_DIR$/Input/Homebrew_issue_data.json" afterPath="" />
       <change type="DELETED" beforePath="$PROJECT_DIR$/Input/Homebrew_pullreq_data.json" afterPath="" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf.py" afterPath="$PROJECT_DIR$/conf.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/mongocontroller.py" afterPath="$PROJECT_DIR$/mongocontroller.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/neocontroller.py" afterPath="$PROJECT_DIR$/neocontroller.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/project.py" afterPath="$PROJECT_DIR$/project.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/references.py" afterPath="$PROJECT_DIR$/references.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/separate_commit_shas.py" afterPath="$PROJECT_DIR$/separate_commit_shas.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/testing.py" afterPath="$PROJECT_DIR$/testing.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/threads.py" afterPath="$PROJECT_DIR$/threads.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -75,7 +67,7 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="1343">
@@ -97,10 +89,10 @@
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="neocontroller.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="neocontroller.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/neocontroller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="876">
+            <state relative-caret-position="1980">
               <caret line="224" column="40" lean-forward="true" selection-start-line="224" selection-start-column="0" selection-end-line="225" selection-end-column="0" />
               <folding>
                 <element signature="e#0#24#0" expanded="true" />
@@ -586,7 +578,14 @@
       <option name="project" value="LOCAL" />
       <updated>1516371241345</updated>
     </task>
-    <option name="localTasksCounter" value="26" />
+    <task id="LOCAL-00026" summary="fixed queries to return right number of links">
+      <created>1516387474365</created>
+      <option name="number" value="00026" />
+      <option name="presentableId" value="LOCAL-00026" />
+      <option name="project" value="LOCAL" />
+      <updated>1516387474365</updated>
+    </task>
+    <option name="localTasksCounter" value="27" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -743,7 +742,8 @@
     <MESSAGE value="fixed data format problem, added NetworkX degree and betweenness centrality" />
     <MESSAGE value="fixed data problem (cypher query), added analysis class" />
     <MESSAGE value="script to separate commit-comment commit shas per project in the owners csv" />
-    <option name="LAST_COMMIT_MESSAGE" value="script to separate commit-comment commit shas per project in the owners csv" />
+    <MESSAGE value="fixed queries to return right number of links" />
+    <option name="LAST_COMMIT_MESSAGE" value="fixed queries to return right number of links" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1015,16 +1015,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/main.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="1343">
-          <caret line="79" column="0" lean-forward="true" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
-          <folding>
-            <element signature="e#174#193#0" expanded="true" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/threads.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="-1110">
@@ -1090,7 +1080,7 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/neocontroller.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="876">
+        <state relative-caret-position="1980">
           <caret line="224" column="40" lean-forward="true" selection-start-line="224" selection-start-column="0" selection-end-line="225" selection-end-column="0" />
           <folding>
             <element signature="e#0#24#0" expanded="true" />
@@ -1100,6 +1090,16 @@
             <element signature="e#8444#8782#0" expanded="false" />
             <element signature="e#8842#9084#0" expanded="false" />
             <marker date="1516385843000" expanded="true" signature="12200:12300" ph="..." />
+          </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/main.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="1343">
+          <caret line="79" column="0" lean-forward="true" selection-start-line="79" selection-start-column="0" selection-end-line="79" selection-end-column="0" />
+          <folding>
+            <element signature="e#174#193#0" expanded="true" />
           </folding>
         </state>
       </provider>
