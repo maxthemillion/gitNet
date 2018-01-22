@@ -69,7 +69,7 @@ def _split_projects(owner, repos):
 def _import_comment_data(owner):
     """loads comment data owner wise from json dumps"""
 
-    with open(conf.get_import_path(owner)) as json_data:
+    with open(conf.get_data_path(owner)) as json_data:
         d = json.load(json_data)
 
     pullreq_data = pd.DataFrame(d["pc"])

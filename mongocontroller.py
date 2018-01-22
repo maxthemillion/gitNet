@@ -63,7 +63,7 @@ def _collect_comment_data():
              "pc": pullreq_comments,
              "cc": commit_comments}
 
-        with open(conf.get_import_path(owner), "w") as fp:
+        with open(conf.get_data_path(owner), "w") as fp:
             json.dump(d, fp, indent="\t")
 
         print("total time required:             {0:.2f}s".format(time.time() - time_start))

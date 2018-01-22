@@ -262,13 +262,15 @@ class Neo4jController:
             groups = self.convert_keys_to_string(a.get_groups())
             d_centrality = self.convert_keys_to_string(a.get_degree_centrality())
             b_centrality = self.convert_keys_to_string(a.get_betweenness_centrality())
+            modularity = self.convert_keys_to_string(a.get_modularity())
 
             data = {"info": info,
                     "nodes": nodes,
                     "links": links,
                     "groups": groups,
                     "d_centrality": d_centrality,
-                    "b_centrality": b_centrality}
+                    "b_centrality": b_centrality,
+                    "modularity": modularity}
 
             with open("Export/viz/data_{0}_{1}.json".format(owner, repo), "w") as fp:
                 json.dump(data, fp, indent="\t")
