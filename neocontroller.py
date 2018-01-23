@@ -23,58 +23,63 @@ class Neo4jController:
             self.graph.run(query)
 
     def import_project(self, ref_df, node_df, owner, repo, stats):
+        """First creates owner and repository relationship. Then adds comments to the timetree
+        and their relationships to users."""
+
         if not conf.neo4j_import:
             return
 
-        merge_ref = '''MERGE (a:USER{login:$l_login_a})
-                    MERGE (b:USER{login:$l_login_b})
-                    WITH a, b
-                    CALL apoc.create.relationship(a, $l_ref_type, 
-                            {weight: $l_weight, 
-                            tscomp: apoc.date.parse($l_timestamp, 's',"yyyy-MM-dd"), 
-                            owner: $l_owner,
-                            repo: $l_repo,
-                            thread_type: $l_thread_type
-                            }, b)
-                    YIELD rel
-                    WITH rel
-                    RETURN rel'''
+        q_repos = '''MERGE(r:REPO{name:$l_repo})
+                        SET r.no_threads = $l_no_threads
+                        SET r.no_comments = $l_no_comments
+                        WITH r
+                      MERGE (o:OWNER{name:$l_owner})
+                      WITH r, o
+                      MERGE (r)-[y:BelongsTo]->(o)
+                      RETURN y'''
+
+        self.graph.run(q_repos, parameters={'l_repo': repo,
+                                            'l_owner': owner,
+                                            'l_no_comments': stats.get_no_comments(),
+                                            'l_no_threads': stats.get_no_threads()})
+
+        q_comments = '''WITH apoc.date.parse($l_time, 'ms', 'yyyy-MM-dd') as dt
+                        MERGE (c:COMMENT{id:$l_comment_id})
+                        WITH dt, c
+                        CALL ga.timetree.events.attach({node: c, time: dt, relationshipType: "CreatedOn"}) 
+                        YIELD node as comment
+                        WITH comment, dt
+                        SET comment.thread_type = $l_thread_type
+                        SET comment.tscomp = dt
+                        WITH comment
+                        MERGE (a:USER{login:$l_login_a})
+                        MERGE (b:USER{login:$l_login_b})
+                        WITH comment, a, b
+                        MERGE (a) -[:makes]->(comment)
+                        WITH comment, b
+                        CALL apoc.create.relationship(comment, $l_ref_type, {}, b) YIELD rel as rel2
+                        WITH comment
+                        MATCH (r:REPO{name:$l_repo_name}) --> (o:OWNER{name:$l_owner_name})
+                        MERGE  (comment)-[:to]-> (r)
+                        RETURN r 
+                        '''
 
         tx = self.graph.begin()
         for index, row in ref_df.iterrows():
 
-            tx.evaluate(merge_ref, parameters={'l_login_a': row['commenter'],
-                                               'l_login_b': row['addressee'],
-                                               'l_ref_type': row['ref_type'],
-                                               'l_weight': 1,
-                                               'l_timestamp': row['timestamp'].strftime("%Y-%m-%d"),
-                                               'l_owner': owner,
-                                               'l_repo': repo,
-                                               'l_thread_type': row['thread_type']})
+            tx.evaluate(q_comments, parameters={'l_login_a': row['commenter'],
+                                                'l_login_b': row['addressee'],
+                                                'l_ref_type': row['ref_type'],
+                                                # 'l_weight': 1,
+                                                'l_time': row['timestamp'].strftime("%Y-%m-%d"),
+                                                'l_owner_name': owner,
+                                                'l_repo_name': repo,
+                                                'l_thread_type': row['thread_type'],
+                                                'l_comment_id': row['comment_id']})
             if (index + 1) % 10000 == 0:
                 tx.commit()
                 warnings.warn("batch commit to neo4j at " + index)
                 tx = self.graph.begin()
-        tx.commit()
-
-        merge_nodes = '''MERGE (a:USER{login:$l_login_a})
-                      MERGE (r:REPO{
-                      name:$l_repo, 
-                      no_threads: $l_no_threads,
-                      no_comments: $l_no_comments})
-                      MERGE (o:OWNER{name:$l_owner})
-                      WITH a, r, o
-                      MERGE (a)-[x:DISCUSSED_IN]->(r)
-                      MERGE (r)-[y:BELONGS_TO]->(o)
-                      RETURN x, y'''
-
-        tx = self.graph.begin()
-        for index, row in node_df.iterrows():
-            tx.evaluate(merge_nodes, parameters={'l_login_a': row["participants"],
-                                                 'l_repo': repo,
-                                                 'l_owner': owner,
-                                                 'l_no_comments': stats.get_no_comments(),
-                                                 'l_no_threads': stats.get_no_threads()})
         tx.commit()
 
         print("{0}/{1}: Import to Neo4j succeeded!".format(owner, repo))
@@ -102,81 +107,30 @@ class Neo4jController:
         return startdt, enddt
 
     def get_subgraph(self, owner, repo, dt):
-        squery_links = '''WITH apoc.date.parse($l_dt, 's', "yyyy-MM-dd") AS dateEnd 
-                                          WITH dateEnd,  apoc.date.add(dateEnd, 's', $l_tf_length, 'd') AS dateStart
-                                          MATCH (u1:USER)-[x]->(u2:USER)
-                                          WHERE x.owner = $l_owner
-                                          and x.repo = $l_repo
-                                          and x.tscomp < dateEnd
-                                          and x.tscomp > dateStart
-                                          RETURN id(u1) as source, id(u2) as target'''
 
-        links = pd.DataFrame(self.graph.run(squery_links,
-                                            parameters={"l_owner": owner,
-                                                        "l_repo": repo,
-                                                        "l_tf_length": conf.a_length_timeframe * -1,
-                                                        "l_dt": dt.strftime("%Y-%m-%d")}
-                                            ).data())
+        q_subgraph_time = '''
+                            WITH
+                            apoc.date.parse("2016-01-01", 'ms', 'yyyy-MM-dd') as start,
+                            apoc.date.add(dateEnd, 'ms', $l_tf_length, 'd') as end
+                            CALL
+                            ga.timetree.events.range({start: start, end: end}) YIELD node
+                            WITH node
+                            MATCH(r: REPO{name: $l_repo})-->(o: OWNER{name: $l_owner})
+                            WHERE(node: COMMENT)-->(r)
+                            WITH DISTINCT node as comment
+                            MATCH (source:USER) --> (comment)
+                            MATCH (comment) --> (target:USER)
+                            RETURN source.login as source, target.login as target
+                            '''
+
+        links = pd.DataFrame(self.graph.data(q_subgraph_time,
+                                             parameters={"l_owner": owner,
+                                                         "l_repo": repo,
+                                                         "l_tf_length": conf.a_length_timeframe * -1,
+                                                         "l_dt": dt.strftime("%Y-%m-%d")}
+                                             ))
 
         return links
-
-    def run_louvain_on_subgraph(self, owner, repo):
-        warnings.warn("buggy louvain implementation on Neo4j. "
-                      "louvain runs on complete graph despite selection of subgraph")
-
-        date_query = '''MATCH (u:USER) -[x]-> (u2:USER) 
-                            WHERE x.owner = "{0}" and x.repo = "{1}"
-                            UNWIND x.tscomp as ts
-                            RETURN 
-                            apoc.date.format( min(ts),'s', 'yyyy-MM-dd') AS startdt, 
-                            apoc.date.format(max(ts), 's', 'yyyy-MM-dd') AS enddt'''.format(owner, repo)
-
-        dates = self.graph.run(date_query).data()[0]
-
-        startdt = datetime.strptime(dates["startdt"], "%Y-%m-%d").date()
-        enddt = datetime.strptime(dates["enddt"], "%Y-%m-%d").date()
-
-        startdt = datetime.strptime("2016-09-01", "%Y-%m-%d").date()
-
-        print("Running Louvain algorithm for {0}/{1} and timeframe length {2}".format(owner, repo,
-                                                                                      conf.a_length_timeframe))
-        res = []
-        for dt in rrule.rrule(rrule.WEEKLY, dtstart=startdt, until=enddt):
-            time_start = time.time()
-
-            squery_nodes = '''WITH apoc.date.parse('2016-09-01', 's', 'yyyy-MM-dd') AS dateEnd 
-                              WITH dateEnd,  apoc.date.add(dateEnd, 's', -30, 'd') AS dateStart
-                              MATCH (u:USER) -[x]- (u2:USER) 
-                              WHERE x.owner = {0}
-                              and x.repo = {1}
-                              and x.tscomp < dateEnd
-                              and x.tscomp > dateStart
-                              RETURN Distinct id(u) as id'''.format(owner, repo)
-
-            squery_links = '''WITH apoc.date.parse({0}, 's', "yyyy-MM-dd") AS dateEnd 
-                              WITH dateEnd,  apoc.date.add(dateEnd, 's', {1}, 'd') AS dateStart
-                              MATCH (u1:USER)-[x]->(u2:USER)
-                              WHERE x.owner = {2}
-                              and x.repo = {3}
-                              and x.tscomp < dateEnd
-                              and x.tscomp > dateStart
-                              RETURN id(u1) as source, id(u2) as target''' \
-                .format(dt, conf.a_length_timeframe * -1, owner, repo)
-
-            query = '''CALL algo.louvain.stream(
-                        $l_node_query, 
-                        $l_link_query,   
-                        {graph:'cypher', concurrency:4})
-                        YIELD nodeId, community
-                        RETURN nodeId as id, community as group                      
-                    '''
-
-            res.append({dt.strftime("%Y-%m-%d"): self.graph.run(query,
-                                                                parameters=({'l_node_query': squery_nodes,
-                                                                             'l_link_query': squery_links})).data()})
-            print("current: {0} - time: {1}".format(dt.date(), time.time() - time_start))
-
-        return res
 
     def stream_to_gephi(self):
         print("Streaming network to Gephi...")
@@ -207,24 +161,33 @@ class Neo4jController:
 
             print("exporting data in graphJSON format for {0}/{1}".format(owner, repo))
 
-            node_query = """MATCH (u1:USER) -[x]- (u2:USER)
-                            WHERE x.owner = $l_owner
-                            and x.repo = $l_repo
-                            WITH DISTINCT u1
-                            RETURN id(u1) AS id, u1.login AS name """
+            node_query = '''
+                            MATCH (u:USER)<--(c:COMMENT)-->(r:REPO)-->(o:OWNER)
+                            WHERE r.name = $l_repo and o.name = $l_owner
+                            WITH COLLECT({name: u.login, id: id(u)}) AS rows
+                            MATCH (u:USER)-->(c:COMMENT)-->(r:REPO)-->(o:OWNER)
+                            WHERE r.name = $l_repo and o.name = $l_owner
+                            WITH rows + COLLECT({name: u.login, id: id(u)}) as allRows
+                            UNWIND allRows as row
+                            WITH row.name as name, row.id as id
+                            RETURN DISTINCT name, id
+                            '''
 
-            link_query = """MATCH (r:REPO{ name: $l_repo }) --> (o:OWNER{name: $l_owner})
-                            WITH r
-                            MATCH (u1:USER) --> (r)
-                            WITH u1
-                            MATCH (u1) -[x:Mention|Quote|ContextualReply{owner: $l_owner, repo: $l_repo}]-> (u2:USER)
-                            RETURN 
-                            id(u1) AS source,
-                            id(u2) AS target,
-                            x.weight AS weight,
-                            type(x) AS rel_type,
-                            apoc.date.format(x.tscomp, 's', 'yyyy-MM-dd') AS timestamp,
-                            id(x) AS link_id"""
+            link_query = '''MATCH (r:REPO) --> (o:OWNER)
+                            WHERE r.name = $l_repo
+                            and o.name = $l_owner
+                            WITH DISTINCT r
+                            MATCH (c:COMMENT)-->(r)
+                            WITH DISTINCT c
+                            MATCH (c)-[x]->(target:USER)
+                            MATCH (source:USER)-->(c)
+                            WITH DISTINCT x, source, target, c
+                            RETURN id(source) as source,
+                            id(target) as target,
+                            type(x) as rel_type,
+                            apoc.date.format(c.tscomp, 'ms', 'yyyy-MM-dd') AS timestamp,
+                            id(x) as link_id
+                            '''
 
             nodes = self.graph.data(node_query, parameters={'l_owner': owner, 'l_repo': repo})
 
@@ -239,14 +202,14 @@ class Neo4jController:
                     node["degree_py"] = 0
 
             links = self.graph.data(link_query, parameters={'l_owner': owner, 'l_repo': repo})
-            for link in links:
-                link["weight"] = int(link["weight"])  # TODO: find the cause for weight being a string
+            links["weight"] = 1
 
-            info_query = '''MATCH (r:REPO)
-                            WHERE r.name = $l_repo
+            info_query = '''MATCH (r:REPO)-->(o:OWNER)
+                            WHERE r.name = $l_repo, o.name = $l_owner
                             RETURN r.no_comments as no_comments, r.no_threads as no_threads'''
 
-            info_res = self.graph.data(info_query, parameters={'l_repo': repo})[0]
+            info_res = self.graph.data(info_query, parameters={'l_repo': repo,
+                                                               'l_owner': owner})[0]
 
             info = [{'owner': owner,
                      'repo': repo,

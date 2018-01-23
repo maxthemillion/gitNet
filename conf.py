@@ -1,7 +1,7 @@
 import pandas as pd
 
 # ---- network construction parameters ----
-construct_network = False
+construct_network = True
 
 # data source
 use_synthetic_data = False
@@ -23,7 +23,7 @@ neo4j_clear_on_startup = construct_network
 neo4j_stream_to_gephi = False
 
 # visualization export
-neo4j_export_json = True
+neo4j_export_json = False
 neo4j_export_json_pnames = [{"owner": "Homebrew", "repo": "brew"},
                             {"owner": "d3", "repo": "d3"}]
 
