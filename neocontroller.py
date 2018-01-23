@@ -70,7 +70,6 @@ class Neo4jController:
             tx.evaluate(q_comments, parameters={'l_login_a': row['commenter'],
                                                 'l_login_b': row['addressee'],
                                                 'l_ref_type': row['ref_type'],
-                                                # 'l_weight': 1,
                                                 'l_time': row['timestamp'].strftime("%Y-%m-%d"),
                                                 'l_owner_name': owner,
                                                 'l_repo_name': repo,
@@ -92,14 +91,16 @@ class Neo4jController:
         return nodes
 
     def get_timeframe(self, owner, repo):
-        date_query = '''MATCH (u:USER) -[x]-> (u2:USER) 
-                                    WHERE x.owner = "{0}" and x.repo = "{1}"
-                                    UNWIND x.tscomp as ts
-                                    RETURN 
-                                    apoc.date.format(min(ts),'s', 'yyyy-MM-dd') AS startdt, 
-                                    apoc.date.format(max(ts), 's', 'yyyy-MM-dd') AS enddt'''.format(owner, repo)
 
-        dates = self.graph.run(date_query).data()[0]
+        date_query = '''
+                    MATCH (o:OWNER)<--(r:REPO)<--(c:COMMENT)
+                    WHERE o.name = $l_owner and r.name = $l_repo
+                    UNWIND c.tscomp as ts
+                    RETURN 
+                    apoc.date.format(min(ts),'ms', 'yyyy-MM-dd') AS startdt, 
+                    apoc.date.format(max(ts), 'ms', 'yyyy-MM-dd') AS enddt'''
+
+        dates = self.graph.run(date_query, parameters={'l_owner':owner, 'l_repo':repo}).data()[0]
 
         startdt = datetime.strptime(dates["startdt"], "%Y-%m-%d").date()
         enddt = datetime.strptime(dates["enddt"], "%Y-%m-%d").date()
@@ -109,11 +110,9 @@ class Neo4jController:
     def get_subgraph(self, owner, repo, dt):
 
         q_subgraph_time = '''
-                            WITH
-                            apoc.date.parse("2016-01-01", 'ms', 'yyyy-MM-dd') as start,
-                            apoc.date.add(dateEnd, 'ms', $l_tf_length, 'd') as end
-                            CALL
-                            ga.timetree.events.range({start: start, end: end}) YIELD node
+                            WITH apoc.date.parse($l_dt, 'ms', 'yyyy-MM-dd') as end
+                            WITH end, apoc.date.add(end, 'ms', $l_tf_length , 'd') as start
+                            CALL ga.timetree.events.range({start: start, end: end}) YIELD node
                             WITH node
                             MATCH(r: REPO{name: $l_repo})-->(o: OWNER{name: $l_owner})
                             WHERE(node: COMMENT)-->(r)
@@ -126,7 +125,7 @@ class Neo4jController:
         links = pd.DataFrame(self.graph.data(q_subgraph_time,
                                              parameters={"l_owner": owner,
                                                          "l_repo": repo,
-                                                         "l_tf_length": conf.a_length_timeframe * -1,
+                                                         "l_tf_length": (-1 * conf.a_length_timeframe),
                                                          "l_dt": dt.strftime("%Y-%m-%d")}
                                              ))
 
@@ -190,22 +189,10 @@ class Neo4jController:
                             '''
 
             nodes = self.graph.data(node_query, parameters={'l_owner': owner, 'l_repo': repo})
-
-            node_degree = self.get_degree()
-
-            for node in nodes:
-
-                if node["id"] in node_degree["name"].values:
-                    idx = node_degree[node_degree["name"] == node["id"]].index[0]
-                    node["degree_py"] = int(node_degree["node_degree"].iloc[idx])
-                else:
-                    node["degree_py"] = 0
-
             links = self.graph.data(link_query, parameters={'l_owner': owner, 'l_repo': repo})
-            links["weight"] = 1
 
             info_query = '''MATCH (r:REPO)-->(o:OWNER)
-                            WHERE r.name = $l_repo, o.name = $l_owner
+                            WHERE r.name = $l_repo and o.name = $l_owner
                             RETURN r.no_comments as no_comments, r.no_threads as no_threads'''
 
             info_res = self.graph.data(info_query, parameters={'l_repo': repo,
