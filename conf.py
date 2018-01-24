@@ -16,6 +16,12 @@ collect_position_nan = False
 minDate = pd.Timestamp('2014-01-01 00:00:00.000', tz=None)
 maxDate = pd.Timestamp('2017-01-01 00:00:00.000', tz=None)
 
+# technical relations
+t_commits = True
+t_issues = True
+t_follows = True
+t_stars = True
+
 # ---- neo4j parameters ----
 neo4j_import = construct_network
 neo4j_clear_on_startup = construct_network

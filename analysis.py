@@ -70,7 +70,7 @@ class Analyzer:
         for dt in rrule.rrule(rrule.WEEKLY, dtstart=self._startdt, until=self._enddt):
             time_start = time.time()
 
-            links = self._controller.get_subgraph(self._owner, self._repo, dt)
+            links = self._controller.get_communication_subgraph(self._owner, self._repo, dt)
 
             if not links.empty:
                 nxgraph = nx.from_pandas_dataframe(links, source="source", target="target", create_using=nx.MultiGraph())
@@ -100,7 +100,7 @@ class Analyzer:
         for dt in rrule.rrule(rrule.WEEKLY, dtstart=self._startdt, until=self._enddt):
             lap_time = time.time()
 
-            links = self._controller.get_subgraph(self._owner, self._repo, dt)
+            links = self._controller.get_communication_subgraph(self._owner, self._repo, dt)
 
             if not links.empty:
                 multi_graph = nx.from_pandas_dataframe(links, source="source", target="target", create_using=nx.MultiGraph())

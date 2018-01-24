@@ -2,7 +2,7 @@ import pandas as pd
 from threads import Thread
 import time
 import conf
-import commits
+import technical_relations
 from neocontroller import Neo4jController
 
 
@@ -41,8 +41,8 @@ class Project:
         self._references = self._collect_references()
 
         controller = Neo4jController()
-        controller.import_project(self._references, self._participants, self.owner, self.repo, self.stats)
-        commits.import_repo(self.owner, self.repo)
+        controller.import_repo(self._references, self._participants, self.owner, self.repo, self.stats)
+        technical_relations.import_repo(self.owner, self.repo)
 
         self.stats.print_summary()
 
