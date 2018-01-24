@@ -100,7 +100,7 @@ class Neo4jController:
                     apoc.date.format(min(ts),'ms', 'yyyy-MM-dd') AS startdt, 
                     apoc.date.format(max(ts), 'ms', 'yyyy-MM-dd') AS enddt'''
 
-        dates = self.graph.run(date_query, parameters={'l_owner':owner, 'l_repo':repo}).data()[0]
+        dates = self.graph.run(date_query, parameters={'l_owner': owner, 'l_repo': repo}).data()[0]
 
         startdt = datetime.strptime(dates["startdt"], "%Y-%m-%d").date()
         enddt = datetime.strptime(dates["enddt"], "%Y-%m-%d").date()
@@ -154,7 +154,6 @@ class Neo4jController:
             return
 
         for e in conf.neo4j_export_json_pnames:
-
             repo = e["repo"]
             owner = e["owner"]
 
@@ -224,3 +223,38 @@ class Neo4jController:
 
             with open("Export/viz/data_{0}_{1}.json".format(owner, repo), "w") as fp:
                 json.dump(data, fp, indent="\t")
+
+    def import_commits(self, commits, owner, repo):
+
+        q_commits = '''
+                    WITH apoc.date.parse($l_time, 'ms', 'yyyy-MM-dd') as dt
+                    MERGE (c:COMMIT{id:$l_id})
+                    SET c.tscomp = dt, c.id = $l_id
+                    WITH c, dt
+                    CALL ga.timetree.events.attach({node: c, time: dt, relationshipType: "CreatedOn"}) 
+                    YIELD node as commit
+                    WITH commit
+                    MERGE (u:USER{login:$l_login})
+                    MERGE (u)-[:commits]->(commit)
+                    WITH commit
+                    MERGE (r:REPO{name:$l_repo}) -[:BelongsTo]-> (o:OWNER{name:$l_owner})
+                    MERGE  (commit)-[:to]-> (r)                    
+                    RETURN r
+                    '''
+
+        tx = self.graph.begin()
+        for index, row in commits.iterrows():
+
+            tx.evaluate(q_commits, parameters={'l_login': row['login'],
+                                               'l_id': row['commit_id'],
+                                               'l_time': row['created_at'].strftime("%Y-%m-%d"),
+                                               'l_owner': owner,
+                                               'l_repo': repo})
+            if (index + 1) % 10000 == 0:
+                tx.commit()
+                warnings.warn("batch commit to neo4j at " + index)
+                tx = self.graph.begin()
+        tx.commit()
+
+        print("{0}/{1}: Import to Neo4j succeeded!".format(owner, repo))
+        print()
