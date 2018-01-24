@@ -178,4 +178,3 @@ class Analyzer:
 
 if __name__ == '__main__':
     analyze_repos()
-    # analyze_owners()

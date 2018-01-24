@@ -1,7 +1,7 @@
 import pandas as pd
 
 # ---- network construction parameters ----
-construct_network = False
+construct_network = True
 
 # data source
 use_synthetic_data = False

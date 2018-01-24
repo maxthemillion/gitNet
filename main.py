@@ -13,6 +13,7 @@ import json
 
 
 def main():
+    time_start = time.time()
     neo_controller = Neo4jController()
     neo_controller.clear_db()
 
@@ -25,6 +26,7 @@ def main():
 
     print("------------------------------------------")
     print("Total process time elapsed:        {0:.2f}s".format(time.process_time()))
+    print("Total time elapsed:                {0:.2f}s".format(time.time()-time_start))
     print("------------------------------------------")
 
 
