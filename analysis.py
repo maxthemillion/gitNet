@@ -1,12 +1,10 @@
 import neocontroller
+import conf
+import time
 import pandas as pd
 import networkx as nx
 import community as nxlouvain
 from dateutil import rrule
-from datetime import datetime
-import conf
-import time
-import numpy as np
 import matplotlib.pyplot as plt
 
 

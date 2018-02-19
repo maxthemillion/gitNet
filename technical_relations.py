@@ -22,6 +22,7 @@ def import_follows():
         controller = Neo4jController()
         controller.import_followers(import_path)
 
+
 def import_repo(o, r):
 
     if conf.t_commits:
@@ -55,7 +56,6 @@ def import_repo(o, r):
             warnings.warn("file not found: {0}".format(import_path))
 
         print()
-
 
 
 if __name__ == '__main__':

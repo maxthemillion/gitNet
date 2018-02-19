@@ -5,7 +5,7 @@ construct_network = True
 
 # data source
 use_synthetic_data = False
-owner_data_folder = "Input/OwnerData"
+comment_data_folder = "Input/Comments"
 synthetic_data_folder = "TestData"
 
 # collectors
@@ -19,12 +19,12 @@ maxDate = pd.Timestamp('2017-01-01 00:00:00.000', tz=None)
 # technical relations
 t_commits = True
 t_issues = True
-t_follows = True
+t_follows = False
 t_stars = True
 
 # ---- neo4j parameters ----
 neo4j_import = construct_network
-neo4j_clear_on_startup = construct_network
+neo4j_clear_on_startup = False
 
 neo4j_stream_to_gephi = False
 
@@ -53,11 +53,11 @@ a_eigenvector_centrality = True or construct_network
 output_verbose = False
 
 
-def get_data_path(owner):
+def get_comment_data_path(owner):
     if use_synthetic_data:
         return "{0}/mongo_{1}_syn.json".format(synthetic_data_folder, owner)
     else:
-        return "{0}/mongo_{1}.json".format(owner_data_folder, owner)
+        return "{0}/mongo_{1}.json".format(comment_data_folder, owner)
 
 def get_nx_path(owner, repo, i):
     return "{0}/nxm_{1}_{2}_{3}.csv".format(nx_measures_path, owner, repo, i)

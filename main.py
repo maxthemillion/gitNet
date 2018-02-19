@@ -1,18 +1,27 @@
-"""core file to the network construction process.
-To start network construction, run main().
-To configure the network construction process, set parameters in conf module"""
+"""
+MODULE: main
 
-import pandas as pd
+core script to the network construction process. To start network construction, run main().
+To configure the network construction process, set parameters in conf module
+"""
+
 from project import Project
 from neocontroller import Neo4jController
-import time
 import collectors
 import conf
+
+import pandas as pd
+import time
 import json
 # import cProfile
 
 
 def main():
+    """
+    Calls the network construction process.
+
+    :return:    --
+    """
     time_start = time.time()
     neo_controller = Neo4jController()
     neo_controller.clear_db()
@@ -31,8 +40,12 @@ def main():
 
 
 def _construct_network():
-    """Reads the owner/repository combinations from the file Input/owners.csv. For each owner/repository
-    which was filled in there, the network construction process is being started."""
+    """
+    Reads the owner/repository combinations from the file Input/owners.csv. For each owner/repository
+    which was filled in there, the network construction process is being started.
+
+    :return:    --
+    """
 
     if not conf.construct_network:
         return
@@ -46,9 +59,15 @@ def _construct_network():
         _split_projects(owner, repos)
 
 
-def _split_projects(owner, repos):
-    """Creates a new Project-object for each owner/repo combination.
-    Starts the analysis process on each Project"""
+def _split_projects(owner: str, repos: pd.Series):
+    """
+    Creates a new Project-object for each owner/repo combination.
+    Starts the analysis process on each Project
+
+    :param owner:       owner name
+    :param repos:       pd.Series containing repository names
+    :return:            --
+    """
 
     pullreq_data, issue_data, commit_data = _import_comment_data(owner)
 
@@ -68,25 +87,37 @@ def _split_projects(owner, repos):
         print()
 
 
-def _import_comment_data(owner):
-    """loads comment data owner wise from json dumps"""
+def _import_comment_data(owner: str) -> (pd.DataFrame, pd.DataFrame, pd.DataFrame):
+    """
+    loads comment data owner wise from json dumps.
 
-    with open(conf.get_data_path(owner)) as json_data:
-        d = json.load(json_data)
+    :param owner:       owner name
+    :return:            tuple of pullrequest-, issue- and comment data
+    """
 
-    pullreq_data = pd.DataFrame(d["pc"])
-    issue_data = pd.DataFrame(d["ic"])
-    commit_data = pd.DataFrame(d["cc"])
+    with open(conf.get_comment_data_path(owner)) as comment_data:
+        d = json.load(comment_data)
 
-    pullreq_data, issue_data, commit_data = _clean_comment_data(pullreq_data, issue_data, commit_data)
+    p_data = pd.DataFrame(d["pc"])
+    i_data = pd.DataFrame(d["ic"])
+    c_data = pd.DataFrame(d["cc"])
+
+    p_data, i_data, c_data = _clean_comment_data(p_data, i_data, c_data)
 
     print("Imported data for >>> " + owner)
 
-    return pullreq_data, issue_data, commit_data
+    return p_data, i_data, c_data
 
 
 def _clean_comment_data(pc, ic, cc):
-    """infers data cleaning on the raw comment data json input"""
+    """
+    infers data cleaning on the raw comment data json input
+
+    :param pc:
+    :param ic:
+    :param cc:
+    :return:
+    """
 
     lst = [pc, ic, cc]
 
@@ -111,24 +142,32 @@ def _clean_comment_data(pc, ic, cc):
 
 
 def _extract_user(data):
-    """data from mongoDB can be nested in two levels. this method gets the username if it is nested
-    like user:{login:'name'} """
-    try:
-        if not data["user"].empty:
-            if type(data["user"].iloc[0]) is dict:
-                for index, row in data.iterrows():
-                    data.at[index, "user"] = row["user"].get('login')
+    """
+    data from mongoDB can be nested in two levels. this method gets the username if it is nested
+    like user:{login:'name'}
 
-            data["user"] = data["user"].str.lower()
-    except KeyError:
-        print(data)
-        raise KeyError
+    :param data:
+    :return:
+    """
+
+    if not data["user"].empty:
+        if type(data["user"].iloc[0]) is dict:
+            for index, row in data.iterrows():
+                data.at[index, "user"] = row["user"].get('login')
+
+        data["user"] = data["user"].str.lower()
+
     return data
 
 
 def _position_na_filter(data):
-    """takes out commit or pullreq comments that do not have a valid position such that they can't be
-    split into comment threads later"""
+    """
+    takes out commit or pullreq comments that do not have a valid position such that they can't be
+    split into comment threads later
+
+    :param data:
+    :return:
+    """
 
     # nan-filter for positions
     data_nan = data[pd.isna(data["position"])]
@@ -139,18 +178,35 @@ def _position_na_filter(data):
 
 
 def _infer_datetime(data):
+    """
+
+    :param data:
+    :return:
+    """
+
     data["created_at"] = pd.to_datetime(data["created_at"])
     return data
 
 
 def _date_filter(data):
-    """filters entries that do not lie within the date range defined in the config file"""
+    """
+    filters entries that do not lie within the date range defined in the config file
+
+    :param data:
+    :return:
+    """
+
     data = data[conf.minDate <= data["created_at"]]
     data = data[data["created_at"] <= conf.maxDate]
     return data
 
 
 def _rename_cols(data):
+    """
+
+    :param data:
+    :return:
+    """
     # TODO: find another name for thread_id
     # the name thread_id is incorrect as for cc and pc threads have to be split further by position. Fi
     column_names = data.columns
@@ -162,6 +218,7 @@ def _rename_cols(data):
         data = data.rename(index=str, columns={"commit_id": "thread_id"})
 
     return data
+
 
 if __name__ == '__main__':
     # cProfile.run("main()", sort="cumtime")
