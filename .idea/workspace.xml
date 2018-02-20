@@ -18,10 +18,10 @@
       <file leaf-file-name="event_preprocessing.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/DataPreparation/event_preprocessing.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="544">
-              <caret line="32" column="45" lean-forward="true" selection-start-line="32" selection-start-column="45" selection-end-line="32" selection-end-column="45" />
+            <state relative-caret-position="510">
+              <caret line="30" column="0" lean-forward="true" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
               <folding>
-                <element signature="e#131#146#0" expanded="true" />
+                <element signature="e#121#136#0" expanded="true" />
               </folding>
             </state>
           </provider>
@@ -145,10 +145,10 @@
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="304" />
+    <option name="x" value="707" />
     <option name="y" value="23" />
-    <option name="width" value="2256" />
-    <option name="height" value="1413" />
+    <option name="width" value="1970" />
+    <option name="height" value="1404" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
@@ -558,7 +558,14 @@
       <option name="project" value="LOCAL" />
       <updated>1519049889451</updated>
     </task>
-    <option name="localTasksCounter" value="34" />
+    <task id="LOCAL-00034" summary="data preprocessing">
+      <created>1519057116190</created>
+      <option name="number" value="00034" />
+      <option name="presentableId" value="LOCAL-00034" />
+      <option name="project" value="LOCAL" />
+      <updated>1519057116190</updated>
+    </task>
+    <option name="localTasksCounter" value="35" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -603,19 +610,20 @@
     </todo-panel>
   </component>
   <component name="ToolWindowManager">
-    <frame x="304" y="23" width="2256" height="1413" extended-state="0" />
+    <frame x="707" y="23" width="1970" height="1404" extended-state="0" />
+    <editor active="true" />
     <layout>
-      <window_info id="Project" active="true" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.16576332" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.22866043" sideWeight="0.5" order="1" side_tool="false" content_ui="combo" />
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32462174" sideWeight="0.49285147" order="8" side_tool="false" content_ui="tabs" />
       <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.34513274" sideWeight="0.5129241" order="0" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3232462" sideWeight="0.49353796" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3274648" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
-      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.41644084" sideWeight="0.48707592" order="5" side_tool="false" content_ui="tabs" x="0" y="23" width="445" height="696" />
+      <window_info id="Run" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" show_stripe_button="true" weight="0.4776971" sideWeight="0.48707592" order="5" side_tool="false" content_ui="tabs" x="0" y="23" width="445" height="696" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.11423748" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
       <window_info id="Terminal" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.32737276" sideWeight="0.49353796" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="0" side_tool="true" content_ui="tabs" />
-      <window_info id="Debug" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.3794038" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" x="21" y="274" width="1238" height="271" />
-      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.8342367" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
+      <window_info id="Debug" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.43931535" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" x="21" y="274" width="1238" height="271" />
+      <window_info id="Data View" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.8342246" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.4" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
@@ -690,7 +698,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="minor changes to project stats" />
     <MESSAGE value="refactoring for thread class, first implementation for contextuals detection" />
     <MESSAGE value="performance improvements" />
     <MESSAGE value="testing mentions and contextuals detection" />
@@ -715,7 +722,8 @@
     <MESSAGE value="added commits relation to neo4j" />
     <MESSAGE value="adding comments and refactoring in neocontroller" />
     <MESSAGE value="some commenting and minor fixes" />
-    <option name="LAST_COMMIT_MESSAGE" value="some commenting and minor fixes" />
+    <MESSAGE value="data preprocessing" />
+    <option name="LAST_COMMIT_MESSAGE" value="data preprocessing" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -737,7 +745,7 @@
           </properties>
         </breakpoint>
       </default-breakpoints>
-      <option name="time" value="322" />
+      <option name="time" value="325" />
     </breakpoint-manager>
     <watches-manager />
   </component>
@@ -1097,10 +1105,10 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/DataPreparation/event_preprocessing.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="32" column="45" lean-forward="true" selection-start-line="32" selection-start-column="45" selection-end-line="32" selection-end-column="45" />
+        <state relative-caret-position="510">
+          <caret line="30" column="0" lean-forward="true" selection-start-line="30" selection-start-column="0" selection-end-line="30" selection-end-column="0" />
           <folding>
-            <element signature="e#131#146#0" expanded="true" />
+            <element signature="e#121#136#0" expanded="true" />
           </folding>
         </state>
       </provider>
