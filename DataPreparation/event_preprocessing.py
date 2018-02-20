@@ -7,9 +7,14 @@ Takes a list of events as input and splits them in separate csv files (owner-wis
 import cProfile
 import pandas as pd
 import time
+import os.path
+import warnings
 
 def main():
     fp = '/Users/Max/Desktop/MA/Data/BigQuery/Extracts/201601/IssueCommentEvent.csv'
+
+    warnings.warn("For final data preprocessing change order of column headers")
+
 
     print("processing: " + fp)
     start = time.time()
@@ -45,8 +50,10 @@ def main():
             temp = chunk.loc[chunk.owner_name == name]
             filename = name.replace('/', '-')
             exp = '/Users/Max/Desktop/MA/Data/BigQuery/Extracts/201601/IssueComments/' + filename
+            file_exists = os.path.isfile(exp)
 
-            temp.to_csv(exp, mode='a', header=True)
+            temp.to_csv(exp, mode='a', header=(not file_exists))
+
 
         print("Chunk processed ({0:.2f}s)".format(time.time() - lapstart))
 
