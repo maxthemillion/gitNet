@@ -13,6 +13,11 @@ import os.path
 
 
 def main():
+    # preprocess()
+    preprocess('CommitCommentEvent')
+
+def preprocess(file=None):
+
     standard_files = ['IssuesEvent',
                       'CreateEvent',
                       'MemberEvent',
@@ -20,14 +25,25 @@ def main():
                       'ReleaseEvent']
 
     comment_files = ['IssueCommentEvent',
-                     'PullRequestReviewEvent',
+                     'PullRequestReviewCommentEvent',
                      'CommitCommentEvent']
 
-    for file in standard_files:
-        prep_standard(file)
+    if file is None:
 
-    for file in comment_files:
-        prep_comments(file)
+        for file in standard_files:
+            prep_standard(file)
+
+        for file in comment_files:
+            prep_comments(file)
+
+    else:
+        if file in standard_files:
+            prep_standard(file)
+        elif file in comment_files:
+            prep_comments(file)
+        else:
+            raise ValueError("Provided filename not in file lists")
+
 
 
 def prep_standard(file):
