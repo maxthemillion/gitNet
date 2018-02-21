@@ -13,8 +13,16 @@ import os.path
 
 
 def main():
-    # preprocess()
-    preprocess('CommitCommentEvent')
+
+    start = time.time()
+    preprocess()
+    # preprocess('CommitCommentEvent')
+
+    print()
+    print("-----------------------")
+    print("Done!")
+    print("Time required:  {0:.2f}s".format(time.time() - start))
+
 
 def preprocess(file=None):
 
@@ -45,7 +53,6 @@ def preprocess(file=None):
             raise ValueError("Provided filename not in file lists")
 
 
-
 def prep_standard(file):
     """
     Takes a file, flattens the "other" column, adds a header and saves
@@ -53,9 +60,9 @@ def prep_standard(file):
 
     :return:
     """
-    import_path = '/Users/Max/Desktop/MA/Data/BigQuery/Extracts/201601/' + file
+    import_path = '../Import_DataPrep/' + file
 
-    export_path = '/Users/Max/Desktop/MA/Data/BigQuery/Extracts/201601/Prepared/' + file + "_prep"
+    export_path = '../Export_DataPrep/' + file + "_prep"
     chunksize = 100000
 
     # remove existing files
@@ -84,6 +91,8 @@ def prep_standard(file):
         counter += 1
         print("Chunk processed {0} ({1:.2f}s)".format(counter, time.time() - start))
 
+    print()
+
 
 def prep_comments(file):
     """
@@ -93,8 +102,8 @@ def prep_comments(file):
     :return:
     """
 
-    import_path = '/Users/Max/Desktop/MA/Data/BigQuery/Extracts/201601/' + file
-    export_dir = '/Users/Max/Desktop/MA/Data/BigQuery/Extracts/201601/Prepared/' + file + '/'
+    import_path = '../Import_DataPrep/' + file
+    export_dir = '../Export_DataPrep/' + file + '/'
     chunksize = 1000000
 
     # remove existing files
@@ -145,23 +154,24 @@ def prep_comments(file):
         counter += 1
 
         print("Chunk processed ({0:.2f}s)".format(time.time() - lapstart))
-
     print()
-    print("-----------------------")
-    print("Done!")
-    print("Time required:  {0:.2f}s".format(time.time() - start))
 
 
 def normalize_other(chunk, chunksize, counter):
 
-    if chunk['other'].dtype is str:
+    try:
         start_index = chunksize * counter
         norm = json_normalize(chunk['other'].apply(json.loads).tolist())
         norm.index += start_index
+
         # chunk = chunk.join(norm)
         chunk = pd.concat([chunk, norm], axis=1)
+    except TypeError:
+        print("skipping 'other' column!")
 
-    chunk = chunk.drop("other", axis=1)
+    finally:
+        chunk = chunk.drop("other", axis=1)
+
     return chunk
 
 
