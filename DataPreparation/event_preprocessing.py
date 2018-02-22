@@ -15,8 +15,9 @@ import os.path
 def main():
 
     start = time.time()
-    preprocess()
+    # preprocess()
     # preprocess('CommitCommentEvent')
+    preprocess('PullRequestEvent')
 
     print()
     print("-----------------------")
@@ -76,9 +77,9 @@ def prep_standard(file):
     for chunk in pd.read_csv(import_path,
                              chunksize=chunksize,
                              header=None,
-                             names=["event_id", "type", "repo_name", "repo_id", "actor_id", "actor_login",
+                             names=["event_id", "type", "owner_name", "repo_name", "repo_id", "actor_id", "actor_login",
                                     "org_id", "org_login", "event_time", "ght_repo_id", "ght_forked_from",
-                                    "action", "other", "owner_name"]):
+                                    "action", "other"]):
 
         start = time.time()
 
@@ -119,9 +120,9 @@ def prep_comments(file):
     for chunk in pd.read_csv(import_path,
                              chunksize=chunksize,
                              header=None,
-                             names=["event_id", "type", "repo_name", "repo_id", "actor_id", "actor_login",
+                             names=["event_id", "type", "owner_name", "repo_name", "repo_id", "actor_id", "actor_login",
                                     "org_id", "org_login", "event_time", "ght_repo_id", "ght_forked_from",
-                                    "action", "other", "owner_name"]):
+                                    "action", "other"]):
 
         lapstart = time.time()
 
