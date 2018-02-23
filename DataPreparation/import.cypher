@@ -70,6 +70,7 @@ CREATE(:GHT_REPO {
 });
 
 // -- relate owners and repos
+EXPLAIN
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM "file:///Export_DataPrep/selected_repos" AS row
 MATCH(o:OWNER{login: row.owner_login})
@@ -88,6 +89,7 @@ CREATE (:ISSUE{
   actor_id:toInt(row.actor_id)}
 );
 
+EXPLAIN
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM "file:///Export_DataPrep/IssuesEvent_prep" AS row
 MATCH(i:ISSUE{gha_id: toInt(row.issue_id)})
@@ -107,6 +109,7 @@ CREATE (:PULLREQUEST{
 	actor_id:toInt(row.actor_id)
 });
 
+EXPLAIN
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM "file:///Export_DataPrep/PullRequestEvent_prep" AS row
 MATCH(p:PULLREQUEST{gha_id: toInt(row.pull_request_id)})
@@ -123,6 +126,8 @@ WHERE i.url = p.issue_url
 MERGE (i)-[:is]->(p)
 
 
+
+
 // -- MemberEvent
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM "file:///Export_DataPrep/MemberEvent_prep" AS row
@@ -133,7 +138,7 @@ CREATE (:COLLABORATOR{
   member_id:toInt(row.member_id)
   });
 
-// TODO: creates less relationships than there are collaborator nodes
+// creates less relationships than there are collaborator nodes
 // cause: removed repositories which didn't have unique name- / gha_id combination
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM "file:///Export_DataPrep/MemberEvent_prep" AS row
@@ -179,6 +184,9 @@ CREATE (:COMMENT{
 // TODO: connect pull request comments to pull requests
 
 
+
+
+
 // -- Import IssueComments
 EXPLAIN
 USING PERIODIC COMMIT 1000
@@ -189,16 +197,19 @@ CREATE (c:COMMENT{
   gha_id:toInt(row.comment_id)
 })
 WITH c, toInt(row.actor_id) as actor
-MATCH (u:USER{gha_id: actor})
+MATCH (u:USER{gha_id: actor}) USING INDEX u:USER(gha_id)
 MERGE (u)-[:makes]->(c);
 
 // test code to add relationships when user nodes had already been created
+EXPLAIN
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM "file:///Export_DataPrep/IssueCommentEvent_prep" AS row
-MATCH (c:COMMENT{gha_id:toInt(c.comment_id)})
-WITH c, toInt(row.actor_id) as actor
-MATCH (u:USER{gha_id: actor})
-MERGE (u)-[:makes]->(c);
+  WITH toInt(row.comment_id) as comment, toInt(row.actor_id) as actor
+  MATCH (c:COMMENT{gha_id:comment}) USING INDEX c:COMMENT(gha_id)
+  WITH c, actor
+  MATCH (u:USER{gha_id: actor}) USING INDEX u:USER(gha_id)
+  MERGE (u)-[:makes]->(c);
+
 
 // creates way less relationships than there are issue comment nodes. Why?
 // because comments can also be made to issues which have been created before Jan 2016
@@ -242,6 +253,7 @@ CREATE (:COMMENT{
 // -- connecting all events to users
 
 // Collaborator
+EXPLAIN
 MATCH(c:COLLABORATOR)
 MATCH(u:USER{gha_id: c.actor_id})
 MERGE (u)-[:announces]->(c)
@@ -254,18 +266,13 @@ WITH c, u
 MERGE (u)-[:becomes]->(c)
 
 // ISSUE
+EXPLAIN
 MATCH (i:ISSUE)
 MATCH (u:USER{gha_id: i.actor_id})
+WITH i, u
 MERGE (u)-[:reports]->(i);
 
 
-// TODO: takes too long. find another solution
-// Comment
-MATCH (c:COMMENT)
-MATCH(u:USER{gha_id: c.actor_id})
-MERGE(u)-[:makes]->(c);
-
-// -- connecting all
 
 
 
