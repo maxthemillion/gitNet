@@ -15,9 +15,7 @@ import os.path
 def main():
 
     start = time.time()
-    # preprocess()
-    # preprocess('CommitCommentEvent')
-    preprocess('PullRequestEvent')
+    preprocess()
 
     print()
     print("-----------------------")
@@ -31,7 +29,11 @@ def preprocess(file=None):
                       'CreateEvent',
                       'MemberEvent',
                       'PullRequestEvent',
-                      'ReleaseEvent']
+                      'ReleaseEvent',
+                      'IssueCommentEvent',
+                      'PullRequestReviewCommentEvent',
+                      'CommitCommentEvent'
+                      ]
 
     comment_files = ['IssueCommentEvent',
                      'PullRequestReviewCommentEvent',
@@ -48,10 +50,9 @@ def preprocess(file=None):
     else:
         if file in standard_files:
             prep_standard(file)
-        elif file in comment_files:
+
+        if file in comment_files:
             prep_comments(file)
-        else:
-            raise ValueError("Provided filename not in file lists")
 
 
 def prep_standard(file):
@@ -86,6 +87,9 @@ def prep_standard(file):
         chunk = drop_cols(chunk)
 
         chunk = normalize_other(chunk, chunksize, counter)
+
+        if 'comment_body' in chunk.columns:
+            chunk = chunk.drop('comment_body', axis=1)
 
         write_out_file(chunk, export_path)
 
