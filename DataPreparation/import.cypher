@@ -17,7 +17,7 @@ CREATE CONSTRAINT ON (r:GHT_REPO) ASSERT r.ght_id IS UNIQUE;
 
 CREATE CONSTRAINT ON (i:ISSUE) ASSERT i.event_id IS UNIQUE;
 CREATE CONSTRAINT ON (i:ISSUE) ASSERT i.gha_id IS UNIQUE;
-CREATE CONSTRAINT ON (i:ISSUE) ASSERT i.url IS UNIQUE;
+CREATE INDEX ON :ISSUE(url);
 
 CREATE CONSTRAINT ON (c:COMMIT) ASSERT c.sha IS UNIQUE;
 
@@ -135,6 +135,18 @@ WITH p,
 MATCH (i:ISSUE{url: issue})
 MERGE (i)-[:is]->(p);
 
+// TODO: Issues and Pullrequests can only be connected based on issue_url since all other data
+// is not available in GHT BQ. MatchQuotes are low. Is there any other way to bring them together more
+// reliably?
+
+// code to connect issues and pr after pr have already been created
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/PullRequestEvent_prep' AS row
+WITH toInt(row.pull_request_id) as pr_id, row.issue_url as issue_url
+MATCH(i:ISSUE{url: issue_url})
+MATCH(p:PULLREQUEST{gha_id: pr_id})
+MERGE (i)-[:is]->(p);
+
 
 // -- MemberEvent
 USING PERIODIC COMMIT 1000
@@ -189,7 +201,6 @@ MERGE (r)-[:to]->(rep);
 
 
 // -- Import PullRequestComments, connect to actors and pullrequests
-// TODO: connection between pr_comments and pullrequests does not work (pr_id is not in pr_comments csv file)
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/PullRequestReviewCommentEvent_prep' AS row
 WITH row,
@@ -230,7 +241,7 @@ MERGE (u)-[:makes]->(c)
 WITH c,
      i_id
 MATCH (i:ISSUE{gha_id:i_id})
-MERGE (ic)-[:to]->(i);
+MERGE (c)-[:to]->(i);
 
 
 
@@ -295,4 +306,3 @@ with labels(n) as l_n,
      COUNT(DISTINCT m) as ct_m
 RETURN l_n, ct_n, t_x, ct_x, l_m, ct_m
 ORDER BY l_m;
-
