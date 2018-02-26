@@ -159,6 +159,7 @@ MERGE (c)-[:to]->(r);
 
 
 // -- ReleaseEvent
+EXPLAIN
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ReleaseEvent_prep' AS row
 WITH row,
@@ -181,21 +182,23 @@ MERGE (r)-[:to]->(rep);
 
 
 // -- Import PullRequestComments, connect to actors and pullrequests
+// TODO: connection between pr_comments and pullrequests does not work (pr_id is not in pr_comments csv file)
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/PullRequestReviewCommentEvent_prep' AS row
 WITH row,
      apoc.date.parse(row.event_time, 'ms', 'yyyy-MM-dd hh:mm:ss') as dt
-CREATE (p:PR_COMMENT:COMMENT:EVENT{
+CREATE (c:PR_COMMENT:COMMENT:EVENT{
 	event_time:dt,
   gha_id:toInt(row.comment_id)
 })
-WITH p,
+
+WITH c,
      toInt(row.actor_id) AS actor,
      toInt(row.pull_request_id) as pr_id
 MATCH (u:USER{gha_id: actor}) USING INDEX u:USER(gha_id)
 MERGE (u)-[:makes]->(c)
 
-WITH p,
+WITH c,
      pr_id
 MATCH (pr:PULLREQUEST{gha_id:pr_id})
 MERGE (c)-[:to]->(pr);
@@ -225,7 +228,6 @@ MERGE (ic)-[:to]->(i);
 
 
 // -- Import CommitComments
-EXPLAIN
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/CommitCommentEvent_prep' AS row
 WITH row,
@@ -265,6 +267,8 @@ MERGE (c)-[:to]->(commit);
 
 
 
+// Queries to verify the database:
 
+MATCH (n:EVENT)-[x]->(m) RETURN labels(n) as l_n, COUNT(n) as ct_l, type(x) as t, COUNT (x) as ct_x, labels(m) as l_m, COUNT(m) as ct_m;
 
 
