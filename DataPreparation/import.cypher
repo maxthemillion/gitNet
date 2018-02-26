@@ -43,6 +43,13 @@ CREATE(:USER {
   gha_id: toInt(row.actor_id)
 });
 
+// -- additionally import members (miss in users csv)
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/MemberEvent_prep' AS row
+MERGE (:USER {
+  gha_id: toInt(row.member_id)
+})
+
 
 // -- import distinct owners
 USING PERIODIC COMMIT 1000
@@ -269,6 +276,23 @@ MERGE (c)-[:to]->(commit);
 
 // Queries to verify the database:
 
-MATCH (n:EVENT)-[x]->(m) RETURN labels(n) as l_n, COUNT(n) as ct_l, type(x) as t, COUNT (x) as ct_x, labels(m) as l_m, COUNT(m) as ct_m;
+MATCH (n:EVENT)-[x]->(m)
+with labels(n) as l_n,
+     COUNT(DISTINCT n) as ct_n,
+     type(x) as t_x,
+     COUNT (DISTINCT x) as ct_x,
+     labels(m) as l_m,
+     COUNT(DISTINCT m) as ct_m
+RETURN l_n, ct_n, t_x, ct_x, l_m, ct_m
+ORDER BY l_m;
 
+MATCH (n:USER)-[x]->(m)
+with labels(n) as l_n,
+     COUNT(DISTINCT n) as ct_n,
+     type(x) as t_x,
+     COUNT (DISTINCT x) as ct_x,
+     labels(m) as l_m,
+     COUNT(DISTINCT m) as ct_m
+RETURN l_n, ct_n, t_x, ct_x, l_m, ct_m
+ORDER BY l_m;
 
