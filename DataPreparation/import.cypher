@@ -5,8 +5,11 @@ CREATE CONSTRAINT ON (o:OWNER) ASSERT o.login IS UNIQUE;
 // CREATE CONSTRAINT ON (o:OWNER) ASSERT o.gha_id IS UNIQUE
 
 CREATE CONSTRAINT ON (u:USER) ASSERT u.login IS UNIQUE;
-CREATE CONSTRAINT ON (user:USER) ASSERT user.ght_id IS UNIQUE;
+// CREATE CONSTRAINT ON (user:USER) ASSERT user.ght_id IS UNIQUE;
 CREATE CONSTRAINT ON (user:USER) ASSERT user.gha_id IS UNIQUE;
+
+CREATE CONSTRAINT ON (ght_u:GHT_USER) ASSERT ght_u.login IS UNIQUE;
+CREATE CONSTRAINT ON (ght_u:GHT_USER) ASSERT ght_u.ght_id IS UNIQUE;
 
 CREATE CONSTRAINT ON (r:RELEASE) ASSERT r.gha_id IS UNIQUE;
 
@@ -53,7 +56,7 @@ MERGE (:USER {
 
 // -- import distinct owners
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/selected_owners' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ght_selected_owners' AS row
 CREATE(:OWNER {
   ght_id: toInt(row.ght_owner_id),
   login: row.owner_login
@@ -70,7 +73,7 @@ CREATE(r:GHA_REPO{
 
 // -- import GHT repositories
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/selected_repos' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ght_selected_repos' AS row
 CREATE(:GHT_REPO {
   ght_id:toInt(row.ght_repo_id),
   full_name:row.full_name
@@ -270,19 +273,64 @@ WITH c,
 MERGE (c)-[:to]->(commit);
 
 
+
+
 // -- importing commits
-// TODO: import commits
+// no commits are allowed to be in the database at time of import
 
+USING PERIODIC COMMIT 1000
+LOAD CSV FROM "file:///Export_DataPrep/ght_commits_201601" AS row
+WITH row[1] as commit_sha,
+     toInt(row[2]) as ght_author_id,
+     toInt(row[4]) as ght_repo_id,
+     apoc.date.parse(row[5], 'ms', 'yyyy-MM-dd hh:mm:ss') as dt
+CREATE(c:COMMIT:EVENT{
+  event_time: dt,
+  gha_id: commit_sha
+})
+WITH c,
+     ght_author_id,
+     ght_repo_id
+MERGE(u:GHT_USER{ght_id:ght_author_id})
+CREATE (u)-[:authored]->(c)
 
-
-
+WITH c,
+     ght_repo_id
+MATCH(r:GHT_REPO)
+WHERE r.ght_id = ght_repo_id
+CREATE(c)-[:to]->(r);
 
 
 // -- import GHT user information
 // TODO: import GHT user information
+// import names to those who committed (come from ght data)
+// match gha and ght users with the same name
 
+EXPLAIN
+USING PERIODIC COMMIT 1000
+LOAD CSV FROM "file:///Export_DataPrep/ght_users" AS row
+WITH toInt(row[0]) as ght_id,
+     row[1] as login,
+     row[4] as type,
+     row[5] as fake,
+     row[6] as deleted
+	// add ght info to those who committed
+	MATCH(ght_u:GHT_USER{ght_id:ght_id})
+  SET
+ght_u.type = type,
+ght_u.fake = fake,
+ght_u.deleted = deleted
 
+	// relate ght_users to gha_users
+	// case 1: gha user with same username exists -> create relationship
+  // case 2: gha user with same username does not exist (means only commits but no other activity)
+  // 		-> check for how many users this is the case
 
+WITH ght_u, login
+MATCH(u:USER{login: login})
+
+WITH ght_u, u
+MERGE(ght_u)-[:is]->(u);
 
 
 // Queries to verify the database:
