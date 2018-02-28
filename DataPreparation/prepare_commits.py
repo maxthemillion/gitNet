@@ -1,11 +1,14 @@
 """
-Read records from in_filename and write records to out_filename if
-the string up to the first comma between positions 11 and 16 of
-line is found in the set keys.
+This script filters commits from the commits.csv file which is included in the GHT MySQL dump.
+The script selects commits that...
+    - ... were made during the specified period ...
+    - ... to all repositories under consideration
+
+The file 'repo_ids.csv' holds GHT repository ids of those repositories which were sampled from the population of
+relevant projects.
 
 """
 
-import datetime
 import time
 
 counter = 0
@@ -22,8 +25,6 @@ min_month = 1
 max_month = 1
 
 proj_keys = set(line.strip() for line in open('repo_ids.csv'))
-# proj_keys = set(['6227'])
-# proj_keys.add('6227'.strip())
 
 lap = time.time()
 

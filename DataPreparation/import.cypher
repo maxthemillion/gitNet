@@ -345,7 +345,7 @@ with labels(n) as l_n,
 RETURN l_n, ct_n, t_x, ct_x, l_m, ct_m
 ORDER BY l_m;
 
-MATCH (n:USER)-[x]->(m)
+MATCH (n)-[x]->(m)
 with labels(n) as l_n,
      COUNT(DISTINCT n) as ct_n,
      type(x) as t_x,
