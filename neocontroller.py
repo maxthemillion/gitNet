@@ -2,8 +2,6 @@
 MODULE: neocontroller
 
 This module handles all read and write transactions to the Neo4j database.
-The database makes use of a timetree which is defined to resolute down to days. Timestamps are converted to integers
-representing milliseconds since Jan 1st, 1970 using UTC timezone.
 
 For a brief documentation on the Neo4j syntax see: https://neo4j.com/docs/cypher-refcard/current/
 
@@ -23,100 +21,44 @@ from analysis import Analyzer
 class Neo4jController:
     def __init__(self):
         self.graph = Graph(user="max", password="1111")
-        # TODO: collect paths as object attributes
 
-    def import_repo(self,
-                    ref_df: pd.DataFrame,
-                    node_df: pd.DataFrame,
-                    owner: str,
-                    repo: str,
-                    stats):
+    def import_references(self,
+                          ref_df: pd.DataFrame):
         """
-        Imports the passed references and nodes to the database and relates them to the passed owner and repository.
-        First matches owner, repository and their relationship. Then adds the repository's comments to the timetree
-        and their relationships to users.
+        Imports the passed references to neo4j.
 
-        Can be activated/deactivated in the conf module.
+        Can be activated/deactivated in the conf module
 
-        :param ref_df:      pd.DataFrame containing references
-        :param node_df:     pd.DataFrame containing participants in a comment thread
-        :param owner:       repository owner
-        :param repo:        repository name
-        :return:            --
+        :param ref_df:
+        :return:
         """
 
-        if not conf.neo4j_import:
-            return
+        q_ref = '''MATCH (c:COMMENT{id:$l_comment_id})
+                    WITH c
 
-        #TODO: this query merges repos with the same name which is wrong because there can be more than one repo with the same name
-        # ! change to pattern MERGE (r:REPO{name})-->(o:OWNER{name})
-        q_repos = '''MERGE(r:REPO{name:$l_repo})
-                     SET r.no_threads = $l_no_threads
-                     SET r.no_comments = $l_no_comments
-                     
-                     WITH r
-                     MERGE (o:OWNER{name:$l_owner})
-                     
-                     WITH r, o
-                     MERGE (r)-[y:BelongsTo]->(o)
-                     RETURN y'''
+                    WITH comment
+                    MERGE (ref_user:USER{login:$l_login_b})
 
-        self.graph.run(q_repos, parameters={'l_repo': repo,
-                                            'l_owner': owner,
-                                            'l_no_comments': stats.get_no_comments(),
-                                            'l_no_threads': stats.get_no_threads()})
-
-        q_comments = '''WITH apoc.date.parse($l_time, 'ms', 'yyyy-MM-dd') as dt
-                        MERGE (c:COMMENT{id:$l_comment_id})
-                        
-                        WITH dt, c
-                        CALL ga.timetree.events.attach({node: c, time: dt, relationshipType: "CreatedOn"}) 
-                        YIELD node as comment
-                        
-                        WITH comment, dt
-                        SET comment.thread_type = $l_thread_type
-                        SET comment.tscomp = dt
-                        
-                        WITH comment
-                        MERGE (a:USER{login:$l_login_a})
-                        MERGE (b:USER{login:$l_login_b})
-                        
-                        WITH comment, a, b
-                        MERGE (a) -[:makes]->(comment)
-                        
-                        WITH comment, b
-                        CALL apoc.create.relationship(comment, $l_ref_type, {}, b) YIELD rel as rel2
-                        
-                        WITH comment
-                        MATCH (r:REPO{name:$l_repo_name}) --> (o:OWNER{name:$l_owner_name})
-                        MERGE  (comment)-[:to]->(r)
-                        RETURN r 
-                        '''
+                    WITH comment, b
+                    CALL apoc.create.relationship(comment, $l_ref_type, {}, ref_user) YIELD rel as rel2
+                    '''
 
         tx = self.graph.begin()
         for index, row in ref_df.iterrows():
 
-            tx.evaluate(q_comments,
-                        parameters={'l_login_a': row['commenter'],
-                                    'l_login_b': row['addressee'],
-                                    'l_ref_type': row['ref_type'],
-                                    'l_time': row['timestamp'].strftime("%Y-%m-%d"),
-                                    'l_owner_name': owner,
-                                    'l_repo_name': repo,
-                                    'l_thread_type': row['thread_type'],
+            tx.evaluate(q_ref,
+                        parameters={'l_login_b': row['addressee'],
                                     'l_comment_id': row['comment_id']})
+
             if (index + 1) % 10000 == 0:
                 tx.commit()
-                warnings.warn("batch commit to neo4j at " + index)
+                print("batch commit to neo4j at " + index)
                 tx = self.graph.begin()
         tx.commit()
 
-        print("{0}/{1}: Import to Neo4j succeeded!".format(owner, repo))
-        print()
-
-    def get_timeframe(self,
-                      owner: str,
-                      repo: str):
+    def get_comment_timeframe(self,
+                              owner: str,
+                              repo: str):
         """
         Returns the dates of the repository's earliest and latest comment.
 
@@ -154,14 +96,13 @@ class Neo4jController:
         :param dt:      timestamp indicating the end of the desired period for the subgraph query
         :return:        pd.DataFrame containing links between nodes in the subgraph
         """
-        # TODO: check this query. Does it deliver what you expect?
         q_subgraph_time = '''
                             WITH apoc.date.parse($l_dt, 'ms', 'yyyy-MM-dd') as end
                             WITH end, apoc.date.add(end, 'ms', $l_tf_length , 'd') as start
                             CALL ga.timetree.events.range({start: start, end: end}) YIELD node
                             
                             WITH node
-                            MATCH(r: REPO{name: $l_repo})-->(o: OWNER{name: $l_owner})
+                            MATCH(r: GHA_REPO{name: $l_repo})-->(o: OWNER{name: $l_owner})
                             WHERE(node: COMMENT)-->(r)
                             
                             WITH DISTINCT node as comment
@@ -237,11 +178,11 @@ class Neo4jController:
             print("exporting data in graphJSON format for {0}/{1}".format(owner, repo))
 
             node_query = '''
-                            MATCH (u:USER)<--(c:COMMENT)-->(r:REPO)-->(o:OWNER)
+                            MATCH (u:USER)<--(c:COMMENT)-->(r:GHA_REPO)-->(o:OWNER)
                             WHERE r.name = $l_repo and o.name = $l_owner
                             
                             WITH COLLECT({name: u.login, id: id(u)}) AS rows
-                            MATCH (u:USER)-->(c:COMMENT)-->(r:REPO)-->(o:OWNER)
+                            MATCH (u:USER)-->(c:COMMENT)-->(r:GHA_REPO)-->(o:OWNER)
                             WHERE r.name = $l_repo and o.name = $l_owner
                             
                             WITH rows + COLLECT({name: u.login, id: id(u)}) as allRows
@@ -251,7 +192,7 @@ class Neo4jController:
                             RETURN DISTINCT name, id
                             '''
 
-            link_query = '''MATCH (r:REPO) --> (o:OWNER)
+            link_query = '''MATCH (r:GHA_REPO) --> (o:OWNER)
                             WHERE r.name = $l_repo
                             and o.name = $l_owner
                             
@@ -309,109 +250,4 @@ class Neo4jController:
 
             with open("Export/viz/data_{0}_{1}.json".format(owner, repo), "w") as fp:
                 json.dump(data, fp, indent="\t")
-
-    def import_commits(self,
-                       commits: pd.DataFrame,
-                       owner: str,
-                       repo: str):
-        """
-        Imports the passed commits and relates them to the passed owner and repository
-
-        :param commits:        pd.DataFrame containing commits with columns
-                                    login:          username of the commit's author
-                                    commit_id:      the commit's id as provided by GHTorrent
-                                    created_at:     a timestamp dating to the commits creation
-
-        :param owner:          owner name
-        :param repo:           repository name
-        :return:               --
-        """
-
-        q_commits = '''
-                    WITH apoc.date.parse($l_time, 'ms', 'yyyy-MM-dd') as dt
-                    MERGE (c:COMMIT{id:$l_id})
-                    SET c.tscomp = dt, c.id = $l_id
-                    
-                    WITH c, dt
-                    CALL ga.timetree.events.attach({node: c, time: dt, relationshipType: "CreatedOn"}) 
-                    YIELD node as commit
-                    
-                    WITH commit
-                    MERGE (u:USER{login:$l_login})
-                    MERGE (u)-[:commits]->(commit)
-                    
-                    WITH commit
-                    MERGE (r:REPO{name:$l_repo}) -[:BelongsTo]-> (o:OWNER{name:$l_owner})
-                    MERGE  (commit)-[:to]-> (r)                    
-                    RETURN r
-                    '''
-
-        tx = self.graph.begin()
-        for index, row in commits.iterrows():
-
-            tx.evaluate(q_commits, parameters={'l_login': row['login'],
-                                               'l_id': row['commit_id'],
-                                               'l_time': row['created_at'].strftime("%Y-%m-%d"),
-                                               'l_owner': owner,
-                                               'l_repo': repo})
-            if (index + 1) % 10000 == 0:
-                tx.commit()
-                warnings.warn("batch commit to neo4j at " + index)
-                tx = self.graph.begin()
-        tx.commit()
-
-        print("{0}/{1}: Import to Neo4j succeeded!".format(owner, repo))
-        print()
-
-    def import_issues(self,
-                      issues: pd.DataFrame,
-                      owner: str,
-                      repo: str):
-        """
-        Imports passed issues and connects them to passed owner and repository
-
-        :param issues:      pd.DataFrame containing issues with columns
-                                reporter:       username of the issue's reporter
-                                issue_id:       the issue's id as provided by GHTorrent
-                                created_at:     timestamp dating to the issue's creation
-        :param owner:       owner name
-        :param repo:        repository name
-        :return:
-        """
-
-        q_commits = '''
-                     WITH apoc.date.parse($l_time, 'ms', 'yyyy-MM-dd') as dt
-                     MERGE (c:ISSUE{id:$l_id})
-                     SET c.tscomp = dt, c.id = $l_id
-                     
-                     WITH c, dt
-                     CALL ga.timetree.events.attach({node: c, time: dt, relationshipType: "CreatedOn"}) 
-                     YIELD node as issue
-                     
-                     WITH issue
-                     MERGE (u:USER{login:$l_login})
-                     MERGE (u)-[:raises]->(issue)
-                     
-                     WITH issue
-                     MERGE (r:REPO{name:$l_repo}) -[:BelongsTo]-> (o:OWNER{name:$l_owner})
-                     MERGE  (issue)-[:to]-> (r)                    
-                     RETURN r
-                     '''
-
-        tx = self.graph.begin()
-        for index, row in issues.iterrows():
-
-            tx.evaluate(q_commits, parameters={'l_login': row['reporter'],
-                                               'l_id': row['issue_id'],
-                                               'l_time': row['created_at'].strftime("%Y-%m-%d"),
-                                               'l_owner': owner,
-                                               'l_repo': repo})
-            if (index + 1) % 10000 == 0:
-                tx.commit()
-                warnings.warn("batch commit to neo4j at " + index)
-                tx = self.graph.begin()
-        tx.commit()
-
-        print("{0}/{1}: Import to Neo4j succeeded!".format(owner, repo))
-        print()
 
