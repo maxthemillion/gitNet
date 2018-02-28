@@ -25,21 +25,6 @@ class Neo4jController:
         self.graph = Graph(user="max", password="1111")
         # TODO: collect paths as object attributes
 
-    def clear_db(self):
-        """"
-        Deletes all links and nodes in the database on startup of the network construction process.
-
-        Can be activated/deactivated in the conf module.
-
-        """
-
-        if conf.neo4j_clear_on_startup:
-            print("clearing neo4j database")
-            print()
-
-            query = "MATCH (n) DETACH DELETE n"
-            self.graph.run(query)
-
     def import_repo(self,
                     ref_df: pd.DataFrame,
                     node_df: pd.DataFrame,
