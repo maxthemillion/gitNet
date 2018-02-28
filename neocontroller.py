@@ -57,13 +57,14 @@ class Neo4jController:
         :param node_df:     pd.DataFrame containing participants in a comment thread
         :param owner:       repository owner
         :param repo:        repository name
-        :param stats:       ProjectStats object
         :return:            --
         """
 
         if not conf.neo4j_import:
             return
 
+        #TODO: this query merges repos with the same name which is wrong because there can be more than one repo with the same name
+        # ! change to pattern MERGE (r:REPO{name})-->(o:OWNER{name})
         q_repos = '''MERGE(r:REPO{name:$l_repo})
                      SET r.no_threads = $l_no_threads
                      SET r.no_comments = $l_no_comments
@@ -168,7 +169,7 @@ class Neo4jController:
         :param dt:      timestamp indicating the end of the desired period for the subgraph query
         :return:        pd.DataFrame containing links between nodes in the subgraph
         """
-
+        # TODO: check this query. Does it deliver what you expect?
         q_subgraph_time = '''
                             WITH apoc.date.parse($l_dt, 'ms', 'yyyy-MM-dd') as end
                             WITH end, apoc.date.add(end, 'ms', $l_tf_length , 'd') as start
@@ -429,28 +430,3 @@ class Neo4jController:
         print("{0}/{1}: Import to Neo4j succeeded!".format(owner, repo))
         print()
 
-    def import_followers(self, import_link: str):
-        """
-
-        :param import_link:
-        :return:
-        """
-
-        q_followers = '''
-                      USING PERIODIC COMMIT 1000
-                      LOAD CSV WITH HEADERS FROM $l_import_link AS row FIELDTERMINATOR ","
-                      MERGE (u:USER{login: toLower(row.user)})
-                      MERGE (f:USER{login: toLower(row.follower)})
-                      CREATE (fe:FOLLOWER)
-                      WITH apoc.date.parse($l_time, 'ms', 'yyyy-MM-dd HH:mm:ss') as dt, u, f, fe
-                      SET fe.tscomp = dt
-                      CREATE (f) -[fx:is]->(fe)
-                      CREATE (fe) -[ox:of]-> (u)
-                      WITH fe, dt
-                      CALL ga.timetree.events.attach({node: fe, time: dt, relationshipType: "CreatedOn"})
-                      YIELD node
-                      RETURN node
-                      LIMIT 1000
-                      '''
-
-        self.graph.run(q_followers, parameters={'l_import_link': import_link})
