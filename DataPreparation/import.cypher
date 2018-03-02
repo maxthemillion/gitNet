@@ -38,7 +38,6 @@ MATCH (n) DETACH DELETE n;
 // --- import data ---
 
 
-
 // -- import distinct users
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/Users_prep' AS row
@@ -273,8 +272,6 @@ WITH c,
 MERGE (c)-[:to]->(commit);
 
 
-
-
 // -- importing commits
 // no commits are allowed to be in the database at time of import
 
@@ -302,38 +299,22 @@ CREATE(c)-[:to]->(r);
 
 
 // -- import GHT user information
-// TODO: import GHT user information
-// import names to those who committed (come from ght data)
 // match gha and ght users with the same name
 
-EXPLAIN
-USING PERIODIC COMMIT 1000
-LOAD CSV FROM "file:///Export_DataPrep/ght_users" AS row
-WITH toInt(row[0]) as ght_id,
-     row[1] as login,
-     row[4] as type,
-     row[5] as fake,
-     row[6] as deleted
-	// add ght info to those who committed
-	MATCH(ght_u:GHT_USER{ght_id:ght_id})
-  SET
-ght_u.type = type,
-ght_u.fake = fake,
-ght_u.deleted = deleted
+USING PERIODIC COMMIT 10000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/users_joined' AS row
+MATCH(ght_u:GHT_USER{ght_id: toInt(row.ght_id)})
+MATCH(gha_u:USER{gha_id: toInt(row.gha_id)})
+MERGE (ght_u) -[:is]->(gha_u);
 
-	// relate ght_users to gha_users
-	// case 1: gha user with same username exists -> create relationship
-  // case 2: gha user with same username does not exist (means only commits but no other activity)
-  // 		-> check for how many users this is the case
-
-WITH ght_u, login
-MATCH(u:USER{login: login})
-
-WITH ght_u, u
-MERGE(ght_u)-[:is]->(u);
-
+// match gha users which share the same login but different ids
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_users_joined' AS row
+MATCH (u1:USER{gha_id: toInt(row.gha1)})
+MATCH (u2:USER{gha_id: toInt(row.gha2)})
+MERGE (u1) -[:is]-> (u2);
 
 // Queries to verify the database:
+// view connections
 
 MATCH (n:EVENT)-[x]->(m)
 with labels(n) as l_n,
@@ -354,3 +335,9 @@ with labels(n) as l_n,
      COUNT(DISTINCT m) as ct_m
 RETURN l_n, ct_n, t_x, ct_x, l_m, ct_m
 ORDER BY l_m;
+
+// check how many gha_users were matched to two or more ght_users
+MATCH (u:USER)<-[x]-(:GHT_USER) WITH u.gha_id as gha_id, COUNT(x) as ct WHERE ct > 1 RETURN gha_id,  ct;
+
+// check how many gha_users share the same login
+MATCH (u:USER) <-[x]- (u2:USER) WITH u.gha_id as gha_id, COUNT(x) as ct WHERE ct >= 1 RETURN DISTINCT gha_id, ct;
