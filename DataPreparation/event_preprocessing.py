@@ -78,13 +78,28 @@ def prep_standard(file):
     for chunk in pd.read_csv(import_path,
                              chunksize=chunksize,
                              header=None,
-                             names=["event_id", "type", "owner_name", "repo_name", "repo_id", "actor_id", "actor_login",
-                                    "org_id", "org_login", "event_time", "ght_repo_id", "ght_forked_from",
-                                    "action", "other"]):
+                             names=["event_id",
+                                    "type",
+                                    "owner_name",
+                                    "repo_name",
+                                    "repo_id",
+                                    "actor_id",
+                                    "actor_login",
+                                    "org_id",
+                                    "org_login",
+                                    "event_time",
+                                    "ght_repo_id",
+                                    "ght_forked_from",
+                                    "action",
+                                    "other"]):
 
         start = time.time()
 
-        chunk = drop_cols(chunk)
+        drop_list = ['type',
+                     'action']
+
+        for col in drop_list:
+            chunk = chunk.drop(col, axis=1)
 
         chunk = normalize_other(chunk, chunksize, counter)
 
@@ -101,7 +116,7 @@ def prep_standard(file):
 
 def prep_comments(file):
     """
-    Takes a comment file and sorts each row to the owner of its repository
+    Takes a comment file, removes superfluous columns and sorts each row to the owner of its repository
     in a new csv file
 
     :return:
@@ -124,13 +139,35 @@ def prep_comments(file):
     for chunk in pd.read_csv(import_path,
                              chunksize=chunksize,
                              header=None,
-                             names=["event_id", "type", "owner_name", "repo_name", "repo_id", "actor_id", "actor_login",
-                                    "org_id", "org_login", "event_time", "ght_repo_id", "ght_forked_from",
-                                    "action", "other"]):
+                             names=["event_id",
+                                    "type",
+                                    "owner_name",
+                                    "repo_name",
+                                    "repo_id",
+                                    "actor_id",
+                                    "actor_login",
+                                    "org_id",
+                                    "org_login",
+                                    "event_time",
+                                    "ght_repo_id",
+                                    "ght_forked_from",
+                                    "action",
+                                    "other"]):
 
         lapstart = time.time()
 
-        chunk = drop_cols(chunk)
+        drop_list = ["event_id",
+                     "type",
+                     "repo_name",
+                     "org_id",
+                     "org_login",
+                     "event_time",
+                     "ght_repo_id",
+                     "ght_forked_from",
+                     "action"]
+
+        for col in drop_list:
+            chunk = chunk.drop(col, axis=1)
 
         # convert to category
         chunk['owner_name'] = chunk['owner_name'].astype('category')
@@ -169,22 +206,12 @@ def normalize_other(chunk, chunksize, counter):
         norm = json_normalize(chunk['other'].apply(json.loads).tolist())
         norm.index += start_index
 
-        # chunk = chunk.join(norm)
         chunk = pd.concat([chunk, norm], axis=1)
     except TypeError:
         print("skipping 'other' column!")
 
     finally:
         chunk = chunk.drop("other", axis=1)
-
-    return chunk
-
-
-def drop_cols(chunk):
-    drop_list = ['type',
-                 'action']
-    for col in drop_list:
-        chunk = chunk.drop(col, axis=1)
 
     return chunk
 
