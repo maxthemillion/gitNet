@@ -1,5 +1,6 @@
 from references import Mention, Quote, ContextualReply
 import collectors
+import pandas as pd
 import conf
 
 
@@ -8,17 +9,24 @@ class Thread:
 
     def __init__(self, thread_data, thread_type, project_stats, parent_project):
 
-        self._thread_data = thread_data.sort_values(by="id", axis="rows", ascending=True)
-        # assert that only one pull request id appears in each thread
-        assert len(thread_data["thread_id"].unique()) is 1  # TODO: move to testing file
+        self._thread_data = thread_data.sort_values(by="comment_id", axis="rows", ascending=True)
         self.no_comments = len(self._thread_data)
 
-        self.owner = "fooOwner"  #TODO: add support for thread_owners
+        self.owner = "fooOwner"  # TODO: remove support for thread owners
+        # connection between first commenter and thread owner can be implemented
+        # via a cypher script more easily
 
         self._type = thread_type
         self.parent_project = parent_project
 
-        self._participants = (self._thread_data["user"].str.lower()).unique()
+        self._participants = (self._thread_data["actor_id"]).unique()
+
+        self._actor_dict = (pd.concat([self._thread_data["actor_id"],
+                                      self._thread_data["actor_login"].str.lower()],
+                                      axis="columns"))\
+            .set_index('actor_login')\
+            .to_dict()\
+            .get('actor_id')
 
         self._references_strict = None
         self._references_relaxed = None
@@ -94,20 +102,23 @@ class Thread:
             cleared_md_list.append(md_list[len(md_list) - 1])
         return cleared_md_list
 
+    # TODO: check mentions discovery (works but needs to be reviewed)
     def _detect_mentions_in_row(self, row):
         mentions_list = []
 
-        body = row["body"]
-        commenter = row["user"]
-        comment_id = row["id"]
-        timestamp = row["created_at"]
+        body = row["comment_body"]
+        commenter_id = row["actor_id"]
+        comment_id = row["comment_id"]
 
         start_pos_list = self._find_all(body, "@")
         for start_pos in start_pos_list:
             stop_pos = Thread._find_end_username(body, start_pos)
-            addressee = str.lower(body[start_pos + 1:stop_pos])
 
-            mention = Mention(commenter, addressee, comment_id, self, self._project_stats, timestamp, self._type)
+            addressee_login = str.lower(body[start_pos + 1:stop_pos])
+            # search for lowercase username, since users might not type their mentions case sensitively
+            addressee_id = self._actor_dict.get(addressee_login)
+
+            mention = Mention(commenter_id, addressee_id, comment_id, self, self._project_stats, self._type)
             mention.set_start_pos(start_pos)
 
             if mentions_list:
@@ -117,14 +128,14 @@ class Thread:
 
         return mentions_list
 
+    # TODO: check quote discovery (fails for some reason)
     def _detect_quotes_in_row(self, row, index):
         # TODO: source can't be found if quote was altered slightly (spelling corrected, etc.)
         quote_list = []
 
-        body = row["body"]
-        commenter = row["user"]
-        comment_id = row["id"]
-        timestamp = row["created_at"]
+        body = row["comment_body"]
+        commenter_id = row["actor_id"]
+        comment_id = row["comment_id"]
 
         # filter '>' that define quotes
         close_temp = []
@@ -143,9 +154,9 @@ class Thread:
             # don't consider the first 5 values
             quote_body = body[start_pos + 5:stop_pos]
 
-            addressee = self._find_source(quote_body, index)
+            addressee_id = self._find_source(quote_body, index)
 
-            new_quote = Quote(commenter, addressee, comment_id, self, self._project_stats, timestamp, self._type)
+            new_quote = Quote(commenter_id, addressee_id, comment_id, self, self._project_stats, self._type)
             new_quote.set_start_pos(start_pos)
 
             if quote_list:
@@ -158,7 +169,7 @@ class Thread:
     def _detect_contextuals(self, mentions, m_indices, quotes, q_indices):
 
         contextuals_list = []
-        comment_sequence = self._thread_data["user"]
+        comment_sequence = self._thread_data["actor_id"]
         m_i = 0
         q_i = 0
 
@@ -172,8 +183,7 @@ class Thread:
 
             u_current = comment_sequence[r]
 
-            comment_id = self._thread_data["id"].iloc[r]
-            timestamp = self._thread_data["created_at"].iloc[r]
+            comment_id = self._thread_data["comment_id"].iloc[r]
 
             if len(comment_sequence[0:r].unique()) > 2 and mentions and quotes:
                 if m_indices[r] > 0 or q_indices[r] > 0:
@@ -198,17 +208,17 @@ class Thread:
 
                     if create:
                         new_contextual = ContextualReply(u_current, u_prev, comment_id, self, self._project_stats,
-                                                         timestamp, self._type)
+                                                          self._type)
 
                 else:
                     new_contextual = ContextualReply(u_current, u_prev, comment_id, self, self._project_stats,
-                                                     timestamp, self._type)
+                                                      self._type)
             else:
                 if u_current == u_prev:
                     pass
                 else:
                     new_contextual = ContextualReply(u_current, u_prev, comment_id, self, self._project_stats,
-                                                     timestamp, self._type)
+                                                      self._type)
 
             if contextuals_list and new_contextual is not None:
                 contextuals_list.append(new_contextual)
@@ -292,8 +302,8 @@ class Thread:
     def _find_source(self, quote, stop_row):
         i = 0
         while stop_row > i:
-            if self._thread_data["body"].iloc[i].find(quote) > -1:
-                return self._thread_data["user"].iloc[i].lower()
+            if self._thread_data["comment_body"].iloc[i].find(quote) > -1:
+                return self._thread_data["actor_id"].iloc[i]
             i = i + 1
 
         return None

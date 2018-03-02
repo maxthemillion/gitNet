@@ -1,16 +1,15 @@
 import pandas as pd
 from threads import Thread
 import time
-import conf
-import technical_relations
 from neocontroller import Neo4jController
+import conf
 
 
 class Project:
     """Serves as data container for the communication data of a single project
     and splits the project communication data into threads."""
 
-    _export_folder = "Export/"
+    _export_folder = "Export_Network/"
 
     def __init__(self, pullreq_data, issue_data, commit_data, owner, repo):
 
@@ -24,8 +23,9 @@ class Project:
         self._threads = None
 
         self._references = None
-        self._participants = pd.DataFrame(pd.concat([self._pullreq_data["user"].str.lower(),
-                                                     self._issue_data["user"].str.lower()])
+
+        self._participants = pd.DataFrame(pd.concat([self._pullreq_data["actor_id"],
+                                                     self._issue_data["actor_id"]])
                                           .unique(),
                                           columns=["participants"])
 
@@ -40,9 +40,8 @@ class Project:
 
         self._references = self._collect_references()
 
-        controller = Neo4jController()
-        controller.import_repo(self._references, self._participants, self.owner, self.repo, self.stats)
-        technical_relations.import_repo(self.owner, self.repo)
+        neo4j = Neo4jController()
+        neo4j.import_references(self._references)
 
         self.stats.print_summary()
 
@@ -53,7 +52,6 @@ class Project:
     # -------- threads -------
     def _split_threads(self, thread_type, start=None, stop=None):
         """splits the project data into single threads and passes them to new thread objects"""
-        print("start splitting {0} threads".format(thread_type))
         proc_time_start = time.process_time()
 
         if thread_type == "issue":
@@ -80,9 +78,9 @@ class Project:
 
             if thread_type in ["pullreq", "commit"]:
 
-                positions = thread_data["position"].unique()
+                positions = thread_data["comment_position"].unique()
                 for pos in positions:
-                    thread_position_data = thread_data[thread_data["position"] == pos]
+                    thread_position_data = thread_data[thread_data["comment_position"] == pos]
                     new_thread = Thread(thread_position_data, thread_type, self.stats, self)
                     new_thread.run()
                     thread_list.append(new_thread)
@@ -93,9 +91,6 @@ class Project:
                 thread_list.append(new_thread)
 
             i = i + 1
-
-        print("time required:       {0:.2f}s".format(time.process_time() - proc_time_start))
-        print()
 
         return thread_list
 
@@ -186,39 +181,52 @@ class ProjectStats:
         # TODO: print summary to file instead of to the console
 
     def print_summary(self):
+        if not conf.output_verbose:
+            return
+
         total_no_quotes = self._quotes_not_sourced + self._quotes_sourced
         if not total_no_quotes == 0:
             share_sourced = ((1.00 * self._quotes_sourced) /
                              (1.00 * total_no_quotes)) * 100
         else:
-            share_sourced = -999
+            share_sourced = 0
 
         if not self._contextuals_found_total == 0:
             share_contextuals_valid = ((1.00 * self._contextuals_found_valid) /
                                        (1.00 * self._contextuals_found_total)) * 100
         else:
-            share_contextuals_valid = -999
+            share_contextuals_valid = 0
 
         if not self._mentions_found_total == 0:
             share_mentions_valid = ((1.00 * self._mentions_found_valid) /
                                     (1.00 * self._mentions_found_total)) * 100
         else:
-            share_mentions_valid = -999
+            share_mentions_valid = 0
 
         print("### Project Stats Summary ###")
         print()
         print("project name:                    {0}/{1}".format(self._parent_project.owner, self._parent_project.repo))
         print()
-        print("number of participants:          {0}".format(self._no_participants))
-        print("number of threads analyzed:      {0}".format(self._no_threads))
-        print("number of comments:              {0}".format(self._no_comments))
+        print("no participants:          {0}".format(self._no_participants))
+        print("no threads:               {0}".format(self._no_threads))
+        print("no comments:              {0}".format(self._no_comments))
         print()
-        print("count sourced quotes:            {0}".format(self._quotes_sourced))
-        print("share sourced quotes:            {0:.2f}%".format(share_sourced))
-        print("count valid mentions:            {0}".format(self._mentions_found_valid))
-        print("share valid mentions:            {0:.2f}%".format(share_mentions_valid))
+
+        print('                          total\tvalid\tshare')
+        print("quotes:                   {0}\t\t{1}\t\t{2:.2f}%".format(
+            total_no_quotes,
+            self._quotes_sourced,
+            share_sourced))
+        print("mentions:                 {0}\t\t{1}\t\t{2:.2f}%".format(
+            self._mentions_found_total,
+            self._mentions_found_valid,
+            share_mentions_valid))
+        print("contextuals:              {0}\t\t{1}\t\t{2:.2f}%".format(
+            self._contextuals_found_total,
+            self._contextuals_found_valid,
+            share_contextuals_valid))
         print()
-        print("total count valid references:    {0}".format(self._quotes_sourced
+        print("sum:                         \t\t{0}".format(self._quotes_sourced
                                                             + self._mentions_found_valid
                                                             + self._contextuals_found_valid))
 

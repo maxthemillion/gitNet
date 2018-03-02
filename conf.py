@@ -5,8 +5,8 @@ construct_network = True
 
 # data source
 use_synthetic_data = False
-comment_data_folder = "Input/Comments"
-synthetic_data_folder = "TestData"
+import_data_folder = "Import_Network"
+prep_data_folder = "Export_DataPrep"
 
 # collectors
 collect_invalid = False
@@ -23,10 +23,9 @@ t_follows = False
 t_stars = True
 
 # ---- neo4j parameters ----
-neo4j_import = construct_network
+# neo4j_import_references = construct_network
+neo4j_import_references = False
 neo4j_clear_on_startup = False
-
-neo4j_stream_to_gephi = False
 
 # visualization export
 neo4j_export_json = True
@@ -34,8 +33,8 @@ neo4j_export_json_pnames = [{"owner": "Homebrew", "repo": "brew"},
                             {"owner": "d3", "repo": "d3"}]
 
 # ---- analysis parameters ---
-nx_measures_path = "Export/nx_measures"
-plot_path = "Export/plots"
+nx_measures_path = "Export_Network/nx_measures"
+plot_path = "Export_Network/plots"
 plot_format = "eps"
 a_gen_charts = False
 
@@ -50,17 +49,24 @@ a_betweenness_centrality = True or construct_network
 a_eigenvector_centrality = True or construct_network
 
 # ---- output parameters ----
-output_verbose = False
+output_verbose = True
 
 
-def get_comment_data_path(owner):
-    if use_synthetic_data:
-        return "{0}/mongo_{1}_syn.json".format(synthetic_data_folder, owner)
-    else:
-        return "{0}/mongo_{1}.json".format(comment_data_folder, owner)
+def get_ic_data_path(owner):
+    return "{0}/IssueCommentEvent/{1}".format(prep_data_folder, owner)
+
+
+def get_cc_data_path(owner):
+    return "{0}/CommitCommentEvent/{1}".format(prep_data_folder, owner)
+
+
+def get_pc_data_path(owner):
+    return "{0}/PullRequestReviewCommentEvent/{1}".format(prep_data_folder, owner)
+
 
 def get_nx_path(owner, repo, i):
     return "{0}/nxm_{1}_{2}_{3}.csv".format(nx_measures_path, owner, repo, i)
+
 
 def get_plot_path(owner, repo, i):
     return "{0}/nxm_{1}_{2}_{3}.{4}".format(plot_path, owner, repo, i, plot_format)
