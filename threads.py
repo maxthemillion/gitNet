@@ -5,7 +5,7 @@ import conf
 
 
 class Thread:
-    """contains a pull request communication thread and its thread analytics"""
+    """contains a communication thread and its thread analytics"""
 
     def __init__(self, thread_data, thread_type, project_stats, parent_project):
 
@@ -13,8 +13,8 @@ class Thread:
         self.no_comments = len(self._thread_data)
 
         self.owner = "fooOwner"  # TODO: remove support for thread owners
-        # connection between first commenter and thread owner can be implemented
-        # via a cypher script more easily
+        # connection between first commenter and thread owner is implemented
+        # with a cypher script
 
         self._type = thread_type
         self.parent_project = parent_project
@@ -71,18 +71,41 @@ class Thread:
         return name in self._participants
 
     @staticmethod
-    def _is_quote(s, i):
-        if i >= 2 and s[i - 2:i] == "\r\n":
+    def _is_quote(sequence, position):
+        """
+        recursively check if > can define a quote or if it is something else.
+        Search begins with the last > found in the body string.
+
+        > defines a quote, ...
+        ... if it is preceeded by \r\n
+        ... if it occurs at position 0
+
+        If the result is false, we know for sure that the > does not define a quote.
+        However, if the result is true, it could introduce a quote but also close an html tag
+        Therefore, we check if we can find the string behind the > in one of the pre-
+        vious comments later.
+
+        :param sequence:        body string
+        :param position:        > position
+        :return:                true or false
+        """
+        if position >= 2 and sequence[position - 2:position] == "\r\n":
             return True
-        elif i >= 1 and s[i - 1:i] == ">":
-            return Thread._is_quote(s, i - 1)
-        elif i == 0:
+        elif position >= 1 and sequence[position - 1:position] == ">":
+            return Thread._is_quote(sequence, position - 1)
+        elif position == 0:
             return True
         else:
             return False
 
     @staticmethod
     def _clear_markdown_close(md_list):
+        """
+        Remove all > which are immediately followed by another >
+
+        :param md_list:
+        :return:
+        """
         md_list.sort()
         cleared_md_list = []
         distance = 1
@@ -102,7 +125,6 @@ class Thread:
             cleared_md_list.append(md_list[len(md_list) - 1])
         return cleared_md_list
 
-    # TODO: check mentions discovery (works but needs to be reviewed)
     def _detect_mentions_in_row(self, row):
         mentions_list = []
 
@@ -116,9 +138,13 @@ class Thread:
 
             addressee_login = str.lower(body[start_pos + 1:stop_pos])
             # search for lowercase username, since users might not type their mentions case sensitively
-            addressee_id = self._actor_dict.get(addressee_login)
 
-            mention = Mention(commenter_id, addressee_id, comment_id, self, self._project_stats, self._type)
+            mention = Mention(commenter_id,
+                              addressee_login,
+                              comment_id,
+                              self,
+                              self._project_stats,
+                              self._type)
             mention.set_start_pos(start_pos)
 
             if mentions_list:
@@ -129,6 +155,9 @@ class Thread:
         return mentions_list
 
     # TODO: check quote discovery (fails for some reason)
+    # seems like line break symbols \r\n are not included explicitly in the string
+    # signs are included in the original data but it seems as if they are replaced during
+    # data preprocessing
     def _detect_quotes_in_row(self, row, index):
         # TODO: source can't be found if quote was altered slightly (spelling corrected, etc.)
         quote_list = []
@@ -144,16 +173,18 @@ class Thread:
         # remove > that follow each other too closely
         markdown_close = self._clear_markdown_close(markdown_close)
 
-        for item in markdown_close:
-            if self._is_quote(body, item):
-                close_temp.append(item)
+        # check if > found can define a quote
+        for item_pos in markdown_close:
+            if self._is_quote(body, item_pos):
+                close_temp.append(item_pos)
 
         start_pos_list = close_temp
         for start_pos in start_pos_list:
+            # find the end of the quote
             stop_pos = Thread._find_end_quote(body, start_pos)
             # don't consider the first 5 values
             quote_body = body[start_pos + 5:stop_pos]
-
+            # find the quote string in previous comments
             addressee_id = self._find_source(quote_body, index)
 
             new_quote = Quote(commenter_id, addressee_id, comment_id, self, self._project_stats, self._type)
@@ -192,7 +223,7 @@ class Thread:
 
                     i = 0
                     while create and i < m_indices[r]:
-                        if mentions[m_i + i].get_start_pos() == 0 or mentions[m_i + i].addressee == u_prev:
+                        if mentions[m_i + i].get_start_pos() == 0 or mentions[m_i + i].addressee_id == u_prev:
                             create = False
                         i += 1
 
@@ -200,7 +231,7 @@ class Thread:
 
                     i = 0
                     while create and i < q_indices[r]:
-                        if quotes[q_i + i].get_start_pos() == 0 or quotes[q_i + i].addressee == u_prev:
+                        if quotes[q_i + i].get_start_pos() == 0 or quotes[q_i + i].addressee_id == u_prev:
                             create = False
                         i += 1
 
@@ -326,11 +357,14 @@ class Thread:
 
     @staticmethod
     def _find_end_quote(quote, start_pos):
-        """find the end of a quote. quotes end with \r\n or with the comment end.
-        long quotes are cut short to speed up the finding process"""
-        characters = {"\r"}
-        ind = next((i for i, ch in enumerate(quote) if ch in characters and i > start_pos + 1), len(quote))
+        """find the end of a quote. quotes end with \r\n or the comment end"""
+
+        end = quote.find("\r\n")
         cut_val = 60
-        if ind - start_pos > cut_val:
-            ind = start_pos + cut_val
-        return ind
+
+        if end == -1:
+            end = len(quote)
+
+        if end - start_pos > cut_val:
+            end = start_pos + cut_val
+        return end

@@ -1,6 +1,5 @@
 import pandas as pd
 from threads import Thread
-import time
 from neocontroller import Neo4jController
 import conf
 
@@ -25,11 +24,31 @@ class Project:
         self._references = None
 
         self._participants = pd.DataFrame(pd.concat([self._pullreq_data["actor_id"],
-                                                     self._issue_data["actor_id"]])
+                                                     self._issue_data["actor_id"],
+                                                     self._commit_data["actor_id"]])
                                           .unique(),
                                           columns=["participants"])
 
+        pullreq_actors = self._actor_login_id(pullreq_data)
+        commit_actors = self._actor_login_id(commit_data)
+        issue_actors = self._actor_login_id(issue_data)
+
+        self._actor_dict = (pd.concat([pullreq_actors,
+                                      commit_actors,
+                                       issue_actors],
+                                      axis="index"))\
+            .set_index('actor_login')\
+            .to_dict()\
+            .get('actor_id')
+
         self.stats = ProjectStats(self)
+
+    @staticmethod
+    def _actor_login_id(comment_df):
+        return pd.concat([comment_df["actor_id"], comment_df["actor_login"].str.lower()], axis="columns")
+
+    def get_actor_id(self, actor_login):
+        return self._actor_dict.get(actor_login)
 
     def run(self):
         self._threads = self._split_threads("pullreq") + \
@@ -52,7 +71,6 @@ class Project:
     # -------- threads -------
     def _split_threads(self, thread_type, start=None, stop=None):
         """splits the project data into single threads and passes them to new thread objects"""
-        proc_time_start = time.process_time()
 
         if thread_type == "issue":
             data = self._issue_data

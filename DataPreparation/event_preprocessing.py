@@ -15,7 +15,7 @@ import os.path
 def main():
 
     start = time.time()
-    preprocess()
+    preprocess("IssueCommentEvent")
 
     print()
     print("-----------------------")

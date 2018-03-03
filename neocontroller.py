@@ -12,7 +12,6 @@ CLASSES:
 from py2neo import Graph
 import json
 import pandas as pd
-import warnings
 import conf
 from datetime import datetime
 from analysis import Analyzer
@@ -29,26 +28,31 @@ class Neo4jController:
 
         Can be activated/deactivated in the conf module
 
-        :param ref_df:
+        :param ref_df:          DataFrame holding references with columns
+                                    addressee_id
+                                    comment_id
+                                    ref_type
+                                    thread_type
         :return:
         """
 
-        q_ref = '''MATCH (c:COMMENT{id:$l_comment_id})
-                    WITH c
+        if not conf.neo4j_import_references:
+            return
 
-                    WITH comment
-                    MERGE (ref_user:USER{login:$l_login_b})
-
-                    WITH comment, b
-                    CALL apoc.create.relationship(comment, $l_ref_type, {}, ref_user) YIELD rel as rel2
+        q_ref = '''MATCH (comment:COMMENT{id:$l_comment_id})
+                    SET comment.thread_type = $l_thread_type
+                    MATCH (target:USER{login:$l_target_user_id})
+                    CALL apoc.create.relationship(comment, $l_ref_type, {}, target) YIELD rel
                     '''
 
         tx = self.graph.begin()
         for index, row in ref_df.iterrows():
 
             tx.evaluate(q_ref,
-                        parameters={'l_login_b': row['addressee'],
-                                    'l_comment_id': row['comment_id']})
+                        parameters={'l_login_b': row['addressee_id'],
+                                    'l_comment_id': row['comment_id'],
+                                    'l_ref_type': row['ref_type'],
+                                    'l_thread_type': row['thread_type']})
 
             if (index + 1) % 10000 == 0:
                 tx.commit()
@@ -57,25 +61,25 @@ class Neo4jController:
         tx.commit()
 
     def get_comment_timeframe(self,
-                              owner: str,
-                              repo: str):
+                              repo_id: int):
         """
         Returns the dates of the repository's earliest and latest comment.
 
-        :param owner:   repository owner
-        :param repo:    repository name
-        :return:        start- and enddate in 'yyyy-MM-dd' representation each
+        :param repo_id:     repository id
+        :return:            start- and enddate in 'yyyy-MM-dd' representation each
         """
 
+        # TODO: c.tscomp does not exist in new neo4j structure
+        # find a way to extract earliest date from timetree directly
         date_query = '''
-                    MATCH (o:OWNER)<--(r:REPO)<--(c:COMMENT)
-                    WHERE o.name = $l_owner and r.name = $l_repo
+                    MATCH (r:GHA_REPO)<--(c:COMMENT)
+                    WHERE gha_id = $l_repo_id
                     UNWIND c.tscomp as ts
                     RETURN 
                     apoc.date.format(min(ts),'ms', 'yyyy-MM-dd') AS startdt, 
                     apoc.date.format(max(ts), 'ms', 'yyyy-MM-dd') AS enddt'''
 
-        dates = self.graph.run(date_query, parameters={'l_owner': owner, 'l_repo': repo}).data()[0]
+        dates = self.graph.run(date_query, parameters={'l_repo_id': repo_id}).data()[0]
 
         startdt = datetime.strptime(dates["startdt"], "%Y-%m-%d").date()
         enddt = datetime.strptime(dates["enddt"], "%Y-%m-%d").date()
@@ -96,14 +100,17 @@ class Neo4jController:
         :param dt:      timestamp indicating the end of the desired period for the subgraph query
         :return:        pd.DataFrame containing links between nodes in the subgraph
         """
+
+        # TODO: reformulate the range query as it might deliver huge results
         q_subgraph_time = '''
+                            MATCH(r: GHA_REPO{gha_id: $l_repo_id})
+                            WHERE(node: COMMENT)-->(r)
+                            
                             WITH apoc.date.parse($l_dt, 'ms', 'yyyy-MM-dd') as end
                             WITH end, apoc.date.add(end, 'ms', $l_tf_length , 'd') as start
                             CALL ga.timetree.events.range({start: start, end: end}) YIELD node
                             
                             WITH node
-                            MATCH(r: GHA_REPO{name: $l_repo})-->(o: OWNER{name: $l_owner})
-                            WHERE(node: COMMENT)-->(r)
                             
                             WITH DISTINCT node as comment
                             MATCH (source:USER) --> (comment)
@@ -215,11 +222,14 @@ class Neo4jController:
             nodes = self.graph.data(node_query, parameters={'l_owner': owner, 'l_repo': repo})
             links = self.graph.data(link_query, parameters={'l_owner': owner, 'l_repo': repo})
 
-            info_query = '''MATCH (r:REPO)-->(o:OWNER)
+            info_query = '''MATCH (r:GHA_REPO)-->(o:OWNER)
                             WHERE r.name = $l_repo and o.name = $l_owner
                             RETURN 
-                            r.no_comments as no_comments, 
+                            r.no_comments as no_comments,  
                             r.no_threads as no_threads'''
+
+            # TODO: no_comments and no_threads has been removed from :GHA_REPO. Replace this with
+            # comment count instead.
 
             info_res = self.graph.data(info_query, parameters={'l_repo': repo,
                                                                'l_owner': owner})[0]
@@ -248,6 +258,5 @@ class Neo4jController:
                     "b_centrality": b_centrality,
                     "modularity": modularity}
 
-            with open("Export/viz/data_{0}_{1}.json".format(owner, repo), "w") as fp:
+            with open("Export_Network/viz/data_{0}_{1}.json".format(owner, repo), "w") as fp:
                 json.dump(data, fp, indent="\t")
-
