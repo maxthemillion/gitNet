@@ -3,7 +3,7 @@ import pandas as pd
 # ---- network construction parameters ----
 construct_network = True
 
-# data source
+# data sources
 use_synthetic_data = False
 import_data_folder = "Import_Network"
 prep_data_folder = "Export_DataPrep"
@@ -12,23 +12,12 @@ prep_data_folder = "Export_DataPrep"
 collect_invalid = False
 collect_position_nan = False
 
-# filter
-minDate = pd.Timestamp('2014-01-01 00:00:00.000', tz=None)
-maxDate = pd.Timestamp('2017-01-01 00:00:00.000', tz=None)
-
-# technical relations
-t_commits = True
-t_issues = True
-t_follows = False
-t_stars = True
-
 # ---- neo4j parameters ----
 # neo4j_import_references = construct_network
 neo4j_import_references = False
-neo4j_clear_on_startup = False
 
 # visualization export
-neo4j_export_json = True
+neo4j_export_json = False
 neo4j_export_json_pnames = [{"owner": "Homebrew", "repo": "brew"},
                             {"owner": "d3", "repo": "d3"}]
 

@@ -8,14 +8,14 @@ For a brief documentation on the Neo4j syntax see: https://neo4j.com/docs/cypher
 CLASSES:
     Neo4jController
 """
-
 import json
 from datetime import datetime
 
 import pandas as pd
-from analysis import Analyzer
 from py2neo import Graph
-from scripts import conf
+
+import conf as conf
+from analysis import Analyzer
 
 
 class Neo4jController:

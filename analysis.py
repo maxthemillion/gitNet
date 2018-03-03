@@ -1,12 +1,14 @@
 import time
+import conf
 
 import community as nxlouvain
 import matplotlib.pyplot as plt
-import neocontroller
 import networkx as nx
 import pandas as pd
 from dateutil import rrule
-from scripts import conf
+
+# from classes.neocontroller import Neo4jController
+# TODO: Circular import! Resolve!
 
 
 def analyze_repos():
@@ -32,7 +34,7 @@ class Analyzer:
         self._owner = owner
         self._repo = repo
 
-        self._controller = neocontroller.Neo4jController()
+        self._controller = Neo4jController()
         self._startdt, self._enddt = self._controller.get_comment_timeframe(self._owner, self._repo)
 
         self._degree_centrality = None

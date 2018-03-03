@@ -7,11 +7,11 @@ To configure the network construction process, set parameters in conf module
 
 import time
 
-import collectors
 import pandas as pd
-from neocontroller import Neo4jController
-from project import Project
-from scripts import conf
+
+import conf as conf
+from classes.neocontroller import Neo4jController
+from classes.project import Project
 
 
 # import cProfile
@@ -31,8 +31,8 @@ def main():
 
     neo_controller.export_graphjson()
 
-    collectors.analyze_invalid_refs()
-    collectors.analyze_position_nan()
+    conf.analyze_invalid_refs()
+    conf.analyze_position_nan()
 
     print("------------------------------------------")
     print("Total process time elapsed:        {0:.2f}s".format(time.process_time()))

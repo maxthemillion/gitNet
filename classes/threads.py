@@ -1,8 +1,8 @@
-import collectors
-import conf
 import pandas as pd
 
-from scripts.references import Mention, Quote, ContextualReply
+import classes.collectors as collectors
+import conf as conf
+from classes.references import Mention, Quote, ContextualReply
 
 
 class Thread:

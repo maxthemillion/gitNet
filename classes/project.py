@@ -1,7 +1,7 @@
+import conf
 import pandas as pd
-from neocontroller import Neo4jController
-from scripts import conf
-from threads import Thread
+from .neocontroller import Neo4jController
+from .threads import Thread
 
 
 class Project:
