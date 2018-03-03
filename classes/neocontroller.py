@@ -15,7 +15,7 @@ import pandas as pd
 from py2neo import Graph
 
 import conf as conf
-from analysis import Analyzer
+# from analysis import Analyzer
 
 
 class Neo4jController:
@@ -128,6 +128,8 @@ class Neo4jController:
 
         return links
 
+
+
     def convert_keys_to_string(self, o):
         """
         Recursively converts dictionary keys to strings. Type conversion is required for exporting JSON files.
@@ -175,7 +177,7 @@ class Neo4jController:
 
         :return:    --
         """
-
+"""
         if not conf.neo4j_export_json:
             return
 
@@ -261,3 +263,4 @@ class Neo4jController:
 
             with open("Export_Network/viz/data_{0}_{1}.json".format(owner, repo), "w") as fp:
                 json.dump(data, fp, indent="\t")
+"""
