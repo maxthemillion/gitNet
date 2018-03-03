@@ -15,7 +15,7 @@ import os.path
 def main():
 
     start = time.time()
-    preprocess("IssueCommentEvent")
+    preprocess()
 
     print()
     print("-----------------------")
@@ -62,9 +62,9 @@ def prep_standard(file):
 
     :return:
     """
-    import_path = '../Import_DataPrep/' + file
+    import_path = '../Data/Import_DataPrep/' + file
 
-    export_path = '../Export_DataPrep/' + file + "_prep"
+    export_path = '../Data/Export_DataPrep/allEvents/' + file + "_prep"
     chunksize = 100000
 
     # remove existing files
@@ -122,8 +122,8 @@ def prep_comments(file):
     :return:
     """
 
-    import_path = '../Import_DataPrep/' + file
-    export_dir = '../Export_DataPrep/' + file + '/'
+    import_path = '../Data/Import_DataPrep/' + file
+    export_dir = '../Data/Export_DataPrep/' + file + '/'
     chunksize = 1000000
 
     # remove existing files
