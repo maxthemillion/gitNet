@@ -6,14 +6,10 @@ To configure the network construction process, set parameters in conf module
 """
 
 import time
-
 import pandas as pd
-
 import conf as conf
 from classes.neocontroller import Neo4jController
 from classes.project import Project
-
-
 # import cProfile
 
 
@@ -30,9 +26,6 @@ def main():
     _construct_network()
 
     neo_controller.export_graphjson()
-
-    conf.analyze_invalid_refs()
-    conf.analyze_position_nan()
 
     print("------------------------------------------")
     print("Total process time elapsed:        {0:.2f}s".format(time.process_time()))
@@ -54,7 +47,6 @@ def _construct_network():
     if not conf.construct_network:
         return
 
-    # TODO: instead of repo name, import repo_id from gha data here
     import_repos = pd.read_csv("Import_Network/repos.csv", sep=',', header=0)
     owners = import_repos["owner_login"].unique()
 

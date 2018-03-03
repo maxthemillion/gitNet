@@ -5,8 +5,8 @@ construct_network = True
 
 # data sources
 use_synthetic_data = False
-import_data_folder = "Import_Network"
-prep_data_folder = "Export_DataPrep"
+import_data_folder = "Data/Import_Network"
+prep_data_folder = "Data/Export_DataPrep"
 
 # collectors
 collect_invalid = False
