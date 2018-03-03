@@ -9,12 +9,13 @@ CLASSES:
     Neo4jController
 """
 
-from py2neo import Graph
 import json
-import pandas as pd
-import conf
 from datetime import datetime
+
+import pandas as pd
 from analysis import Analyzer
+from py2neo import Graph
+from scripts import conf
 
 
 class Neo4jController:

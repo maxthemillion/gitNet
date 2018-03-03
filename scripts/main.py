@@ -5,13 +5,14 @@ core script to the network construction process. To start network construction, 
 To configure the network construction process, set parameters in conf module
 """
 
-from project import Project
-from neocontroller import Neo4jController
-import collectors
-import conf
-
-import pandas as pd
 import time
+
+import collectors
+import pandas as pd
+from neocontroller import Neo4jController
+from project import Project
+from scripts import conf
+
 
 # import cProfile
 

@@ -1,13 +1,14 @@
-import unittest
-import pandas as pd
-import json
 import datetime
-from project import Project, ProjectStats
-from references import Mention, Quote, ContextualReply
-from threads import Thread
-from main import _clean_comment_data
+import json
+import unittest
+
+import pandas as pd
 from analysis import Analyzer
-from neocontroller import Neo4jController
+from main import _clean_comment_data
+from project import Project, ProjectStats
+from threads import Thread
+
+from scripts.references import Mention, Quote, ContextualReply
 
 
 def setup_sample_threads():

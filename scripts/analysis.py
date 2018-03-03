@@ -1,15 +1,16 @@
-import neocontroller
-import conf
 import time
-import pandas as pd
-import networkx as nx
+
 import community as nxlouvain
-from dateutil import rrule
 import matplotlib.pyplot as plt
+import neocontroller
+import networkx as nx
+import pandas as pd
+from dateutil import rrule
+from scripts import conf
 
 
 def analyze_repos():
-    import_repos = pd.read_csv("Input/owners.csv", sep=',', header=0)
+    import_repos = pd.read_csv("Import_Network/owners.csv", sep=',', header=0)
     owners = import_repos["owners"].unique()
 
     for owner in owners:
@@ -32,7 +33,7 @@ class Analyzer:
         self._repo = repo
 
         self._controller = neocontroller.Neo4jController()
-        self._startdt, self._enddt = self._controller.get_timeframe(self._owner, self._repo)
+        self._startdt, self._enddt = self._controller.get_comment_timeframe(self._owner, self._repo)
 
         self._degree_centrality = None
         self._betweenness_centrality = None

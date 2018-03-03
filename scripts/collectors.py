@@ -1,5 +1,5 @@
 import pandas as pd
-import conf
+from scripts import conf
 
 _invalid_references = []
 _position_nan = []
