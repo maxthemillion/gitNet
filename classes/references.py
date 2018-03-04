@@ -40,7 +40,7 @@ class Reference:
         """
         :return:          info required for import to neo4j
         """
-        return ({"addressee": self.addressee_id,
+        return ({"addressee_id": self.addressee_id,
                  "comment_id": self.comment_id,
                  "ref_type": type(self).__name__,
                  "thread_type": self.thread_type})

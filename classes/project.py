@@ -1,6 +1,5 @@
 import conf
 import pandas as pd
-from .neocontroller import Neo4jController
 from .threads import Thread
 
 
@@ -59,8 +58,10 @@ class Project:
 
         self._references = self._collect_references()
 
-        neo4j = Neo4jController()
-        neo4j.import_references(self._references)
+        self._references.to_csv(conf.get_relations_file_path(),
+                                header=False,
+                                mode='a',
+                                index=False)
 
         self.stats.print_summary()
 

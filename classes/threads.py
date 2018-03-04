@@ -344,7 +344,11 @@ class Thread:
     @staticmethod
     def _find_all(s, ch):
         """find all occurrences of ch in s"""
-        return [i for i, ltr in enumerate(s) if ltr == ch]
+        try:
+            return [i for i, ltr in enumerate(s) if ltr == ch]
+        except TypeError:
+            s = str(s)
+            return Thread._find_all(s, ch)
 
     @staticmethod
     def _find_end_username(s, start_pos):

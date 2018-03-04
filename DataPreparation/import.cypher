@@ -17,7 +17,6 @@ CREATE CONSTRAINT ON (r:GHA_REPO) ASSERT r.gha_id IS UNIQUE;
 
 CREATE CONSTRAINT ON (r:GHT_REPO) ASSERT r.ght_id IS UNIQUE;
 
-
 CREATE CONSTRAINT ON (i:ISSUE) ASSERT i.event_id IS UNIQUE;
 CREATE CONSTRAINT ON (i:ISSUE) ASSERT i.gha_id IS UNIQUE;
 CREATE INDEX ON :ISSUE(url);
@@ -312,6 +311,29 @@ LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_users_joined' AS row
 MATCH (u1:USER{gha_id: toInt(row.gha1)})
 MATCH (u2:USER{gha_id: toInt(row.gha2)})
 MERGE (u1) -[:is]-> (u2);
+
+
+
+
+
+
+// -- import references:
+USING PERIODIC COMMIT
+LOAD CSV FROM 'file:///Data/Relations/relations.csv' AS row
+WITH row[0] as comment_id,
+row[1] as user_id,
+row[2] as ref_type,
+row[3] as thread_type
+MATCH (user:USER{gha_id:user_id})
+MATCH (comment:COMMENT{id:comment_id})
+WITH comment, user, ref_type
+CREATE (comment)-[x:references]->(user)
+SET x.ref_type = ref_type;
+
+
+
+
+
 
 // Queries to verify the database:
 // view connections

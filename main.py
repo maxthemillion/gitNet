@@ -8,9 +8,10 @@ To configure the network construction process, set parameters in conf module
 import time
 import pandas as pd
 import conf as conf
-from classes.neocontroller import Neo4jController
 from classes.project import Project
-# import cProfile
+import cProfile
+import logging
+import os
 
 
 def main():
@@ -21,11 +22,7 @@ def main():
     """
     time_start = time.time()
 
-    neo_controller = Neo4jController()
-
     _construct_network()
-
-    neo_controller.export_graphjson()
 
     print("------------------------------------------")
     print("Total process time elapsed:        {0:.2f}s".format(time.process_time()))
@@ -196,6 +193,40 @@ def _rename_cols(data):
     return data
 
 
+def clean_up():
+    # rename references file
+    time_str = time.strftime("%y-%m-%d %H:%M:%S")
+    os.rename("Data/Relations/relations.csv",
+              "Data/Relations/" + time_str + "_relations.csv")
+
+
+def set_up():
+    relations_file = "Data/Relations/relations.csv"
+    file_exists = os.path.isfile(relations_file)
+    if file_exists:
+        os.remove(relations_file)
+        logging.info("removed relations.csv")
+
+
 if __name__ == '__main__':
-    # cProfile.run("main()", sort="cumtime")
-    main()
+
+    logging.basicConfig(filename='NC.log', level=logging.INFO, format='%(levelname)s: %(asctime)s %(message)s', datefmt='%m/%d/%Y %I:%M:%S %p')
+
+    logging.info("Initialized")
+    logging.warning("starting process now")
+
+    set_up()
+
+    logging.info("Started reference detection")
+
+    try:
+        # cProfile.run("main()", sort="cumtime")
+        main()
+    except Exception as e:
+        logging.exception(str(e))
+
+    logging.info("Finished reference detection")
+
+    clean_up()
+
+    logging.info("Completed")
