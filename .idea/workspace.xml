@@ -3,14 +3,8 @@
   <component name="ChangeListManager">
     <list default="true" id="f06550ee-959a-491f-9cb8-acfc389fafa4" name="Default" comment="">
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/DataPreparation/import.cypher" afterPath="$PROJECT_DIR$/DataPreparation/import.cypher" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/analysis.py" afterPath="$PROJECT_DIR$/analysis.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes/neocontroller.py" afterPath="$PROJECT_DIR$/classes/neocontroller.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes/project.py" afterPath="$PROJECT_DIR$/classes/project.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes/references.py" afterPath="$PROJECT_DIR$/classes/references.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/classes/threads.py" afterPath="$PROJECT_DIR$/classes/threads.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/conf.py" afterPath="$PROJECT_DIR$/conf.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/main.py" afterPath="$PROJECT_DIR$/main.py" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="TRACKING_ENABLED" value="true" />
@@ -21,6 +15,16 @@
   </component>
   <component name="FileEditorManager">
     <leaf>
+      <file leaf-file-name="analysis.py" pinned="false" current-in-tab="true">
+        <entry file="file://$PROJECT_DIR$/analysis.py">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="493">
+              <caret line="36" column="25" lean-forward="true" selection-start-line="36" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+              <folding />
+            </state>
+          </provider>
+        </entry>
+      </file>
       <file leaf-file-name="import.cypher" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/DataPreparation/import.cypher">
           <provider selected="true" editor-type-id="text-editor">
@@ -38,16 +42,36 @@
               <caret line="47" column="30" lean-forward="false" selection-start-line="42" selection-start-column="19" selection-end-line="47" selection-end-column="30" />
               <folding>
                 <element signature="e#235#246#0" expanded="true" />
+                <marker date="1520194198000" expanded="true" signature="400:7606" ph="..." />
+                <marker date="1520194198000" expanded="true" signature="562:1989" ph="..." />
+                <marker date="1520194198000" expanded="true" signature="1055:1408" ph="'''...'''" />
+                <marker date="1520194198000" expanded="true" signature="1486:1969" ph="..." />
+                <marker date="1520194198000" expanded="true" signature="1555:1798" ph="..." />
+                <marker date="1520194198000" expanded="true" signature="1842:1969" ph="..." />
+                <marker date="1520194198000" expanded="true" signature="2071:3042" ph="..." />
+                <marker date="1520194198000" expanded="true" signature="2080:2296" ph="&quot;&quot;&quot;Returns the dates of the repository's earliest and latest comment....&quot;&quot;&quot;" />
+                <marker date="1520194198000" expanded="true" signature="2306:2429" ph="..." />
+                <marker date="1520194198000" expanded="true" signature="2451:2779" ph="'''...'''" />
+                <marker date="1520194198000" expanded="true" signature="3247:5117" ph="..." />
+                <marker date="1520194198000" expanded="true" signature="3256:3721" ph="&quot;&quot;&quot;Queries a subgraph from the timetree consisting of communication links between users in a specific timeframe....&quot;&quot;&quot;" />
+                <marker date="1520194198000" expanded="true" signature="3826:4642" ph="'''...'''" />
+                <marker date="1520194198000" expanded="true" signature="4763:5046" ph="..." />
+                <marker date="1520194198000" expanded="true" signature="5161:5560" ph="..." />
+                <marker date="1520194198000" expanded="true" signature="5170:5398" ph="&quot;&quot;&quot;Recursively converts dictionary keys to strings. Type conversion is required for exporting JSON files....&quot;&quot;&quot;" />
+                <marker date="1520194198000" expanded="true" signature="5478:5558" ph="..." />
+                <marker date="1520194198000" expanded="true" signature="5593:7606" ph="..." />
+                <marker date="1520194198000" expanded="true" signature="5602:7606" ph="&quot;&quot;&quot;Exports link data for single repositories as JSON files suitable to serve as input for  the gitNetViewer tool....&quot;&quot;&quot;" />
+                <marker date="1520194198000" expanded="true" signature="7607:11472" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
               </folding>
             </state>
           </provider>
         </entry>
       </file>
-      <file leaf-file-name="main.py" pinned="false" current-in-tab="true">
+      <file leaf-file-name="main.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/main.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="2249">
-              <caret line="201" column="0" lean-forward="false" selection-start-line="201" selection-start-column="0" selection-end-line="201" selection-end-column="0" />
+            <state relative-caret-position="132">
+              <caret line="39" column="0" lean-forward="true" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
               <folding>
                 <element signature="e#192#203#0" expanded="true" />
                 <element signature="e#2766#3540#0" expanded="false" />
@@ -346,13 +370,6 @@
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
       <updated>1512545836274</updated>
-    </task>
-    <task id="LOCAL-00015" summary="supports commit data import, improved data filtering and cleaning">
-      <created>1515694632069</created>
-      <option name="number" value="00015" />
-      <option name="presentableId" value="LOCAL-00015" />
-      <option name="project" value="LOCAL" />
-      <updated>1515694632071</updated>
     </task>
     <task id="LOCAL-00016" summary="supports commit data analysis">
       <created>1515696788123</created>
@@ -690,7 +707,14 @@
       <option name="project" value="LOCAL" />
       <updated>1520117283102</updated>
     </task>
-    <option name="localTasksCounter" value="64" />
+    <task id="LOCAL-00064" summary="relations detection working">
+      <created>1520194065888</created>
+      <option name="number" value="00064" />
+      <option name="presentableId" value="LOCAL-00064" />
+      <option name="project" value="LOCAL" />
+      <updated>1520194065889</updated>
+    </task>
+    <option name="localTasksCounter" value="65" />
     <servers />
   </component>
   <component name="TestHistory">
@@ -827,7 +851,6 @@
     <ignored-roots>
       <path value="$PROJECT_DIR$" />
     </ignored-roots>
-    <MESSAGE value="performance improvement for event preprocessing" />
     <MESSAGE value="preprocessing all files" />
     <MESSAGE value="added separate processing option to main()" />
     <MESSAGE value="fixed missing 'other' columns" />
@@ -852,7 +875,8 @@
     <MESSAGE value="moved files" />
     <MESSAGE value="prepared for first run on VM" />
     <MESSAGE value="prep for VM" />
-    <option name="LAST_COMMIT_MESSAGE" value="prep for VM" />
+    <MESSAGE value="relations detection working" />
+    <option name="LAST_COMMIT_MESSAGE" value="relations detection working" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager>
@@ -1237,19 +1261,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/analysis.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="544">
-          <caret line="39" column="8" lean-forward="false" selection-start-line="39" selection-start-column="8" selection-end-line="39" selection-end-column="8" />
-          <folding>
-            <element signature="e#1665#2577#0" expanded="false" />
-            <element signature="e#2624#5013#0" expanded="false" />
-            <element signature="e#5055#6011#0" expanded="false" />
-            <element signature="e#6080#6417#0" expanded="false" />
-          </folding>
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/conf.py">
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="361">
@@ -1303,6 +1314,26 @@
           <caret line="47" column="30" lean-forward="false" selection-start-line="42" selection-start-column="19" selection-end-line="47" selection-end-column="30" />
           <folding>
             <element signature="e#235#246#0" expanded="true" />
+            <marker date="1520194198000" expanded="true" signature="400:7606" ph="..." />
+            <marker date="1520194198000" expanded="true" signature="562:1989" ph="..." />
+            <marker date="1520194198000" expanded="true" signature="1055:1408" ph="'''...'''" />
+            <marker date="1520194198000" expanded="true" signature="1486:1969" ph="..." />
+            <marker date="1520194198000" expanded="true" signature="1555:1798" ph="..." />
+            <marker date="1520194198000" expanded="true" signature="1842:1969" ph="..." />
+            <marker date="1520194198000" expanded="true" signature="2071:3042" ph="..." />
+            <marker date="1520194198000" expanded="true" signature="2080:2296" ph="&quot;&quot;&quot;Returns the dates of the repository's earliest and latest comment....&quot;&quot;&quot;" />
+            <marker date="1520194198000" expanded="true" signature="2306:2429" ph="..." />
+            <marker date="1520194198000" expanded="true" signature="2451:2779" ph="'''...'''" />
+            <marker date="1520194198000" expanded="true" signature="3247:5117" ph="..." />
+            <marker date="1520194198000" expanded="true" signature="3256:3721" ph="&quot;&quot;&quot;Queries a subgraph from the timetree consisting of communication links between users in a specific timeframe....&quot;&quot;&quot;" />
+            <marker date="1520194198000" expanded="true" signature="3826:4642" ph="'''...'''" />
+            <marker date="1520194198000" expanded="true" signature="4763:5046" ph="..." />
+            <marker date="1520194198000" expanded="true" signature="5161:5560" ph="..." />
+            <marker date="1520194198000" expanded="true" signature="5170:5398" ph="&quot;&quot;&quot;Recursively converts dictionary keys to strings. Type conversion is required for exporting JSON files....&quot;&quot;&quot;" />
+            <marker date="1520194198000" expanded="true" signature="5478:5558" ph="..." />
+            <marker date="1520194198000" expanded="true" signature="5593:7606" ph="..." />
+            <marker date="1520194198000" expanded="true" signature="5602:7606" ph="&quot;&quot;&quot;Exports link data for single repositories as JSON files suitable to serve as input for  the gitNetViewer tool....&quot;&quot;&quot;" />
+            <marker date="1520194198000" expanded="true" signature="7607:11472" ph="&quot;&quot;&quot;...&quot;&quot;&quot;" />
           </folding>
         </state>
       </provider>
@@ -1317,14 +1348,22 @@
     </entry>
     <entry file="file://$PROJECT_DIR$/main.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="2249">
-          <caret line="201" column="0" lean-forward="false" selection-start-line="201" selection-start-column="0" selection-end-line="201" selection-end-column="0" />
+        <state relative-caret-position="132">
+          <caret line="39" column="0" lean-forward="true" selection-start-line="39" selection-start-column="0" selection-end-line="39" selection-end-column="0" />
           <folding>
             <element signature="e#192#203#0" expanded="true" />
             <element signature="e#2766#3540#0" expanded="false" />
             <element signature="e#4533#4931#0" expanded="false" />
             <element signature="e#4962#5546#0" expanded="false" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/analysis.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="493">
+          <caret line="36" column="25" lean-forward="true" selection-start-line="36" selection-start-column="0" selection-end-line="37" selection-end-column="0" />
+          <folding />
         </state>
       </provider>
     </entry>

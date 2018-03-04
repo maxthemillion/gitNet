@@ -34,7 +34,9 @@ class Analyzer:
         self._owner = owner
         self._repo = repo
 
-        self._controller = Neo4jController()
+        # self._controller = Neo4jController()
+        self._controller = None
+
         self._startdt, self._enddt = self._controller.get_comment_timeframe(self._owner, self._repo)
 
         self._degree_centrality = None

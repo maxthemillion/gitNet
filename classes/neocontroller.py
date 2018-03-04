@@ -42,8 +42,10 @@ class Neo4jController:
 
         q_ref = '''MATCH (comment:COMMENT{id:$l_comment_id})
                     SET comment.thread_type = $l_thread_type
-                    MATCH (target:USER{login:$l_target_user_id})
+                    WITH comment
+                    MATCH (target:USER{gha_id:$l_target_user_id})
                     CALL apoc.create.relationship(comment, $l_ref_type, {}, target) YIELD rel
+                    RETURN rel
                     '''
 
         tx = self.graph.begin()
