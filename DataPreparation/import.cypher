@@ -2,10 +2,8 @@
 
 // create constraints (and implicitly indices)
 CREATE CONSTRAINT ON (o:OWNER) ASSERT o.login IS UNIQUE;
-// CREATE CONSTRAINT ON (o:OWNER) ASSERT o.gha_id IS UNIQUE
 
 CREATE CONSTRAINT ON (u:USER) ASSERT u.login IS UNIQUE;
-// CREATE CONSTRAINT ON (user:USER) ASSERT user.ght_id IS UNIQUE;
 CREATE CONSTRAINT ON (user:USER) ASSERT user.gha_id IS UNIQUE;
 
 CREATE CONSTRAINT ON (ght_u:GHT_USER) ASSERT ght_u.login IS UNIQUE;
@@ -14,14 +12,16 @@ CREATE CONSTRAINT ON (ght_u:GHT_USER) ASSERT ght_u.ght_id IS UNIQUE;
 CREATE CONSTRAINT ON (r:RELEASE) ASSERT r.gha_id IS UNIQUE;
 
 CREATE CONSTRAINT ON (r:GHA_REPO) ASSERT r.gha_id IS UNIQUE;
+CREATE INDEX ON :GHA_REPO(full_name);
 
 CREATE CONSTRAINT ON (r:GHT_REPO) ASSERT r.ght_id IS UNIQUE;
+CREATE CONSTRAINT ON (r:GHT_REPO) ASSERT r.full_name IS UNIQUE;
 
 CREATE CONSTRAINT ON (i:ISSUE) ASSERT i.event_id IS UNIQUE;
 CREATE CONSTRAINT ON (i:ISSUE) ASSERT i.gha_id IS UNIQUE;
 CREATE INDEX ON :ISSUE(url);
 
-CREATE CONSTRAINT ON (c:COMMIT) ASSERT c.sha IS UNIQUE;
+CREATE CONSTRAINT ON (c:COMMIT) ASSERT c.gha_id IS UNIQUE;
 
 CREATE CONSTRAINT ON (i:PULLREQUEST) ASSERT i.event_id IS UNIQUE;
 CREATE CONSTRAINT ON (r:PULLREQUEST) ASSERT r.gha_id IS UNIQUE;
@@ -31,8 +31,6 @@ CREATE CONSTRAINT ON (i:COLLABORATOR) ASSERT i.event_id IS UNIQUE;
 CREATE CONSTRAINT ON (i:COMMENT) ASSERT i.event_id IS UNIQUE;
 CREATE CONSTRAINT ON (c:COMMENT) ASSERT c.gha_id IS UNIQUE;
 
-// --- delete existing data ---
-MATCH (n) DETACH DELETE n;
 
 // --- import data ---
 
@@ -77,12 +75,27 @@ CREATE(:GHT_REPO {
   full_name:row.full_name
 });
 
+// -- relate GHA_REPO and GHT_REPO
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ght_selected_repos' AS row
+WITH toInt(row.ght_repo_id) as ght_id
+MATCH (ght_r:GHT_REPO{ght_id: ght_id})
+MATCH (gha_r:GHA_REPO{full_name: ght_r.full_name})
+MERGE(ght_r)-[:is]->(gha_r);
+
 // -- relate owners and GHA_repos
 // TODO: Matching fails. there is no gha_repo_id in "selected_repos". Fix that.
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/selected_repos' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_repos' AS row
 MATCH(o:OWNER{login: row.owner_login})
-MATCH(r:GHA_REPO{gha_id: toInt(row.gha_repo_id)})
+MATCH(r:GHA_REPO{gha_id: toInt(row.gha_id)})
+MERGE(r)-[:belongs_to]->(o);
+
+// -- relate owners and GHT_repos
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ght_selected_repos' AS row
+MATCH(o:OWNER{login: row.owner_login})
+MATCH(r:GHT_REPO{ght_id: toInt(row.ght_repo_id)})
 MERGE(r)-[:belongs_to]->(o);
 
 
@@ -106,8 +119,6 @@ WITH i,
      repo
 MATCH(r:GHA_REPO{gha_id: repo})
 MERGE (i)-[:to]->(r);
-
-
 
 // -- PullRequestEvent
 // create nodes, relate them to users and repos
@@ -248,7 +259,7 @@ MERGE (c)-[:to]->(i);
 
 // -- Import CommitComments
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/CommitCommentEvent_prep' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/CommitCommentEvent_prep' AS row
 WITH row,
      apoc.date.parse(row.event_time, 'ms', 'yyyy-MM-dd hh:mm:ss') as dt,
      row.commit_id as commit_sha
@@ -264,13 +275,20 @@ MERGE (u)-[:makes]->(c)
 WITH c,
      commit_sha
 MERGE(commit:COMMIT{
-  sha: commit_sha
+  gha_id: commit_sha
 })
 WITH c,
      commit
 MERGE (c)-[:to]->(commit);
 
-
+EXPLAIN
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/CommitCommentEvent_prep' AS row
+WITH toInt(row.comment_id) as comment_id,
+     row.commit_id as commit_sha
+MATCH (commit:COMMIT{gha_id:commit_sha})
+MATCH (comment:COMMENT{gha_id:comment_id})
+MERGE (comment)-[:to]->(commit);
 // -- importing commits
 // no commits are allowed to be in the database at time of import
 
@@ -314,18 +332,15 @@ MERGE (u1) -[:is]-> (u2);
 
 
 
-
-
-
 // -- import references:
-USING PERIODIC COMMIT
-LOAD CSV FROM 'file:///Data/Relations/relations.csv' AS row
-WITH row[0] as comment_id,
-row[1] as user_id,
-row[2] as ref_type,
-row[3] as thread_type
+USING PERIODIC COMMIT 10000
+LOAD CSV FROM 'file:///Relations/180304_205623_relations.csv' AS row
+WITH
+	toInt(row[0]) as user_id,
+	toInt(row[1]) as comment_id,
+	row[2] as ref_type
 MATCH (user:USER{gha_id:user_id})
-MATCH (comment:COMMENT{id:comment_id})
+MATCH (comment:COMMENT{gha_id:comment_id})
 WITH comment, user, ref_type
 CREATE (comment)-[x:references]->(user)
 SET x.ref_type = ref_type;
