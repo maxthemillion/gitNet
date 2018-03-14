@@ -18,11 +18,11 @@ in_filename = "/Volumes/MyBook Max/03_Studium/TUM/S5_WS1718/MA/Data/GHT/mysql-20
 out_filename = "commits_filtered.csv"
 
 
-min_year = 2016
-max_year = 2016
+min_year = 2014
+max_year = 2017
 
 min_month = 1
-max_month = 1
+max_month = 8
 
 proj_keys = set(line.strip() for line in open('repo_ids.csv'))
 
