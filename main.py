@@ -44,13 +44,23 @@ def _construct_network():
     if not conf.construct_network:
         return
 
-    import_repos = pd.read_csv("Import_Network/repos.csv", sep=',', header=0)
+    import_repos = pd.read_csv("Data/Import_Network/repos.csv", sep=',', header=0)
     owners = import_repos["owner_login"].unique()
 
+    counter = 0
+    num_owners = len(owners)
     for owner in owners:
+
         repos = import_repos[import_repos["owner_login"] == owner]
         repos = repos["repo_id"]
         _split_projects(owner, repos)
+
+        counter += 1
+        print("progress: {0}/{1}".format(counter, num_owners))
+        logging.info("processed: {0} ({1}/{2})".format(owner, counter, num_owners))
+
+        with open("processed_owners.csv", 'w') as po:
+            po.write(owner)
 
 
 def _split_projects(owner: str, repos: pd.Series):
@@ -199,6 +209,9 @@ def clean_up():
     os.rename("Data/Relations/relations.csv",
               "Data/Relations/" + time_str + "_relations.csv")
 
+    os.rename("processed_owners.csv",
+              time_str + "_processed_owners.csv")
+
 
 def set_up():
     relations_file = "Data/Relations/relations.csv"
@@ -206,6 +219,12 @@ def set_up():
     if file_exists:
         os.remove(relations_file)
         logging.info("removed relations.csv")
+
+    processed_owners_file = "processed_owners.csv"
+    file_exists = os.path.isfile(processed_owners_file)
+    if file_exists:
+        os.remove(processed_owners_file)
+        logging.info("removed processed_owners.csv")
 
 
 if __name__ == '__main__':
