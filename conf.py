@@ -56,6 +56,7 @@ def get_pc_data_path(owner):
 def get_relations_file_path():
     return _relations_file
 
+
 def get_nx_path(owner, repo, i):
     return "{0}/nxm_{1}_{2}_{3}.csv".format(nx_measures_path, owner, repo, i)
 
