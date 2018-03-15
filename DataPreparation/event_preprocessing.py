@@ -10,17 +10,15 @@ from pandas.io.json import json_normalize
 import json
 import time
 import os.path
+import logging
 
 
 def main():
-
     start = time.time()
+
     preprocess()
 
-    print()
-    print("-----------------------")
-    print("Done!")
-    print("Time required:  {0:.2f}s".format(time.time() - start))
+    logging.info("Time required:  {0:.2f}s".format(time.time() - start))
 
 
 def preprocess(file=None):
@@ -62,6 +60,9 @@ def prep_standard(file):
 
     :return:
     """
+
+    logging.info("preprocessing " + file)
+
     import_path = '../Data/Import_DataPrep/' + file
 
     export_path = '../Data/Export_DataPrep/allEvents/' + file + "_prep"
@@ -73,7 +74,7 @@ def prep_standard(file):
         print("remove files")
         os.remove(export_path)
 
-    print("processing: " + file)
+    print("processing: " + file + " events")
     counter = 0
     for chunk in pd.read_csv(import_path,
                              chunksize=chunksize,
@@ -121,6 +122,8 @@ def prep_comments(file):
 
     :return:
     """
+
+    logging.info("preprocessing " + file + " (comments)")
 
     import_path = '../Data/Import_DataPrep/' + file
     export_dir = '../Data/Export_DataPrep/' + file + '/'
@@ -223,4 +226,16 @@ def write_out_file(chunk, exp_path):
 
 if __name__ == '__main__':
     # cProfile.run("main()", sort="tottime")
-    main()
+
+    logging.basicConfig(filename='prep.log', level=logging.INFO,
+                        format='%(levelname)s: %(asctime)s %(message)s',
+                        datefmt='%m/%d/%Y %I:%M:%S %p')
+
+    logging.info("Initialized")
+
+    try:
+        main()
+    except Exception as e:
+        logging.exception(str(e))
+
+    logging.info("Completed")
