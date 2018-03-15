@@ -17,13 +17,11 @@ CREATE INDEX ON :GHA_REPO(full_name);
 CREATE CONSTRAINT ON (r:GHT_REPO) ASSERT r.ght_id IS UNIQUE;
 CREATE CONSTRAINT ON (r:GHT_REPO) ASSERT r.full_name IS UNIQUE;
 
-CREATE CONSTRAINT ON (i:ISSUE) ASSERT i.event_id IS UNIQUE;
 CREATE CONSTRAINT ON (i:ISSUE) ASSERT i.gha_id IS UNIQUE;
 CREATE INDEX ON :ISSUE(url);
 
 CREATE CONSTRAINT ON (c:COMMIT) ASSERT c.gha_id IS UNIQUE;
 
-CREATE CONSTRAINT ON (i:PULLREQUEST) ASSERT i.event_id IS UNIQUE;
 CREATE CONSTRAINT ON (r:PULLREQUEST) ASSERT r.gha_id IS UNIQUE;
 
 CREATE CONSTRAINT ON (i:COLLABORATOR) ASSERT i.event_id IS UNIQUE;
@@ -35,65 +33,77 @@ CREATE CONSTRAINT ON (c:COMMENT) ASSERT c.gha_id IS UNIQUE;
 // --- import data ---
 
 
-// -- import distinct users
-USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/Users_prep' AS row
+// -- import GHA users
+// table gha_actor_ids contains distinct gha_ids of actors and additionally of members who became
+// collaborators to a certain project
+
+USING PERIODIC COMMIT 10000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_actor_ids' AS row
 CREATE(:USER {
   gha_id: toInt(row.actor_id)
 });
 
-// -- additionally import members (miss in users csv)
-USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/MemberEvent_prep' AS row
-MERGE (:USER {
-  gha_id: toInt(row.member_id)
-})
 
-
-// -- import distinct owners
+// -- import GHT owners
+// table ght_owners_sample contains ght_ids and logins of owners in the sample
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ght_selected_owners' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ght_owners_sample' AS row
 CREATE(:OWNER {
   ght_id: toInt(row.ght_owner_id),
   login: row.owner_login
 });
 
-// -- import GHA repositories
-// -- match gha info on repos with events recorded
-USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_repos_5' AS row
-CREATE(r:GHA_REPO{
-  gha_id: toInt(row.gha_id),
-  full_name:row.repo_name
-});
-
 // -- import GHT repositories
+// table ght_repos_sample contains ght_id and full repository names of repositories in the sample
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ght_selected_repos' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ght_repos_sample' AS row
 CREATE(:GHT_REPO {
   ght_id:toInt(row.ght_repo_id),
   full_name:row.full_name
 });
 
-// -- relate GHA_REPO and GHT_REPO
+// -- import GHA repositories
+// table gha_repos contains all distinct repository ids for which events have been recorded
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ght_selected_repos' AS row
-WITH toInt(row.ght_repo_id) as ght_id
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_repos_8' AS row
+MERGE(r:GHA_REPO{
+  gha_id: toInt(row.gha_id)
+});
+
+
+// -- relate GHA and GHT REPOS
+// table gha_to_ght_repos contains ids matched by repository name (covers case recreate where
+// more ids exist per repository name)
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_ght_repos_matching_8' AS row
+WITH toInt(row.ght_repo_id) as ght_id,
+toInt(row.gha_id) as gha_id
 MATCH (ght_r:GHT_REPO{ght_id: ght_id})
-MATCH (gha_r:GHA_REPO{full_name: ght_r.full_name})
-MERGE(ght_r)-[:is]->(gha_r);
+MATCH (gha_r:GHA_REPO{gha_id: gha_id})
+MERGE (ght_r)-[:is]->(gha_r);
+
+// relate GHA Repos
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_repos_matched' AS row
+WITH
+	toInt(row.one) as gha_id_1,
+	toInt(row.two) as gha_id_2
+MATCH (r1:GHA_REPO{gha_id: gha_id_1})
+MATCH (r2:GHA_REPO{gha_id:gha_id_2})
+MERGE (r1)-[:is]-(r2);
+
 
 // -- relate owners and GHA_repos
-// TODO: Matching fails. there is no gha_repo_id in "selected_repos". Fix that.
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_repos' AS row
-MATCH(o:OWNER{login: row.owner_login})
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_repos_8' AS row
+MATCH(o:OWNER{login: row.owner_name})
 MATCH(r:GHA_REPO{gha_id: toInt(row.gha_id)})
 MERGE(r)-[:belongs_to]->(o);
 
+
 // -- relate owners and GHT_repos
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ght_selected_repos' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ght_repos_sample' AS row
 MATCH(o:OWNER{login: row.owner_login})
 MATCH(r:GHT_REPO{ght_id: toInt(row.ght_repo_id)})
 MERGE(r)-[:belongs_to]->(o);
@@ -102,13 +112,21 @@ MERGE(r)-[:belongs_to]->(o);
 // -- IssuesEvent
 // create nodes, relate them to users and repos
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/IssuesEvent_prep' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/IssuesEvent_prep' AS row
 WITH row, apoc.date.parse(row.event_time, 'ms', 'yyyy-MM-dd hh:mm:ss') as dt
-CREATE (i:ISSUE:EVENT{
-gha_id:toInt(row.issue_id),
-url:row.issue_url,
-event_time: dt
+MERGE (i:ISSUE{
+gha_id:toInt(row.issue_id)
 })
+ON CREATE SET
+i :EVENT,
+i.url = row.issue_url,
+i.event_time = dt
+
+
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/IssuesEvent_prep' AS row
+MATCH (i:ISSUE{gha_id:toInt(row.issue_id)})
+
 WITH i,
 		 toInt(row.actor_id) AS actor,
 		 toInt(row.repo_id) as repo
@@ -123,13 +141,23 @@ MERGE (i)-[:to]->(r);
 // -- PullRequestEvent
 // create nodes, relate them to users and repos
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/PullRequestEvent_prep' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/PullRequestEvent_prep' AS row
 WITH row, apoc.date.parse(row.event_time, 'ms', 'yyyy-MM-dd hh:mm:ss') as dt
-CREATE (p:PULLREQUEST:EVENT{
-  event_time:dt,
-  gha_id:toInt(row.pull_request_id)
+MERGE (p:PULLREQUEST{
+	gha_id:toInt(row.pull_request_id)
 })
-WITH p,
+ON CREATE SET
+p: EVENT,
+p.event_time = dt
+
+
+
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/PullRequestEvent_prep' AS row
+	MATCH (p:PULLREQUEST{
+		gha_id:toInt(row.pull_request_id)
+	})
+	WITH p,
      toInt(row.actor_id) AS actor,
      toInt(row.base_repo_id) AS repo,
      row.issue_url as issue
@@ -147,28 +175,27 @@ WITH p,
 MATCH (i:ISSUE{url: issue})
 MERGE (i)-[:is]->(p);
 
+
 // TODO: Issues and Pullrequests can only be connected based on issue_url since all other data
 // is not available in GHT BQ. MatchQuotes are low. Is there any other way to bring them together more
 // reliably?
 
-// code to connect issues and pr after pr have already been created
-USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/PullRequestEvent_prep' AS row
-WITH toInt(row.pull_request_id) as pr_id, row.issue_url as issue_url
-MATCH(i:ISSUE{url: issue_url})
-MATCH(p:PULLREQUEST{gha_id: pr_id})
-MERGE (i)-[:is]->(p);
-
-
 // -- MemberEvent
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/MemberEvent_prep' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/MemberEvent_prep' AS row
 WITH row,
      apoc.date.parse(row.event_time, 'ms', 'yyyy-MM-dd hh:mm:ss') as dt
-CREATE (c:COLLABORATOR:EVENT{
-  event_id:toInt(row.event_id),
-  event_time:dt
-  })
+MERGE (c:COLLABORATOR{
+  event_id:toInt(row.event_id)
+})
+ON CREATE SET
+c: EVENT,
+c.event_time = dt
+
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/MemberEvent_prep' AS row
+MATCH (c:COLLABORATOR{event_id: toInt(row.event_id)})
+
 WITH c,
      toInt(row.actor_id) AS actor,
      toInt(row.member_id) as member,
@@ -190,16 +217,19 @@ MERGE (c)-[:to]->(r);
 
 
 // -- ReleaseEvent
-EXPLAIN
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ReleaseEvent_prep' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/ReleaseEvent_prep' AS row
 WITH row,
      apoc.date.parse(row.event_time, 'ms', 'yyyy-MM-dd hh:mm:ss') as dt
-CREATE (r:RELEASE:EVENT{
-  event_time:dt,
-  gha_id:toInt(row.release_id)
-})
+MERGE (r:RELEASE{gha_id:toInt(row.release_id)})
+ON CREATE SET
+r : EVENT,
+r.event_time = dt
 
+
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/ReleaseEvent_prep' AS row
+MATCH (r:RELEASE{gha_id:toInt(row.release_id)})
 WITH r,
      toInt(row.actor_id) AS actor,
      toInt(row.repo_id) as repo
@@ -214,15 +244,19 @@ MERGE (r)-[:to]->(rep);
 
 // -- Import PullRequestComments, connect to actors and pullrequests
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/PullRequestReviewCommentEvent_prep' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/PullRequestReviewCommentEvent_prep' AS row
 WITH row,
      apoc.date.parse(row.event_time, 'ms', 'yyyy-MM-dd hh:mm:ss') as dt
-CREATE (c:PR_COMMENT:COMMENT:EVENT{
-	event_time:dt,
-  gha_id:toInt(row.comment_id)
-})
+MERGE (c:COMMENT{gha_id:toInt(row.comment_id)})
+ON CREATE SET
+c : EVENT,
+c : PR_COMMENT,
+c.event_time = dt
 
-WITH c,
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/PullRequestReviewCommentEvent_prep' AS row
+MATCH (c:COMMENT{gha_id:toInt(row.comment_id)})
+	WITH c,
      toInt(row.actor_id) AS actor,
      toInt(row.pull_request_id) as pr_id
 MATCH (u:USER{gha_id: actor}) USING INDEX u:USER(gha_id)
@@ -236,14 +270,20 @@ MERGE (c)-[:to]->(pr);
 
 // -- Import IssueComments, connect to actors and issues
 USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/IssueCommentEvent_prep' AS row
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/IssueCommentEvent_prep' AS row
 WITH row,
      apoc.date.parse(row.event_time, 'ms', 'yyyy-MM-dd hh:mm:ss') as dt
-CREATE (c:I_COMMENT:COMMENT:EVENT{
-	event_time:dt,
+MERGE (c:COMMENT{
   gha_id:toInt(row.comment_id)
 })
+ON CREATE SET
+c: EVENT,
+c: I_COMMENT,
+c.event_time = dt;
 
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/IssueCommentEvent_prep' AS row
+MATCH (c:COMMENT{gha_id:toInt(row.comment_id)})
 WITH c,
      toInt(row.actor_id) AS actor,
      toInt(row.issue_id) as i_id
@@ -256,44 +296,34 @@ MATCH (i:ISSUE{gha_id:i_id})
 MERGE (c)-[:to]->(i);
 
 
-
 // -- Import CommitComments
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/CommitCommentEvent_prep' AS row
 WITH row,
-     apoc.date.parse(row.event_time, 'ms', 'yyyy-MM-dd hh:mm:ss') as dt,
-     row.commit_id as commit_sha
-CREATE (c:C_COMMENT:COMMENT:EVENT{
-	event_time:dt,
-  gha_id:toInt(row.comment_id)
+     apoc.date.parse(row.event_time, 'ms', 'yyyy-MM-dd hh:mm:ss') as dt
+MERGE (c:COMMENT{
+	gha_id:toInt(row.comment_id)
 })
-WITH c,
-     toInt(row.actor_id) AS actor,
-     commit_sha
-MATCH (u:USER{gha_id: actor}) USING INDEX u:USER(gha_id)
-MERGE (u)-[:makes]->(c)
-WITH c,
-     commit_sha
-MERGE(commit:COMMIT{
-  gha_id: commit_sha
-})
-WITH c,
-     commit
-MERGE (c)-[:to]->(commit);
+ON CREATE SET
+c : EVENT,
+c : C_COMMENT,
+c.event_time = dt;
 
-EXPLAIN
+// match commenter and commit comments
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/CommitCommentEvent_prep' AS row
-WITH toInt(row.comment_id) as comment_id,
+MATCH (c:COMMENT{gha_id:toInt(row.comment_id)})
+WITH c,
+     toInt(row.actor_id) AS actor,
      row.commit_id as commit_sha
-MATCH (commit:COMMIT{gha_id:commit_sha})
-MATCH (comment:COMMENT{gha_id:comment_id})
-MERGE (comment)-[:to]->(commit);
+MATCH (u:USER{gha_id: actor}) USING INDEX u:USER(gha_id)
+MERGE (u)-[:makes]->(c);
+
 // -- importing commits
 // no commits are allowed to be in the database at time of import
 
 USING PERIODIC COMMIT 1000
-LOAD CSV FROM "file:///Export_DataPrep/ght_commits_201601" AS row
+LOAD CSV FROM "file:///Export_DataPrep/ght_commits_8" AS row
 WITH row[1] as commit_sha,
      toInt(row[2]) as ght_author_id,
      toInt(row[4]) as ght_repo_id,
@@ -315,26 +345,23 @@ WHERE r.ght_id = ght_repo_id
 CREATE(c)-[:to]->(r);
 
 
-// -- import GHT user information
-// match gha and ght users with the same name
+// -- create commits having comments on them and relate them to GHT_REPOS if both commit and relation does not already exist
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/CommitCommentEvent_prep' AS row
+WITH toInt(row.ght_repo_id) as ght_repo_id,
+	row.commit_id as commit_sha
+	MERGE (c:COMMIT{
+	gha_id: commit_sha
+})
 
-USING PERIODIC COMMIT 10000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/users_joined' AS row
-MATCH(ght_u:GHT_USER{ght_id: toInt(row.ght_id)})
-MATCH(gha_u:USER{gha_id: toInt(row.gha_id)})
-MERGE (ght_u) -[:is]->(gha_u);
-
-// match gha users which share the same login but different ids
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_users_joined' AS row
-MATCH (u1:USER{gha_id: toInt(row.gha1)})
-MATCH (u2:USER{gha_id: toInt(row.gha2)})
-MERGE (u1) -[:is]-> (u2);
-
+WITH c, ght_repo_id
+MATCH (r:GHT_REPO{ght_id: ght_repo_id})
+MERGE (c)-[:to]->(r);
 
 
 // -- import references:
-USING PERIODIC COMMIT 10000
-LOAD CSV FROM 'file:///Relations/180304_205623_relations.csv' AS row
+USING PERIODIC COMMIT 1000
+LOAD CSV FROM 'file:///Relations/180307_relations.csv' AS row
 WITH
 	toInt(row[0]) as user_id,
 	toInt(row[1]) as comment_id,
@@ -342,10 +369,9 @@ WITH
 MATCH (user:USER{gha_id:user_id})
 MATCH (comment:COMMENT{gha_id:comment_id})
 WITH comment, user, ref_type
-CREATE (comment)-[x:references]->(user)
-SET x.ref_type = ref_type;
-
-
+CALL apoc.create.relationship(comment, ref_type, {}, user)
+YIELD rel
+RETURN rel;
 
 
 
@@ -378,3 +404,72 @@ MATCH (u:USER)<-[x]-(:GHT_USER) WITH u.gha_id as gha_id, COUNT(x) as ct WHERE ct
 
 // check how many gha_users share the same login
 MATCH (u:USER) <-[x]- (u2:USER) WITH u.gha_id as gha_id, COUNT(x) as ct WHERE ct >= 1 RETURN DISTINCT gha_id, ct;
+
+
+
+
+
+//-- match gha and ght users with the same name
+
+// query to match gha and ght users fails, too, because of a bug in Neo4j 3.3.1.
+// (see bug report at https://github.com/neo4j-contrib/neo4j-apoc-procedures/issues/762)
+
+EXPLAIN
+USING PERIODIC COMMIT 100
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_users_to_ght_users_8' AS row
+MATCH(ght_u:GHT_USER{ght_id: toInt(row.ght_id)})
+MATCH(gha_u:USER{gha_id: toInt(row.gha_id)})
+CALL apoc.refactor.mergeNodes([gha_u, ght_u])
+YIELD node
+RETURN node;
+
+
+// alternative query could not be applied, because the operation below requires an Eager-operation. However, there is not enough
+// memory to perform Eager-operations.
+
+EXPLAIN
+USING PERIODIC COMMIT 100
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_users_to_ght_users_8' AS row
+MATCH(ght_u:GHT_USER{ght_id: toInt(row.ght_id)})
+WITH ght_u, row
+
+MATCH (ght_u) -[:authored]-> (c:COMMIT)
+WITH c, row
+MATCH(gha_u:USER{gha_id: toInt(row.gha_id)})
+	CREATE (gha_u) -[:authored]->(c);
+
+
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_users_to_ght_users_8' AS row
+MATCH(ght_u:GHT_USER{ght_id: toInt(row.ght_id)})
+MATCH(gha_u:USER{gha_id: toInt(row.gha_id)})
+
+	WITH COLLECT({del: ght_u, ght_id: ght_u.ght_id, u: gha_u}) as list
+
+UNWIND list as row
+WITH row.del as del,
+	row.ght_id as ght_id,
+	row.u as u
+	DETACH DELETE del
+
+	SET
+		u.ght_id = ght_id,
+		u:GHT_USER;
+
+// -- match gha users which share the same login but differ in ids
+// same problem as described above
+
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_users_to_gha_users_8' AS row
+MATCH (u1:USER{gha_id: toInt(row.gha1)})
+MATCH (u2:USER{gha_id: toInt(row.gha2)})
+CALL apoc.refactor.mergeNodes([u1, u2])
+YIELD node
+RETURN node;
+
+// -- create connection between first commenter and creator of issue
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/IssuesEvent_prep' AS row
+MATCH (i:ISSUE{gha_id:toInt(row.issue_id)})
+MATCH (c:COMMENT)-[:to]->(i)
+WITH c, i ORDER BY i, c.gha_id
+
