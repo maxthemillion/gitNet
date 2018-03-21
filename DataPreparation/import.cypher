@@ -71,17 +71,6 @@ MERGE(r:GHA_REPO{
 });
 
 
-// -- relate GHA and GHT REPOS
-// table gha_to_ght_repos contains ids matched by repository name (covers case recreate where
-// more ids exist per repository name)
-USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_ght_repos_matching_8' AS row
-WITH toInt(row.ght_repo_id) as ght_id,
-toInt(row.gha_id) as gha_id
-MATCH (ght_r:GHT_REPO{ght_id: ght_id})
-MATCH (gha_r:GHA_REPO{gha_id: gha_id})
-MERGE (ght_r)-[:is]->(gha_r);
-
 // relate GHA Repos
 USING PERIODIC COMMIT 1000
 LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_repos_matched' AS row
@@ -399,11 +388,6 @@ with labels(n) as l_n,
 RETURN l_n, ct_n, t_x, ct_x, l_m, ct_m
 ORDER BY l_m;
 
-// check how many gha_users were matched to two or more ght_users
-MATCH (u:USER)<-[x]-(:GHT_USER) WITH u.gha_id as gha_id, COUNT(x) as ct WHERE ct > 1 RETURN gha_id,  ct;
-
-// check how many gha_users share the same login
-MATCH (u:USER) <-[x]- (u2:USER) WITH u.gha_id as gha_id, COUNT(x) as ct WHERE ct >= 1 RETURN DISTINCT gha_id, ct;
 
 
 
@@ -411,60 +395,44 @@ MATCH (u:USER) <-[x]- (u2:USER) WITH u.gha_id as gha_id, COUNT(x) as ct WHERE ct
 
 //-- match gha and ght users with the same name
 
-// query to match gha and ght users fails, too, because of a bug in Neo4j 3.3.1.
-// (see bug report at https://github.com/neo4j-contrib/neo4j-apoc-procedures/issues/762)
-
-EXPLAIN
 USING PERIODIC COMMIT 100
 LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_users_to_ght_users_8' AS row
 MATCH(ght_u:GHT_USER{ght_id: toInt(row.ght_id)})
 MATCH(gha_u:USER{gha_id: toInt(row.gha_id)})
 CALL apoc.refactor.mergeNodes([gha_u, ght_u])
 YIELD node
-RETURN node;
+RETURN  Count(node);
 
 
-// alternative query could not be applied, because the operation below requires an Eager-operation. However, there is not enough
-// memory to perform Eager-operations.
+// -- match gha and ght repos with the same name
 
-EXPLAIN
 USING PERIODIC COMMIT 100
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_users_to_ght_users_8' AS row
-MATCH(ght_u:GHT_USER{ght_id: toInt(row.ght_id)})
-WITH ght_u, row
-
-MATCH (ght_u) -[:authored]-> (c:COMMIT)
-WITH c, row
-MATCH(gha_u:USER{gha_id: toInt(row.gha_id)})
-	CREATE (gha_u) -[:authored]->(c);
-
-
-USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_users_to_ght_users_8' AS row
-MATCH(ght_u:GHT_USER{ght_id: toInt(row.ght_id)})
-MATCH(gha_u:USER{gha_id: toInt(row.gha_id)})
-
-	WITH COLLECT({del: ght_u, ght_id: ght_u.ght_id, u: gha_u}) as list
-
-UNWIND list as row
-WITH row.del as del,
-	row.ght_id as ght_id,
-	row.u as u
-	DETACH DELETE del
-
-	SET
-		u.ght_id = ght_id,
-		u:GHT_USER;
-
-// -- match gha users which share the same login but differ in ids
-// same problem as described above
-
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_users_to_gha_users_8' AS row
-MATCH (u1:USER{gha_id: toInt(row.gha1)})
-MATCH (u2:USER{gha_id: toInt(row.gha2)})
-CALL apoc.refactor.mergeNodes([u1, u2])
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/gha_ght_repos_matching_8' AS row
+WITH
+	toInt(row.ght_repo_id) as ght_id,
+	toInt(row.gha_id) as gha_id
+MATCH (ght_r:GHT_REPO{ght_id: ght_id})
+MATCH (gha_r:GHA_REPO{gha_id: gha_id})
+CALL apoc.refactor.mergeNodes([gha_r, ght_r])
 YIELD node
-RETURN node;
+RETURN  Count(node);
+
+// delete duplicate :belongs_to relationships
+MATCH (x:GHT_REPO)-[y:belongs_to]->(o:OWNER)
+WITH x, o, type(y) as t, tail(collect(y)) as coll
+FOREACH(i in coll | delete i);
+
+
+// delete repositories which have been attributed to more than one owner.
+MATCH (x:GHT_REPO)-[y:belongs_to]->(o:OWNER)
+WITH x, COLLECT(o) as ct WHERE SIZE(ct) >1
+DETACH DELETE x;
+
+//
+MATCH (x:GHT_REPO) SET x:REPO;
+CREATE CONSTRAINT ON (r:REPO) ASSERT r.ght_id IS UNIQUE;
+
+
 
 // -- create connection between first commenter and creator of issue
 USING PERIODIC COMMIT 1000
