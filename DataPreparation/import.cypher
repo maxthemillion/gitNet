@@ -391,8 +391,6 @@ ORDER BY l_m;
 
 
 
-
-
 //-- match gha and ght users with the same name
 
 USING PERIODIC COMMIT 100
@@ -435,9 +433,153 @@ CREATE CONSTRAINT ON (r:REPO) ASSERT r.ght_id IS UNIQUE;
 
 
 // -- create connection between first commenter and creator of issue
-USING PERIODIC COMMIT 1000
-LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/IssuesEvent_prep' AS row
-MATCH (i:ISSUE{gha_id:toInt(row.issue_id)})
-MATCH (c:COMMENT)-[:to]->(i)
-WITH c, i ORDER BY i, c.gha_id
+// Remark: constrained RAM causes heavy trouble here. Set Java Heap Space to 3G (min). Operation takes
+// much time because of swapping.
 
+USING PERIODIC COMMIT 1
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/ght_repos_sample' AS row
+MATCH (r:REPO{ght_id:toInt(row.ght_repo_id)})
+MATCH (comment:COMMENT) -[:to]-> (node) -[:to]-> (r)
+WITH comment, node Order by node, comment.event_time ASC
+WITH COLLECT(comment) as comments, node
+WITH head(comments) as first_comment, node
+MATCH (u:USER) -[x]-> (node)
+WHERE type(x) in ['authored', 'opens', 'requests']
+SET first_comment.arg = u.gha_id;
+
+MATCH (c:COMMENT) WHERE EXISTS(c.arg)
+MATCH (u:USER{gha_id: c.arg})
+MERGE (c)-[:first_reply]->(u);
+
+MATCH (c:COMMENT)
+WHERE EXISTS(c.arg)
+REMOVE c.arg;
+
+
+// -- connect loose issue comments
+// import all missing issues
+EXPLAIN
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/IssueCommentEvent_prep' AS row
+WITH
+	toInt(row.issue_id) as issue_id
+MERGE(i:ISSUE{gha_id: issue_id});
+
+// connect all comments to issues where a connection does not already exist
+EXPLAIN
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/IssueCommentEvent_prep' AS row
+WITH
+	toInt(row.issue_id) as issue_id,
+	toInt(row.comment_id) as comment_id
+MATCH (c:COMMENT{gha_id: comment_id})
+MATCH (i:ISSUE{gha_id: issue_id})
+WITH c, i
+WHERE NOT EXISTS ((c)-[:to]->(:ISSUE))
+MERGE(c)-[:to]->(i);
+
+// import all missing repositories
+EXPLAIN
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/IssueCommentEvent_prep' AS row
+WITH toInt(row.repo_id) as gha_repo_id
+MERGE(r:GHA_REPO{gha_id:gha_repo_id})
+
+// connect repos to owners where connection does not already exist
+EXPLAIN
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/IssueCommentEvent_prep' AS row
+WITH row.owner_name as owner_login,
+		 toInt(row.repo_id) as gha_repo_id
+MATCH (o:OWNER{login: owner_login})
+MATCH (r:GHA_REPO{gha_id: gha_repo_id})
+WITH o, r
+WHERE NOT EXISTS ((r)-->(:OWNER))
+MERGE(r)-[:belongs_to]->(o)
+
+
+// add date of first comment as event time to ISSUES
+// time corrected by avg response time for issues (16.0062403 days)
+EXPLAIN
+MATCH (i:ISSUE) <-[:to]- (c:COMMENT)
+	WITH i, c
+	WHERE NOT EXISTS (i.event_time)
+	WITH i, c.event_time as c_time Order by i, c_time ASC
+	WITH COLLECT(c_time) as times, i
+	WITH head(times) as t , i
+	WITH t - 16.0062403 * 86400000 as new_t, i
+	SET i.event_time = new_t
+	SET i: EVENT;
+
+// -- connect loose pullreq comments
+// import missing pull requests
+EXPLAIN
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/PullRequestReviewCommentEvent_prep' AS row
+WITH toInt(row.pull_request_id) as pr_id
+MERGE (i:PULLREQUEST{gha_id: pr_id});
+
+
+// connect loose comments
+EXPLAIN
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/PullRequestReviewCommentEvent_prep' AS row
+WITH
+	toInt(row.pull_request_id) as pr_id,
+	toInt(row.comment_id) as comment_id
+MATCH (c:COMMENT{gha_id: comment_id})
+MATCH (p:PULLREQUEST{gha_id: pr_id})
+WITH c, p
+WHERE NOT EXISTS ((c)-[:to]->(:PULLREQUEST))
+MERGE(c)-[:to]->(p);
+
+// import eventually missing repositories
+EXPLAIN
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/PullRequestReviewCommentEvent_prep' AS row
+WITH toInt(row.repo_id) as gha_repo_id
+MERGE(r:GHA_REPO{gha_id:gha_repo_id})
+
+// connect missing repositories
+EXPLAIN
+USING PERIODIC COMMIT 1000
+LOAD CSV WITH HEADERS FROM 'file:///Export_DataPrep/allEvents/PullRequestReviewCommentEvent_prep' AS row
+WITH row.owner_name as owner_login,
+		 toInt(row.repo_id) as gha_repo_id
+MATCH (o:OWNER{login: owner_login})
+MATCH (r:GHA_REPO{gha_id: gha_repo_id})
+WITH o, r
+WHERE NOT EXISTS ((r)-->(:OWNER))
+MERGE(r)-[:belongs_to]->(o)
+
+
+// add date of first comment as event time to PULLREQUESTS
+EXPLAIN
+MATCH (i:PULLREQUEST) <-[:to]- (c:COMMENT)
+	WITH i, c
+	WHERE NOT EXISTS (i.event_time)
+	WITH i, c.event_time as c_time Order by i, c_time ASC
+	WITH COLLECT(c_time) as times, i
+	WITH head(times) as t , i
+	WITH t - 4.8037954691 * 86400000 as new_t, i
+	SET i.event_time = new_t
+	SET i: EVENT;
+
+
+
+// get min avg and max response time for issues or pullrequests
+Explain
+	MATCH (i:PULLREQUEST) <-[:to]- (c:COMMENT)
+	WITH i, c
+	WHERE EXISTS (i.event_time) and EXISTS(c.event_time)
+	WITH id(i) as i_id, c.event_time - i.event_time as timediff Order by i_id, timediff ASC
+	WITH COLLECT(timediff) as times, i_id
+	WITH COLLECT(head(times)) as heads
+	UNWIND heads as t
+	RETURN min(t)/86400000 as min, avg(t)/86400000, max(t)/86400000;
+
+	MATCH (i:ISSUE) <-[:to]- (c:COMMENT)
+	WITH i, c
+	WHERE EXISTS (i.event_time) and EXISTS(c.event_time)
+	WITH c.event_time - i.event_time as t
+	RETURN min(t)/86400000 as min, avg(t)/86400000, max(t)/86400000;

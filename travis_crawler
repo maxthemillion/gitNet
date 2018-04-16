@@ -1,0 +1,29 @@
+import requests
+import pandas as pd
+
+import_repos = pd.read_csv("Data/Import_Network/repos.csv", sep=',', header=0)
+owners = import_repos["owner_login"].unique()
+
+responses = []
+i = 1
+
+try:
+    for name in owners:
+
+        url = 'https://api.travis-ci.org/owner/' + name
+        headers = {'Travis-API-Version': '3', 'Authorization': 'token Uh27aY2FhsmR-yVN62-WKA'}
+        r = requests.get(url, headers=headers)
+        responses = responses + [{"project": name, "response": r.text}]
+
+        i += 1
+
+finally:
+    df = pd.DataFrame(responses)
+
+    df["CI"] = df["response"].apply(str.find, args=("error", 12, 25)) == -1
+
+    df = pd.DataFrame({"project": df["project"], "has_travis": df["CI"]})
+
+    df.to_csv("/Users/Max/Desktop/MA/R/NetworkAnalyzer/faultlines/travis.csv")
+
+

@@ -27,6 +27,9 @@ a_gen_charts = False
 # a_resolution = 7  # resolution in days
 a_length_timeframe = 30  # length of time period to consider
 
+a_dev_core_min_contributions = 20
+a_filter_core = True
+
 a_louvain = True
 a_modularity = True and a_louvain
 
@@ -54,13 +57,22 @@ def get_relations_file_path():
     return _relations_file
 
 
-def get_nx_path(owner, repo, i):
-    return "{0}/nxm_{1}_{2}_{3}.csv".format(_nx_measures_path, owner, repo, i)
+def get_nx_path(owner, i, repo=None):
+    if repo is None:
+        return "{0}/nxm_{1}_{2}.csv".format(_nx_measures_path, owner, i)
+    else:
+        return "{0}/nxm_{1}_{2}_{3}.csv".format(_nx_measures_path, owner, repo, i)
 
 
-def get_plot_path(owner, repo, i):
-    return "{0}/nxm_{1}_{2}_{3}.{4}".format(_plot_path, owner, repo, i, plot_format)
+def get_plot_path(owner, i, repo=None):
+    if repo is None:
+        return "{0}/nxm_{1}_{2}.{3}".format(_plot_path, owner, i, plot_format)
+    else:
+        return "{0}/nxm_{1}_{2}_{3}.{4}".format(_plot_path, owner, repo, i, plot_format)
 
 
-def get_viz_data_path(owner, repo):
-    return "{0}/viz_{1}_{2}.json".format(_viz_data_folder, owner, repo)
+def get_viz_data_path(owner, repo=None):
+    if repo is None:
+        return "{0}/viz_{1}.json".format(_viz_data_folder, owner)
+    else:
+        return "{0}/viz_{1}_{2}.json".format(_viz_data_folder, owner, repo)

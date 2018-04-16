@@ -11,28 +11,25 @@ import json
 from classes.neocontroller import Neo4jController
 
 
-owners = ['OneDrive']
-repos = [16727251]
-
-
-def analyze_repos():
+def analyze_repos(owners):
 
     for owner in owners:
-        for repo in repos:
-            analyzer = Analyzer(owner, repo)
-            analyzer.export_graphjson()
+        analyzer = Analyzer(owner)
+        analyzer.export_graphjson()
+    else:
+        pass
 
 
 class Analyzer:
     def __init__(self,
                  owner: str,
-                 repo: int):
+                 repo=None):
         self._owner = owner
         self._repo = repo
 
         self._controller = Neo4jController()
 
-        self._startdt, self._enddt = self._controller.get_comment_timeframe(self._repo)
+        self._startdt, self._enddt = self._controller.get_comment_timeframe(self._owner)
 
         self._degree_centrality = None
         self._betweenness_centrality = None
@@ -60,13 +57,13 @@ class Analyzer:
 
     def _louvain_networkx(self):
 
-        print("Running NX Louvain algorithm for {0}/{1} and timeframe length {2}".format(self._owner, self._repo,
-                                                                                         conf.a_length_timeframe))
+        print("Running NX Louvain algorithm for {0} and timeframe length {1}".format(self._owner,
+                                                                                     conf.a_length_timeframe))
         res = {}
         for dt in rrule.rrule(rrule.WEEKLY, dtstart=self._startdt, until=self._enddt):
             time_start = time.time()
 
-            links = self._controller.get_communication_subgraph(self._owner, self._repo, dt)
+            links = self._controller.get_communication_subgraph(self._owner, dt)
 
             if not links.empty:
                 nxgraph = nx.from_pandas_dataframe(links, source="source", target="target", create_using=nx.MultiGraph())
@@ -83,9 +80,8 @@ class Analyzer:
 
     def _individual_measures(self):
 
-        print("Running NX analysis for {0}/{1} and timeframe length {2}".format(self._owner,
-                                                                                self._repo,
-                                                                                conf.a_length_timeframe))
+        print("Running NX analysis for {0} and timeframe length {1}".format(self._owner,
+                                                                            conf.a_length_timeframe))
         res_louvain = {}
         res_degree_centrality = {}
         res_betweenness_centrality = {}
@@ -96,15 +92,13 @@ class Analyzer:
         for dt in rrule.rrule(rrule.WEEKLY, dtstart=self._startdt, until=self._enddt):
             lap_time = time.time()
 
-            links = self._controller.get_communication_subgraph(self._owner, self._repo, dt)
+            links = self._controller.get_communication_subgraph(self._owner, dt)
 
             if not links.empty:
                 multi_graph = nx.from_pandas_dataframe(links,
                                                        source="source",
                                                        target="target",
                                                        create_using=nx.MultiGraph())
-
-                simple_graph = self.convert_to_simple(multi_graph)
 
                 if conf.a_louvain:
                     partition = nxlouvain.best_partition(multi_graph)
@@ -124,6 +118,8 @@ class Analyzer:
 
                 if conf.a_eigenvector_centrality:
                     pass
+                    # simple_graph = self.convert_to_simple(multi_graph)
+
                     # TODO: eigenvector centrality calculation fails occasionally
                     # reason may be that nx.eigenvector_centrality() can't handle star graphs
                     # https://stackoverflow.com/questions/43208737/using-networkx-to-calculate-eigenvector-centrality
@@ -146,20 +142,20 @@ class Analyzer:
     def _export_measures(self):
         if conf.a_betweenness_centrality:
             pd.DataFrame.from_dict(self._betweenness_centrality)\
-                .to_csv(conf.get_nx_path(self._owner, self._repo, "bc"))
+                .to_csv(conf.get_nx_path(self._owner, "bc",  self._repo))
 
         if conf.a_degree_centrality:
             pd.DataFrame.from_dict(self._degree_centrality)\
-                .to_csv(conf.get_nx_path(self._owner, self._repo, "dc"))
+                .to_csv(conf.get_nx_path(self._owner, "dc", self._repo))
 
         if conf.a_eigenvector_centrality:
             pd.DataFrame.from_dict(self._eigenvector_centrality) \
-                .to_csv(conf.get_nx_path(self._owner, self._repo, "ec"))
+                .to_csv(conf.get_nx_path(self._owner, "ec", self._repo))
 
         if conf.a_modularity:
             i = "mod"
             df = pd.DataFrame.from_dict(self._modularity, orient="index")
-            df.to_csv(conf.get_nx_path(self._owner, self._repo, i))
+            df.to_csv(conf.get_nx_path(self._owner, i, self._repo))
             if conf.a_gen_charts:
                 pass
                 # df.plot(title="Modularity ({0}/{1})".format(self._owner, self._repo),
@@ -228,14 +224,14 @@ class Analyzer:
         :return:    --
         """
 
-        print("exporting data in graphJSON format for {0}/{1}".format(self._owner, self._repo))
+        print("exporting data in graphJSON format for {0}".format(self._owner))
 
         groups = self.convert_keys_to_string(self._partition)
         d_centrality = self.convert_keys_to_string(self._degree_centrality)
         b_centrality = self.convert_keys_to_string(self._betweenness_centrality)
         modularity = self.convert_keys_to_string(self._modularity)
 
-        nodes, links, info = self._controller.get_viz_data(self._owner, self._repo)
+        nodes, links, info = self._controller.get_viz_data(self._owner)
 
         data = {"info": info,
                 "nodes": nodes,
@@ -250,4 +246,15 @@ class Analyzer:
 
 
 if __name__ == '__main__':
-    analyze_repos()
+    owners = [
+        'OneDrive',
+        'waffleio',
+        'getnikola',
+        'Tribler',
+        'BobPalmer',
+        'novus',
+        'rathena',
+        'gatsbyjs']
+
+    # repos = [16727251]
+    analyze_repos(owners)
